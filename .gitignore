@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+*.egg-info/
+.pytest_cache/
+.aws-sam/
+samconfig.toml
+*.p8
+.DS_Store
+xcuserdata/
+*.xcuserstate
+build/
+DerivedData/

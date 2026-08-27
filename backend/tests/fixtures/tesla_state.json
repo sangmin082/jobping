@@ -1,0 +1,14 @@
+{
+  "departments": [{"id": 11, "name": "Engineering & Information Technology"},
+                  {"id": 20, "name": "Manufacturing"}],
+  "locations": [{"id": 45, "name": "Palo Alto, California"},
+                {"id": 91, "name": "Seoul, South Korea"}],
+  "types": [{"id": 3, "name": "Full-time"}, {"id": 5, "name": "Intern"}],
+  "regions": [{"id": 100, "name": "North America"}],
+  "listings": [
+    {"id": 240001, "t": "Senior DevOps Engineer", "dp": 11, "l": 45, "rl": 100, "y": 3},
+    {"id": 240002, "t": "인프라 엔지니어", "dp": 11, "l": 91, "rl": 100, "y": 3},
+    {"id": 240003, "t": "Software Engineering Intern", "dp": 11, "l": 45, "rl": 100, "y": 5},
+    {"id": 240004, "title": "Production Associate", "department": 20, "location": 91, "type": 3}
+  ]
+}
