@@ -6,7 +6,7 @@ install:
 test:
 	.venv/bin/pytest -q
 
-# 예: make verify A=tesla
+# 예: make verify A=samsung
 verify:
 	.venv/bin/python scripts/verify.py $(A)
 

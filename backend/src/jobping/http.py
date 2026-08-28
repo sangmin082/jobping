@@ -80,6 +80,10 @@ class Client:
     def get_text(self, url: str, **kwargs) -> str:
         return self.request("GET", url, **kwargs).text
 
+    def post_text(self, url: str, **kwargs) -> str:
+        """POST 로 HTML 조각을 받아오는 경우(삼성 list.data)."""
+        return self.request("POST", url, **kwargs).text
+
     @staticmethod
     def _as_json(res: requests.Response) -> dict | list:
         try:

@@ -22,8 +22,10 @@ import traceback
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1] / "src"))
 
 from jobping import registry  # noqa: E402
+from jobping.companies import BY_KEY  # noqa: E402
 from jobping.adapters import NeedsDiscovery  # noqa: E402
 from jobping.http import Client, FetchError  # noqa: E402
+from jobping.matching import display_name  # noqa: E402
 from jobping.models import Job  # noqa: E402
 
 FIXTURES = pathlib.Path(__file__).resolve().parents[1] / "tests" / "fixtures"
@@ -67,9 +69,14 @@ def _report(jobs: list[Job], as_json: bool, limit: int) -> None:
                          ensure_ascii=False, indent=2, default=str))
         return
     for job in jobs[:limit]:
-        meta = " / ".join(filter(None, (job.location, job.department, job.employment_type)))
-        print(f"   • {job.title[:70]}")
-        print(f"     {meta or '-'}")
+        meta = " / ".join(filter(None, (job.location, job.employment_type)))
+        print(f"   • [{display_name(job.company)}] {job.title[:60]}")
+        if meta:
+            print(f"     {meta}")
+        if job.roles:
+            shown = ", ".join(job.roles[:2])
+            more = f" 외 {len(job.roles) - 2}개" if len(job.roles) > 2 else ""
+            print(f"     직무: {shown[:80]}{more}")
         print(f"     {job.url}")
     if len(jobs) > limit:
         print(f"   … 외 {len(jobs) - limit}건 (--limit 로 더 보기)")
@@ -79,6 +86,16 @@ def _report(jobs: list[Job], as_json: bool, limit: int) -> None:
     if len(set(ids)) != len(ids):
         dupes = len(ids) - len(set(ids))
         print(f"   ⚠ job_id 중복 {dupes}건 — source_id 선택이 잘못됐을 수 있다.")
+
+    urls = [j.url for j in jobs]
+    if len(set(urls)) != len(urls):
+        print(f"   ⚠ URL 중복 {len(urls) - len(set(urls))}건 — 링크가 전부 같은 곳으로 간다.")
+
+    # 앱 회사 목록에 없는 계열사는 사용자가 구독할 수 없다.
+    unknown = sorted({j.company for j in jobs if j.company not in BY_KEY})
+    if unknown:
+        print(f"   ⚠ 미등록 계열사 {len(unknown)}곳: {', '.join(unknown[:6])}")
+        print("     companies.py 에 추가해야 앱에서 구독할 수 있다.")
 
 
 def _patch_for_fixture(client: Client, key: str) -> None:

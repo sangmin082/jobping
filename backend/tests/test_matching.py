@@ -12,11 +12,11 @@ from jobping.models import Job
 _n = 0
 
 
-def job(title, company="samsung", department=None):
+def job(title, company="samsung_dx", department=None, roles=()):
     global _n
     _n += 1
     return Job.make(company=company, title=title, department=department,
-                    url=f"https://x.com/j/{_n}")
+                    roles=roles, url=f"https://x.com/j/{_n}")
 
 
 class TestSpacingVariants:
@@ -59,14 +59,45 @@ class TestDepartmentField:
         assert match(job("Staff Engineer", department="Infrastructure"), ["인프라"])
 
 
+class TestRoles:
+    """실제 데이터에서 매칭의 대부분은 세부 직무에서 나온다.
+
+    삼성 공고 제목은 "R&D분야 경력사원 채용(DX부문)" 처럼 뭉뚱그려져 있고,
+    "데이터 엔지니어링"은 그 안에 묶인 직무 태그에만 있다.
+    """
+
+    def test_role_tag_matches_when_title_does_not(self):
+        posting = job(
+            "R&D분야 외국인 경력사원 채용(DX부문)",
+            roles=("[Big Data센터] SW개발 (데이터 엔지니어링)",
+                   "[생산기술연구소] 기구개발 (학습기반 로봇조작 AI)"),
+        )
+        assert match(posting, ["데이터 엔지니어링"]) is not None
+        assert match(posting, ["데이터 엔지니어링"]).keyword == "데이터 엔지니어링"
+
+    def test_same_posting_without_roles_does_not_match(self):
+        assert match(job("R&D분야 외국인 경력사원 채용(DX부문)"),
+                     ["데이터 엔지니어링"]) is None
+
+    def test_synonyms_apply_to_roles(self):
+        posting = job("DC 설비 운용 전문가 영입",
+                      roles=("Infra/Infra 운용/관리/최적화",))
+        assert match(posting, ["인프라"]) is not None
+
+
 class TestCompanyFilter:
     def test_only_subscribed_companies(self):
-        jobs = [job("DevOps", company="samsung"), job("DevOps", company="tesla")]
-        hits = match_all(jobs, ["devops"], companies=["tesla"])
-        assert [h.job.company for h in hits] == ["tesla"]
+        """그룹이 아니라 계열사 단위로 걸러야 한다.
+
+        반도체 공고를 원하는 사람에게 삼성생명 공고를 보내면 안 된다.
+        """
+        jobs = [job("DevOps", company="samsung_ds"),
+                job("DevOps", company="samsung_life")]
+        hits = match_all(jobs, ["devops"], companies=["samsung_ds"])
+        assert [h.job.company for h in hits] == ["samsung_ds"]
 
     def test_no_filter_means_all(self):
-        jobs = [job("DevOps", company="samsung"), job("DevOps", company="tesla")]
+        jobs = [job("DevOps", company="samsung_ds"), job("DevOps", company="tesla_kr")]
         assert len(match_all(jobs, ["devops"])) == 2
 
 
@@ -74,9 +105,16 @@ class TestNotificationPlan:
     def test_empty(self):
         assert notification_plan([]) == []
 
-    def test_individual_below_cap(self):
+    def test_uses_human_readable_company_names(self):
+        """알림에 'samsung_dx' 가 뜨면 안 된다."""
         hits = match_all([job("DevOps A"), job("DevOps B")], ["devops"])
-        assert notification_plan(hits) == ["[samsung] DevOps A", "[samsung] DevOps B"]
+        assert notification_plan(hits) == [
+            "[삼성전자 DX부문] DevOps A", "[삼성전자 DX부문] DevOps B",
+        ]
+
+    def test_unregistered_company_falls_back_to_its_key(self):
+        hits = match_all([job("DevOps", company="sk신규회사")], ["devops"])
+        assert notification_plan(hits) == ["[sk신규회사] DevOps"]
 
     def test_collapses_above_cap(self):
         """상한이 없으면 채용 시즌에 알림 20개가 한 번에 터진다."""

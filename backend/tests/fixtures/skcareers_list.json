@@ -1,0 +1,90 @@
+{
+ "success": true,
+ "totalCount": 6,
+ "list": [
+  {
+   "jobNoticeNo": 6283,
+   "noticeID": "R261831",
+   "title": "2026 Junior Talent 채용 - 고객 직군",
+   "jobRole": "기획/서비스 기획/운영 • 영업/B2C 영업,B2B 영업",
+   "recruitType": "New",
+   "workingType": "Permanent",
+   "workingArea": "NationWide",
+   "remainDay": 2,
+   "corpName": "SK telecom",
+   "scrapIdx": 0,
+   "start": "August 24, 2026(Mon)",
+   "end": "August 30, 2026(Sun)"
+  },
+  {
+   "jobNoticeNo": 6292,
+   "noticeID": "R261840",
+   "title": "2026 Junior Talent 채용 - Infra 직군",
+   "jobRole": "Infra/무선 Network,유선/IP Network,Core Network,Network 설비",
+   "recruitType": "New",
+   "workingType": "Permanent",
+   "workingArea": "NationWide",
+   "remainDay": 2,
+   "corpName": "SK telecom",
+   "scrapIdx": 0,
+   "start": "August 24, 2026(Mon)",
+   "end": "August 30, 2026(Sun)"
+  },
+  {
+   "jobNoticeNo": 6293,
+   "noticeID": "R261841",
+   "title": " 2026 Junior Talent 채용 - Tech 직군",
+   "jobRole": "Tech R&D/SW 개발,AI Model",
+   "recruitType": "New",
+   "workingType": "Permanent",
+   "workingArea": "NationWide",
+   "remainDay": 2,
+   "corpName": "SK telecom",
+   "scrapIdx": 0,
+   "start": "August 24, 2026(Mon)",
+   "end": "August 30, 2026(Sun)"
+  },
+  {
+   "jobNoticeNo": 6294,
+   "noticeID": "R261842",
+   "title": "2026 Junior Talent 채용 - Staff 직군",
+   "jobRole": "기업문화/HR • 대외협력/CR/PR • 재무",
+   "recruitType": "New",
+   "workingType": "Permanent",
+   "workingArea": "Seoul",
+   "remainDay": 2,
+   "corpName": "SK telecom",
+   "scrapIdx": 0,
+   "start": "August 24, 2026(Mon)",
+   "end": "August 30, 2026(Sun)"
+  },
+  {
+   "jobNoticeNo": 6295,
+   "noticeID": "R261843",
+   "title": "2026 Junior Talent 채용 - 법무 직군",
+   "jobRole": "법무",
+   "recruitType": "New",
+   "workingType": "Permanent",
+   "workingArea": "Seoul",
+   "remainDay": 2,
+   "corpName": "SK telecom",
+   "scrapIdx": 0,
+   "start": "August 24, 2026(Mon)",
+   "end": "August 30, 2026(Sun)"
+  },
+  {
+   "jobNoticeNo": 6212,
+   "noticeID": "R261760",
+   "title": "[SK케미칼] 패치&ODF제형 의약품 생산/공정관리 담당 경력 모집",
+   "jobRole": "제조/생산관리",
+   "recruitType": "Experienced",
+   "workingType": "Permanent",
+   "workingArea": "Chungcheong",
+   "remainDay": 2,
+   "corpName": "SK chemicals(LS)",
+   "scrapIdx": 0,
+   "start": "August 11, 2026(Tue)",
+   "end": "August 30, 2026(Sun)"
+  }
+ ]
+}

@@ -2,19 +2,37 @@ from datetime import datetime, timezone
 
 import pytest
 
-from jobping.models import Job, canonical_url, normalize_text
+from jobping.models import Job, clean_url, identity_url, normalize_text
 
 
-class TestCanonicalUrl:
-    def test_strips_tracking_params_and_fragment(self):
-        assert canonical_url(
-            "https://Www.Tesla.com/careers/job/123/?utm_source=x&gclid=y&lang=ko#apply"
-        ) == "https://www.tesla.com/careers/job/123?lang=ko"
+class TestCleanUrl:
+    """저장하고 사용자에게 보여줄 URL — 눌렀을 때 실제로 열려야 한다."""
 
-    def test_sorts_remaining_query(self):
-        a = canonical_url("https://x.com/j?b=2&a=1")
-        b = canonical_url("https://x.com/j?a=1&b=2")
-        assert a == b
+    def test_strips_tracking_params(self):
+        assert clean_url(
+            "https://x.com/careers/job/123?utm_source=a&gclid=b&lang=ko"
+        ) == "https://x.com/careers/job/123?lang=ko"
+
+    def test_keeps_fragment(self):
+        """해시 라우팅 SPA에서는 프래그먼트가 곧 공고 경로다."""
+        url = "https://hire-r1.mokahr.com/social-recruitment/tesla/100000166#/job/abc"
+        assert clean_url(url) == url
+
+    def test_keeps_trailing_slash(self):
+        """`/hr/?no=1` 과 `/hr?no=1` 을 다르게 취급하는 서버가 있다."""
+        assert clean_url("https://x.com/hr/?no=1") == "https://x.com/hr/?no=1"
+
+
+class TestIdentityUrl:
+    """해시 계산용 정규화 — 사용자에게 보여주지 않으므로 더 공격적으로 줄인다."""
+
+    def test_sorts_query_and_drops_trailing_slash(self):
+        assert identity_url("https://X.com/j/1/?b=2&a=1") == "https://x.com/j/1?a=1&b=2"
+
+    def test_keeps_fragment_so_spa_jobs_stay_distinct(self):
+        a = identity_url("https://x.com/site#/job/1")
+        b = identity_url("https://x.com/site#/job/2")
+        assert a != b
 
 
 class TestJobId:
@@ -55,6 +73,29 @@ class TestJobId:
     def test_relative_url_rejected(self):
         with pytest.raises(ValueError):
             Job.make(company="c", title="T", url="/careers/job/1")
+
+    def test_spa_hash_routes_are_distinct_jobs(self):
+        """프래그먼트만 다른 공고들이 하나로 합쳐지면 안 된다."""
+        base = "https://hire-r1.mokahr.com/social-recruitment/tesla/100000166"
+        a = Job.make(company="tesla_kr", title="A", url=f"{base}#/job/aaa")
+        b = Job.make(company="tesla_kr", title="A", url=f"{base}#/job/bbb")
+        assert a.job_id != b.job_id
+
+
+class TestRoles:
+    def test_whitespace_is_collapsed_and_blanks_dropped(self):
+        job = Job.make(company="c", title="T", url="https://x.com/1",
+                       roles=("  SW개발 (데이터  엔지니어링) ", "", "   "))
+        assert job.roles == ("SW개발 (데이터 엔지니어링)",)
+
+    def test_absent_roles_are_not_written_to_dynamodb(self):
+        assert "roles" not in Job.make(
+            company="c", title="T", url="https://x.com/1").to_item()
+
+    def test_present_roles_are_written_as_a_list(self):
+        item = Job.make(company="c", title="T", url="https://x.com/1",
+                        roles=("A", "B")).to_item()
+        assert item["roles"] == ["A", "B"]
 
 
 class TestNormalizeText:

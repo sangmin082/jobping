@@ -7,9 +7,16 @@ FIXTURES = pathlib.Path(__file__).parent / "fixtures"
 
 
 @pytest.fixture
-def load_fixture():
+def fixture_json():
     def _load(name: str):
         return json.loads((FIXTURES / name).read_text(encoding="utf-8"))
+    return _load
+
+
+@pytest.fixture
+def fixture_text():
+    def _load(name: str):
+        return (FIXTURES / name).read_text(encoding="utf-8")
     return _load
 
 
@@ -24,7 +31,7 @@ class FakeClient:
         self.calls = []
 
     def _next(self, method, url, **kwargs):
-        self.calls.append((method, url, kwargs))
+        self.calls.append({"method": method, "url": url, **kwargs})
         if not self.responses:
             raise AssertionError(f"준비된 응답보다 많이 호출됨: {method} {url}")
         return self.responses.pop(0)
@@ -37,6 +44,9 @@ class FakeClient:
 
     def get_text(self, url, **kwargs):
         return self._next("GET", url, **kwargs)
+
+    def post_text(self, url, **kwargs):
+        return self._next("POST", url, **kwargs)
 
 
 @pytest.fixture

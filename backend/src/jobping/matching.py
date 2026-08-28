@@ -14,6 +14,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from .companies import BY_KEY
 from .models import Job, normalize_text
 
 #: 한 그룹 안의 단어는 서로 같은 것으로 본다. 사용자가 어느 쪽을 넣든 매칭된다.
@@ -62,12 +63,16 @@ class MatchResult:
 
 
 def haystack(job: Job) -> str:
-    """매칭 대상 텍스트.
+    """매칭 대상 텍스트: 제목 + 부서 + 세부 직무.
 
-    제목과 부서만 본다. 공고 본문은 저장하지 않기 때문이다(저작권 및 앱스토어
-    가이드라인 — docs/PLAN.md 4절).
+    `roles`가 매칭 품질의 대부분을 만든다. 삼성 공고 제목은 "R&D분야 경력사원
+    채용(DX부문)" 처럼 뭉뚱그려져 있고, 사용자가 찾는 "데이터 엔지니어링"은
+    그 안에 묶인 세부 직무에 있다. 제목만 보면 거의 아무것도 걸리지 않는다.
+
+    공고 본문은 보지 않는다. 저장하지 않기 때문이다(docs/PLAN.md 4절).
     """
-    return normalize_text(" ".join(filter(None, (job.title, job.department))))
+    parts = (job.title, job.department, *job.roles)
+    return normalize_text(" ".join(filter(None, parts)))
 
 
 def match(
@@ -113,6 +118,12 @@ def notification_plan(results: list[MatchResult]) -> list[str]:
     if not results:
         return []
     if len(results) > MAX_PUSH_PER_RUN:
-        companies = sorted({r.job.company for r in results})
+        companies = sorted({display_name(r.job.company) for r in results})
         return [f"새 공고 {len(results)}건 ({', '.join(companies)})"]
-    return [f"[{r.job.company}] {r.job.title}" for r in results]
+    return [f"[{display_name(r.job.company)}] {r.job.title}" for r in results]
+
+
+def display_name(company_key: str) -> str:
+    """알림에 쓸 회사 이름. 등록되지 않은 계열사는 키를 그대로 보여준다."""
+    company = BY_KEY.get(company_key)
+    return company.display_name if company else company_key

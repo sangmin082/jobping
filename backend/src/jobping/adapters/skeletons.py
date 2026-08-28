@@ -22,7 +22,7 @@ class _Skeleton(Adapter):
 class HyundaiAdapter(_Skeleton):
     key, display_name = "hyundai", "현대자동차"
     site_url = "https://careers.hyundai.com"
-    note = "개발 컨테이너 egress 정책에서 차단되어 구조 미확인."
+    note = "구조 미확인. 삼성·SK처럼 그룹 통합 포털일 가능성이 높다."
 
 
 class KiaAdapter(_Skeleton):

@@ -1,0 +1,130 @@
+{
+ "code": 0,
+ "codeType": 0,
+ "data": {
+  "jobStats": {
+   "orgId": "tesla",
+   "total": 65
+  },
+  "jobs": [
+   {
+    "campusSites": [],
+    "commitment": "全职",
+    "createdAt": "2026-06-18T16:45:48",
+    "customFields": {
+     "100002794": {
+      "name": "Job Location",
+      "value": "Seoul, Korea"
+     }
+    },
+    "department": {
+     "id": 100008242,
+     "name": "Delivery"
+    },
+    "deptId": 100008242,
+    "hireMode": 1,
+    "id": "80188138-457e-4179-9067-c5e1436359d6",
+    "multiLocale": "{\"mainLocale\":\"ko-KR\",\"secondLocale\":\"\"}",
+    "openedAt": "2026-06-17T23:00",
+    "orgId": "tesla",
+    "showIsCampus": false,
+    "status": "open",
+    "title": "Sales - Delivery Advisor (1 Year Contract), Korea",
+    "updatedAt": "2026-08-28T15:03:07",
+    "zhineng": {
+     "id": 100002523,
+     "name": "Sales & Customer Support"
+    }
+   },
+   {
+    "campusSites": [],
+    "commitment": "全职",
+    "createdAt": "2026-08-25T08:40:36",
+    "customFields": {
+     "100002794": {
+      "name": "Job Location",
+      "value": "Seoul, Korea"
+     }
+    },
+    "department": {
+     "id": 100008245,
+     "name": "Sales"
+    },
+    "deptId": 100008245,
+    "hireMode": 1,
+    "id": "309151df-93bb-481c-9871-1fd2d037d0fd",
+    "multiLocale": "{\"mainLocale\":\"ko-KR\",\"secondLocale\":\"\"}",
+    "openedAt": "2026-08-24T23:00",
+    "orgId": "tesla",
+    "showIsCampus": false,
+    "status": "open",
+    "title": "Sales - Inside Sales Advisor, Seoul, Korea ",
+    "updatedAt": "2026-08-25T08:40:53",
+    "zhineng": {
+     "id": 100002523,
+     "name": "Sales & Customer Support"
+    }
+   },
+   {
+    "campusSites": [],
+    "commitment": "全职",
+    "createdAt": "2026-08-21T17:19:11",
+    "customFields": {
+     "100002794": {
+      "name": "Job Location",
+      "value": "Seoul, Korea"
+     }
+    },
+    "department": {
+     "id": 100008227,
+     "name": "Vehicle Service"
+    },
+    "deptId": 100008227,
+    "hireMode": 1,
+    "id": "c35ca570-7ece-47fd-bdbe-790f3e678af3",
+    "multiLocale": "{\"mainLocale\":\"en-US\",\"secondLocale\":\"\"}",
+    "openedAt": "2026-08-20T23:00",
+    "orgId": "tesla",
+    "showIsCampus": false,
+    "status": "open",
+    "title": "Service – Vehicle Technician, Gangnam, Seoul, Korea",
+    "updatedAt": "2026-08-21T17:19:17",
+    "zhineng": {
+     "id": 100002524,
+     "name": "Vehicle Service"
+    }
+   },
+   {
+    "campusSites": [],
+    "commitment": "全职",
+    "createdAt": "2026-08-21T16:29:24",
+    "customFields": {
+     "100002794": {
+      "name": "Job Location",
+      "value": "Daejeon, Korea"
+     }
+    },
+    "department": {
+     "id": 100008237,
+     "name": "Energy"
+    },
+    "deptId": 100008237,
+    "hireMode": 1,
+    "id": "e8c28b3b-06a2-48a7-b80f-c8a26deac404",
+    "multiLocale": "{\"mainLocale\":\"en-US\",\"secondLocale\":\"\"}",
+    "openedAt": "2026-08-20T23:00",
+    "orgId": "tesla",
+    "showIsCampus": false,
+    "status": "open",
+    "title": "Energy - Field Service Specialist, Daejeon",
+    "updatedAt": "2026-08-21T16:29:30",
+    "zhineng": {
+     "id": 100012018,
+     "name": "Energy - Solar & Storage"
+    }
+   }
+  ]
+ },
+ "msg": "成功",
+ "success": true
+}

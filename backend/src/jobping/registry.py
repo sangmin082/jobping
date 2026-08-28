@@ -10,15 +10,16 @@ from .adapters import (
     LGAdapter,
     NaverAdapter,
     SamsungAdapter,
-    SKHynixAdapter,
-    TeslaAdapter,
+    SKCareersAdapter,
+    TeslaKoreaAdapter,
 )
+from .companies import Company
 
-# 1차 대상 3사를 앞에 둔다.
+# 동작이 확인된 소스를 앞에 둔다.
 _CLASSES: tuple[type[Adapter], ...] = (
     SamsungAdapter,
-    SKHynixAdapter,
-    TeslaAdapter,
+    SKCareersAdapter,
+    TeslaKoreaAdapter,
     HyundaiAdapter,
     KiaAdapter,
     LGAdapter,
@@ -43,3 +44,12 @@ def all_adapters() -> list[Adapter]:
 def verified_adapters() -> list[Adapter]:
     """앱에 노출해도 되는 어댑터만."""
     return [a for a in ADAPTERS.values() if a.verified]
+
+
+def app_companies() -> list[Company]:
+    """앱의 회사 선택 화면에 띄울 목록.
+
+    검증된 소스가 내보내는 계열사만 노출한다. 공고가 실제로 흐르지 않는
+    회사를 목록에 띄우면 사용자는 앱이 고장난 줄 모르고 채용이 없다고 믿는다.
+    """
+    return [c for adapter in verified_adapters() for c in adapter.companies]
