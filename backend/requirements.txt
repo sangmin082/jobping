@@ -1,2 +1,2 @@
-requests>=2.32
-beautifulsoup4>=4.12
+-r src/requirements.txt
+boto3>=1.34

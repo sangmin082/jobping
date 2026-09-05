@@ -1,0 +1,218 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  잡핑 백엔드 — 30분마다 채용 포털을 수집하고, 새 경력 공고를 키워드로 매칭해 APNs 로 보낸다.
+
+Parameters:
+  Stage:
+    Type: String
+    Default: dev
+    AllowedValues: [dev, prod]
+  ApnsEnvironment:
+    Type: String
+    Default: sandbox
+    AllowedValues: [sandbox, production]
+    Description: 개발 빌드는 sandbox, TestFlight/App Store 빌드는 production
+  ApnsKeyId:
+    Type: String
+    Default: ""
+  ApnsTeamId:
+    Type: String
+    Default: ""
+  ApnsBundleId:
+    Type: String
+    Default: ""
+  # 비밀값은 파라미터가 아니라 SSM Parameter Store(SecureString)에 둔다.
+  # 값 자체가 CloudFormation 에 남지 않고, 표준 티어 파라미터는 무료다.
+  #   aws ssm put-parameter --name /jobping/dev/apns-key --type SecureString --value "$(cat AuthKey_XXXX.p8)"
+  #   aws ssm put-parameter --name /jobping/dev/slack-webhook --type SecureString --value "https://hooks.slack.com/..."
+
+Globals:
+  Function:
+    Runtime: python3.11
+    Architectures: [arm64]
+    Timeout: 60
+    MemorySize: 512
+    Environment:
+      Variables:
+        JOBS_TABLE: !Ref JobsTable
+        DEVICES_TABLE: !Ref DevicesTable
+        DELIVERIES_TABLE: !Ref DeliveriesTable
+        HEALTH_TABLE: !Ref HealthTable
+        SLACK_WEBHOOK_PARAM: !Sub /jobping/${Stage}/slack-webhook
+        APNS_KEY_PARAM: !Sub /jobping/${Stage}/apns-key
+        APNS_KEY_ID: !Ref ApnsKeyId
+        APNS_TEAM_ID: !Ref ApnsTeamId
+        APNS_BUNDLE_ID: !Ref ApnsBundleId
+        APNS_ENVIRONMENT: !Ref ApnsEnvironment
+
+Resources:
+  # ------------------------------------------------------------ DynamoDB
+  JobsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub jobping-${Stage}-jobs
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - { AttributeName: company, AttributeType: S }
+        - { AttributeName: job_id, AttributeType: S }
+        - { AttributeName: first_seen_at, AttributeType: S }
+      KeySchema:
+        - { AttributeName: company, KeyType: HASH }
+        - { AttributeName: job_id, KeyType: RANGE }
+      # 회사별 최신순 목록. 3.5단계의 GET /v1/jobs 가 이걸 쿼리한다.
+      LocalSecondaryIndexes:
+        - IndexName: by_first_seen
+          KeySchema:
+            - { AttributeName: company, KeyType: HASH }
+            - { AttributeName: first_seen_at, KeyType: RANGE }
+          Projection: { ProjectionType: ALL }
+      TimeToLiveSpecification: { AttributeName: expires_at, Enabled: true }
+
+  DevicesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub jobping-${Stage}-devices
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - { AttributeName: install_id, AttributeType: S }
+      KeySchema:
+        - { AttributeName: install_id, KeyType: HASH }
+
+  DeliveriesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub jobping-${Stage}-deliveries
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - { AttributeName: install_id, AttributeType: S }
+        - { AttributeName: job_id, AttributeType: S }
+      KeySchema:
+        - { AttributeName: install_id, KeyType: HASH }
+        - { AttributeName: job_id, KeyType: RANGE }
+      TimeToLiveSpecification: { AttributeName: expires_at, Enabled: true }
+
+  HealthTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub jobping-${Stage}-adapter-health
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - { AttributeName: adapter, AttributeType: S }
+      KeySchema:
+        - { AttributeName: adapter, KeyType: HASH }
+
+  # ------------------------------------------------------------ 큐
+  NewJobsQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub jobping-${Stage}-new-jobs
+      VisibilityTimeout: 360   # notifier Timeout(300) 보다 커야 한다
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt NewJobsDLQ.Arn
+        maxReceiveCount: 3
+
+  NewJobsDLQ:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub jobping-${Stage}-new-jobs-dlq
+      MessageRetentionPeriod: 1209600
+
+  # ------------------------------------------------------------ 수집
+  CollectorFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub jobping-${Stage}-collector
+      CodeUri: src/
+      Handler: jobping.handlers.collector.handler
+      Timeout: 300          # 소스 14개, 각각 최대 60초. 병렬이라 보통 15초 안에 끝난다
+      MemorySize: 1024      # 토스 응답이 6MB 다
+      Environment:
+        Variables:
+          NEW_JOBS_QUEUE_URL: !Ref NewJobsQueue
+          ADAPTER_TIMEOUT_S: "60"
+      Events:
+        Every30Min:
+          Type: Schedule
+          Properties:
+            Schedule: rate(30 minutes)
+            Enabled: true
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref JobsTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref HealthTable
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt NewJobsQueue.QueueName
+        - SSMParameterReadPolicy:
+            ParameterName: !Sub jobping/${Stage}/*
+
+  # ------------------------------------------------------------ 알림
+  NotifierFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub jobping-${Stage}-notifier
+      CodeUri: src/
+      Handler: jobping.handlers.notifier.handler
+      Timeout: 300
+      Events:
+        NewJobs:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt NewJobsQueue.Arn
+            BatchSize: 1     # 실행당 메시지 하나. 묶음 계산이 실행 단위라서다
+        # 조용한 시간(23–08 KST) 동안 보류한 것을 아침에 묶어 보낸다. 08:00 KST = 23:00 UTC
+        MorningFlush:
+          Type: Schedule
+          Properties:
+            Schedule: cron(0 23 * * ? *)
+            Input: '{"flush": true}'
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref JobsTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DevicesTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DeliveriesTable
+        - SSMParameterReadPolicy:
+            ParameterName: !Sub jobping/${Stage}/*
+
+  # ------------------------------------------------------------ 관측
+  CollectorErrorsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub jobping-${Stage}-collector-errors
+      Namespace: AWS/Lambda
+      MetricName: Errors
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref CollectorFunction
+      Statistic: Sum
+      Period: 1800
+      EvaluationPeriods: 2
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: notBreaching
+
+  DLQDepthAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub jobping-${Stage}-dlq-not-empty
+      Namespace: AWS/SQS
+      MetricName: ApproximateNumberOfMessagesVisible
+      Dimensions:
+        - Name: QueueName
+          Value: !GetAtt NewJobsDLQ.QueueName
+      Statistic: Maximum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: notBreaching
+
+Outputs:
+  JobsTable: { Value: !Ref JobsTable }
+  DevicesTable: { Value: !Ref DevicesTable }
+  NewJobsQueue: { Value: !Ref NewJobsQueue }
+  CollectorFunction: { Value: !Ref CollectorFunction }
+  NotifierFunction: { Value: !Ref NotifierFunction }

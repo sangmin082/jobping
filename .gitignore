@@ -13,3 +13,4 @@ xcuserdata/
 *.xcuserstate
 build/
 DerivedData/
+.dry-run-state.json
