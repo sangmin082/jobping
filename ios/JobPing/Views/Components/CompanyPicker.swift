@@ -8,7 +8,7 @@ struct CompanyPicker: View {
 
     var body: some View {
         List {
-            ForEach(filteredGroups, id: \.group) { section in
+            ForEach(filteredGroups) { section in
                 Section(section.group) {
                     ForEach(section.companies) { company in
                         Button {
@@ -46,11 +46,11 @@ struct CompanyPicker: View {
         }
     }
 
-    private var filteredGroups: [(group: String, companies: [Company])] {
+    private var filteredGroups: [CompanyGroup] {
         guard !search.isEmpty else { return model.companiesByGroup }
         return model.companiesByGroup.compactMap { g in
             let hits = g.companies.filter { $0.displayName.localizedCaseInsensitiveContains(search) || g.group.localizedCaseInsensitiveContains(search) }
-            return hits.isEmpty ? nil : (group: g.group, companies: hits)
+            return hits.isEmpty ? nil : CompanyGroup(group: g.group, companies: hits)
         }
     }
 

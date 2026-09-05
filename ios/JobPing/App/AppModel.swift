@@ -58,9 +58,9 @@ final class AppModel {
     var effectiveKeywords: [String] { isPro ? keywords : Array(keywords.prefix(freeTier.maxKeywords)) }
     var effectiveCompanies: [String] { isPro ? selectedCompanies : Array(selectedCompanies.prefix(freeTier.maxCompanies)) }
 
-    var companiesByGroup: [(group: String, companies: [Company])] {
+    var companiesByGroup: [CompanyGroup] {
         let grouped = Dictionary(grouping: companies, by: \.group)
-        return grouped.keys.sorted().map { (group: $0, companies: grouped[$0] ?? []) }
+        return grouped.keys.sorted().map { CompanyGroup(group: $0, companies: grouped[$0] ?? []) }
     }
 
     func company(for key: String) -> Company? { companies.first { $0.key == key } }

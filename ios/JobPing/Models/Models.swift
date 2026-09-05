@@ -19,6 +19,13 @@ struct Company: Codable, Identifiable, Hashable {
     }
 }
 
+/// 회사 선택 화면의 섹션 단위(삼성/SK/LG…). 튜플 대신 구조체인 이유는 ForEach 의 id 키패스 때문이다.
+struct CompanyGroup: Identifiable, Hashable {
+    let group: String
+    let companies: [Company]
+    var id: String { group }
+}
+
 struct FreeTier: Codable, Hashable {
     let maxKeywords: Int
     let maxCompanies: Int
