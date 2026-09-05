@@ -63,8 +63,17 @@ class HMGAdapter(Adapter):
             payload = client.get_json(
                 self.list_url,
                 params=params,
-                headers={"Referer": f"{self.host}/apply/applyList",
-                         "X-HKMC-SERVICE": self.service},
+                headers={
+                    "Referer": f"{self.host}/apply/applyList",
+                    "X-HKMC-SERVICE": self.service,
+                    # 브라우저의 axios 는 로그인 전 sessionStorage 값(null)을
+                    # 그대로 헤더에 실어 문자열 "null" 로 보낸다. 기아 서버는
+                    # 이 헤더가 **아예 없으면** 400 을 주고, "null" 이면 통과시킨다.
+                    # 빈 문자열도 400 이다. 현대차는 없어도 되지만 같은 플랫폼이라
+                    # 둘 다 보낸다.
+                    "X-HKMC-TOKEN": "null",
+                    "X-HKMC-EMP-TOKEN": "null",
+                },
             )
             rows = get_path(payload, "data.list")
             if not isinstance(rows, list):
@@ -136,13 +145,7 @@ class HyundaiAdapter(HMGAdapter):
 
 
 class KiaAdapter(HMGAdapter):
-    """기아 — 현대차와 같은 플랫폼.
-
-    **미검증.** 개발 환경에서는 `career.kia.com/api/*` 가 파라미터·API 번호와
-    무관하게 전부 HTTP 400을 준다(현대차는 같은 코드로 동작한다). 특정 IP를
-    막는 것으로 보이므로 일반 네트워크에서 `verify.py kia` 로 확인한 뒤
-    `verified = True` 로 올려야 한다.
-    """
+    """기아 — 현대차와 같은 플랫폼. `X-HKMC-TOKEN: null` 헤더가 없으면 400."""
 
     key, display_name = "kia", "기아"
     site_url = "https://career.kia.com/apply/applyList.kc"
@@ -150,4 +153,4 @@ class KiaAdapter(HMGAdapter):
     detail_path = "/apply/applyView.kc"
     extra_params = ("searchSectorList", "searchSecList", "searchPlaceList")
     companies = (BY_KEY["kia"],)
-    verified = False
+    verified = True

@@ -34,9 +34,9 @@ _CLASSES: tuple[type[Adapter], ...] = (
     TeslaKoreaAdapter,
     KiaAdapter,
     LGAdapter,
+    TossAdapter,
     LineAdapter,
     WoowahanAdapter,
-    TossAdapter,
 )
 
 ADAPTERS: dict[str, Adapter] = {cls.key: cls() for cls in _CLASSES}

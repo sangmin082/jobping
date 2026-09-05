@@ -1,0 +1,625 @@
+{
+ "resultType": "SUCCESS",
+ "error": null,
+ "success": [
+  {
+   "id": 6576715003,
+   "title": "Android Developer",
+   "primary_job": {
+    "id": 6576715003,
+    "title": "Android Developer",
+    "absolute_url": "https://toss.im/career/job-detail?gh_jid=6576715003",
+    "location": {
+     "name": "Seoul"
+    },
+    "first_published": "2025-05-22T22:51:23-04:00",
+    "metadata": [
+     {
+      "id": 4112432003,
+      "name": "Employment_Type",
+      "value": "정규직",
+      "value_type": "single_select"
+     },
+     {
+      "id": 4169410003,
+      "name": "포지션의 소속 자회사를 선택해 주세요.",
+      "value": "토스",
+      "value_type": "single_select"
+     },
+     {
+      "id": 24623243003,
+      "name": "커리어 페이지 노출 Job Category 값을 선택해주세요",
+      "value": "App",
+      "value_type": "single_select"
+     },
+     {
+      "id": 4194643003,
+      "name": "외부 노출용 키워드를 입력해주세요. (최대 4개  / 1번 키워드 = 포지션 카테고리 / 나머지 키워드 = 포지션 특성에 맞게 작성)",
+      "value": "개발,Android,Kotlin",
+      "value_type": "long_text"
+     },
+     {
+      "id": 24809743003,
+      "name": "‘더알아보기’에 자동으로 노출시킬 아티클 TCS 태그를 기입해주세요. (ex. Frontend,토스뱅크)",
+      "value": null,
+      "value_type": "multi_select"
+     },
+     {
+      "id": 4542273003,
+      "name": "지원자로부터 보험 설계사 고유번호를 입력 받아야 하나요?",
+      "value": null,
+      "value_type": "yes_no"
+     },
+     {
+      "id": 4582078003,
+      "name": "상단 노출이 필요한 Job인가요?",
+      "value": false,
+      "value_type": "yes_no"
+     },
+     {
+      "id": 5038345003,
+      "name": "커리어페이지 메뉴에 \"미노출\" 되어야 하는 Job인가요?",
+      "value": false,
+      "value_type": "yes_no"
+     },
+     {
+      "id": 11431213003,
+      "name": "커리어페이지 채용공고 클로징 일자 (서류접수 마감일이 정해진 경우)",
+      "value": "",
+      "value_type": "date"
+     },
+     {
+      "id": 20500786003,
+      "name": "커리어페이지 채용공고 클로징 시각 (자정 마감이 아닌 경우)",
+      "value": null,
+      "value_type": "single_select"
+     },
+     {
+      "id": 14258557003,
+      "name": "세부 포지션 명을 작성해주세요.",
+      "value": null,
+      "value_type": "short_text"
+     },
+     {
+      "id": 15155622003,
+      "name": "Workday Job Profile",
+      "value": "Android Developer",
+      "value_type": "single_select"
+     },
+     {
+      "id": 20595829003,
+      "name": "토스커뮤니티 공통 채용일 경우, 해당 계열사 기입",
+      "value": [],
+      "value_type": "multi_select"
+     },
+     {
+      "id": 4622371003,
+      "name": "포스터 형태의 JD인가요?",
+      "value": null,
+      "value_type": "yes_no"
+     },
+     {
+      "id": 38110468003,
+      "name": "(임원/정규직 경우) 사내추천 가능 포지션 여부",
+      "value": "Yes",
+      "value_type": "single_select"
+     },
+     {
+      "id": 38110469003,
+      "name": "(계약직/인턴 경우) 사내추천 가능 포지션 여부",
+      "value": null,
+      "value_type": "single_select"
+     }
+    ]
+   },
+   "jobs": [
+    {
+     "id": 6576715003,
+     "title": "Android Developer"
+    },
+    {
+     "id": 5153070003,
+     "title": "Android Developer"
+    }
+   ]
+  },
+  {
+   "id": 4326315003,
+   "title": "Product Designer",
+   "primary_job": {
+    "id": 4326315003,
+    "title": "Product Designer",
+    "absolute_url": "https://toss.im/career/job-detail?gh_jid=4326315003",
+    "location": {
+     "name": "Seoul"
+    },
+    "first_published": "2021-01-18T00:56:08-05:00",
+    "metadata": [
+     {
+      "id": 4112432003,
+      "name": "Employment_Type",
+      "value": "정규직",
+      "value_type": "single_select"
+     },
+     {
+      "id": 4169410003,
+      "name": "포지션의 소속 자회사를 선택해 주세요.",
+      "value": "토스",
+      "value_type": "single_select"
+     },
+     {
+      "id": 24623243003,
+      "name": "커리어 페이지 노출 Job Category 값을 선택해주세요",
+      "value": "Product Design",
+      "value_type": "single_select"
+     },
+     {
+      "id": 4194643003,
+      "name": "외부 노출용 키워드를 입력해주세요. (최대 4개  / 1번 키워드 = 포지션 카테고리 / 나머지 키워드 = 포지션 특성에 맞게 작성)",
+      "value": "디자인, Product Design, UXUI",
+      "value_type": "long_text"
+     },
+     {
+      "id": 24809743003,
+      "name": "‘더알아보기’에 자동으로 노출시킬 아티클 TCS 태그를 기입해주세요. (ex. Frontend,토스뱅크)",
+      "value": null,
+      "value_type": "multi_select"
+     },
+     {
+      "id": 4542273003,
+      "name": "지원자로부터 보험 설계사 고유번호를 입력 받아야 하나요?",
+      "value": null,
+      "value_type": "yes_no"
+     },
+     {
+      "id": 4582078003,
+      "name": "상단 노출이 필요한 Job인가요?",
+      "value": null,
+      "value_type": "yes_no"
+     },
+     {
+      "id": 5038345003,
+      "name": "커리어페이지 메뉴에 \"미노출\" 되어야 하는 Job인가요?",
+      "value": false,
+      "value_type": "yes_no"
+     },
+     {
+      "id": 11431213003,
+      "name": "커리어페이지 채용공고 클로징 일자 (서류접수 마감일이 정해진 경우)",
+      "value": "",
+      "value_type": "date"
+     },
+     {
+      "id": 20500786003,
+      "name": "커리어페이지 채용공고 클로징 시각 (자정 마감이 아닌 경우)",
+      "value": null,
+      "value_type": "single_select"
+     },
+     {
+      "id": 14258557003,
+      "name": "세부 포지션 명을 작성해주세요.",
+      "value": "일반",
+      "value_type": "short_text"
+     },
+     {
+      "id": 15155622003,
+      "name": "Workday Job Profile",
+      "value": "Product Designer",
+      "value_type": "single_select"
+     },
+     {
+      "id": 20595829003,
+      "name": "토스커뮤니티 공통 채용일 경우, 해당 계열사 기입",
+      "value": [],
+      "value_type": "multi_select"
+     },
+     {
+      "id": 4622371003,
+      "name": "포스터 형태의 JD인가요?",
+      "value": null,
+      "value_type": "yes_no"
+     },
+     {
+      "id": 38110468003,
+      "name": "(임원/정규직 경우) 사내추천 가능 포지션 여부",
+      "value": "Yes",
+      "value_type": "single_select"
+     },
+     {
+      "id": 38110469003,
+      "name": "(계약직/인턴 경우) 사내추천 가능 포지션 여부",
+      "value": null,
+      "value_type": "single_select"
+     }
+    ]
+   },
+   "jobs": [
+    {
+     "id": 4326315003,
+     "title": "Product Designer"
+    },
+    {
+     "id": 4346520003,
+     "title": "Product Designer"
+    }
+   ]
+  },
+  {
+   "id": 5715138003,
+   "title": "Account Manager ",
+   "primary_job": {
+    "id": 5715138003,
+    "title": "Account Manager (광고)",
+    "absolute_url": "https://toss.im/career/job-detail?gh_jid=5715138003",
+    "location": {
+     "name": "Seoul"
+    },
+    "first_published": "2023-08-21T05:30:55-04:00",
+    "metadata": [
+     {
+      "id": 4112432003,
+      "name": "Employment_Type",
+      "value": "정규직",
+      "value_type": "single_select"
+     },
+     {
+      "id": 4169410003,
+      "name": "포지션의 소속 자회사를 선택해 주세요.",
+      "value": "토스",
+      "value_type": "single_select"
+     },
+     {
+      "id": 24623243003,
+      "name": "커리어 페이지 노출 Job Category 값을 선택해주세요",
+      "value": "Sales",
+      "value_type": "single_select"
+     },
+     {
+      "id": 4194643003,
+      "name": "외부 노출용 키워드를 입력해주세요. (최대 4개  / 1번 키워드 = 포지션 카테고리 / 나머지 키워드 = 포지션 특성에 맞게 작성)",
+      "value": "광고, 비즈니스, 영업, 아웃바운드, 제휴, 프로모션, 파트너십, 신사업, 사업개발",
+      "value_type": "long_text"
+     },
+     {
+      "id": 4201551003,
+      "name": "검색에 쓰일 키워드를 입력해주세요(신규 비즈니스의 초기멤버라면, 초기멤버 키워드를 작성하세요)",
+      "value": "광고, 비즈니스, 영업, 아웃바운드, 제휴, 프로모션, 파트너십, 신사업, 사업개발,ads",
+      "value_type": "long_text"
+     },
+     {
+      "id": 24809743003,
+      "name": "‘더알아보기’에 자동으로 노출시킬 아티클 TCS 태그를 기입해주세요. (ex. Frontend,토스뱅크)",
+      "value": null,
+      "value_type": "multi_select"
+     },
+     {
+      "id": 4542273003,
+      "name": "지원자로부터 보험 설계사 고유번호를 입력 받아야 하나요?",
+      "value": null,
+      "value_type": "yes_no"
+     },
+     {
+      "id": 4582078003,
+      "name": "상단 노출이 필요한 Job인가요?",
+      "value": false,
+      "value_type": "yes_no"
+     },
+     {
+      "id": 5038345003,
+      "name": "커리어페이지 메뉴에 \"미노출\" 되어야 하는 Job인가요?",
+      "value": null,
+      "value_type": "yes_no"
+     },
+     {
+      "id": 11431213003,
+      "name": "커리어페이지 채용공고 클로징 일자 (서류접수 마감일이 정해진 경우)",
+      "value": "",
+      "value_type": "date"
+     },
+     {
+      "id": 20500786003,
+      "name": "커리어페이지 채용공고 클로징 시각 (자정 마감이 아닌 경우)",
+      "value": null,
+      "value_type": "single_select"
+     },
+     {
+      "id": 14258557003,
+      "name": "세부 포지션 명을 작성해주세요.",
+      "value": "광고",
+      "value_type": "short_text"
+     },
+     {
+      "id": 15155622003,
+      "name": "Workday Job Profile",
+      "value": "Account Manager",
+      "value_type": "single_select"
+     },
+     {
+      "id": 20595829003,
+      "name": "토스커뮤니티 공통 채용일 경우, 해당 계열사 기입",
+      "value": null,
+      "value_type": "multi_select"
+     },
+     {
+      "id": 4622371003,
+      "name": "포스터 형태의 JD인가요?",
+      "value": null,
+      "value_type": "yes_no"
+     },
+     {
+      "id": 38110468003,
+      "name": "(임원/정규직 경우) 사내추천 가능 포지션 여부",
+      "value": "Yes",
+      "value_type": "single_select"
+     },
+     {
+      "id": 38110469003,
+      "name": "(계약직/인턴 경우) 사내추천 가능 포지션 여부",
+      "value": null,
+      "value_type": "single_select"
+     }
+    ]
+   },
+   "jobs": [
+    {
+     "id": 5715138003,
+     "title": "Account Manager (광고)"
+    }
+   ]
+  },
+  {
+   "id": 6008890003,
+   "title": "Account Manager [FacePay Business]",
+   "primary_job": {
+    "id": 6008890003,
+    "title": "Account Manager (FacePay)",
+    "absolute_url": "https://toss.im/career/job-detail?gh_jid=6008890003",
+    "location": {
+     "name": "Seoul"
+    },
+    "first_published": "2024-06-03T08:40:26-04:00",
+    "metadata": [
+     {
+      "id": 4112432003,
+      "name": "Employment_Type",
+      "value": "정규직",
+      "value_type": "single_select"
+     },
+     {
+      "id": 4169410003,
+      "name": "포지션의 소속 자회사를 선택해 주세요.",
+      "value": "토스",
+      "value_type": "single_select"
+     },
+     {
+      "id": 24623243003,
+      "name": "커리어 페이지 노출 Job Category 값을 선택해주세요",
+      "value": "Sales",
+      "value_type": "single_select"
+     },
+     {
+      "id": 4194643003,
+      "name": "외부 노출용 키워드를 입력해주세요. (최대 4개  / 1번 키워드 = 포지션 카테고리 / 나머지 키워드 = 포지션 특성에 맞게 작성)",
+      "value": "오프라인, 토스페이, 토스페이, 영업, 제휴",
+      "value_type": "long_text"
+     },
+     {
+      "id": 24809743003,
+      "name": "‘더알아보기’에 자동으로 노출시킬 아티클 TCS 태그를 기입해주세요. (ex. Frontend,토스뱅크)",
+      "value": null,
+      "value_type": "multi_select"
+     },
+     {
+      "id": 4542273003,
+      "name": "지원자로부터 보험 설계사 고유번호를 입력 받아야 하나요?",
+      "value": null,
+      "value_type": "yes_no"
+     },
+     {
+      "id": 4582078003,
+      "name": "상단 노출이 필요한 Job인가요?",
+      "value": null,
+      "value_type": "yes_no"
+     },
+     {
+      "id": 5038345003,
+      "name": "커리어페이지 메뉴에 \"미노출\" 되어야 하는 Job인가요?",
+      "value": false,
+      "value_type": "yes_no"
+     },
+     {
+      "id": 11431213003,
+      "name": "커리어페이지 채용공고 클로징 일자 (서류접수 마감일이 정해진 경우)",
+      "value": "",
+      "value_type": "date"
+     },
+     {
+      "id": 20500786003,
+      "name": "커리어페이지 채용공고 클로징 시각 (자정 마감이 아닌 경우)",
+      "value": null,
+      "value_type": "single_select"
+     },
+     {
+      "id": 14258557003,
+      "name": "세부 포지션 명을 작성해주세요.",
+      "value": "FacePay",
+      "value_type": "short_text"
+     },
+     {
+      "id": 15155622003,
+      "name": "Workday Job Profile",
+      "value": "Account Manager",
+      "value_type": "single_select"
+     },
+     {
+      "id": 20595829003,
+      "name": "토스커뮤니티 공통 채용일 경우, 해당 계열사 기입",
+      "value": [],
+      "value_type": "multi_select"
+     },
+     {
+      "id": 4622371003,
+      "name": "포스터 형태의 JD인가요?",
+      "value": null,
+      "value_type": "yes_no"
+     },
+     {
+      "id": 38110468003,
+      "name": "(임원/정규직 경우) 사내추천 가능 포지션 여부",
+      "value": "Yes",
+      "value_type": "single_select"
+     },
+     {
+      "id": 38110469003,
+      "name": "(계약직/인턴 경우) 사내추천 가능 포지션 여부",
+      "value": null,
+      "value_type": "single_select"
+     }
+    ]
+   },
+   "jobs": [
+    {
+     "id": 6008890003,
+     "title": "Account Manager (FacePay)"
+    },
+    {
+     "id": 7773345003,
+     "title": "Account Manager (FacePay/Merchant Growth)"
+    }
+   ]
+  },
+  {
+   "id": 7503655003,
+   "title": "AI Engineer",
+   "primary_job": {
+    "id": 7503655003,
+    "title": "AI Engineer (Brain, AIOC)",
+    "absolute_url": "https://toss.im/career/job-detail?gh_jid=7503655003",
+    "location": {
+     "name": "Seoul"
+    },
+    "first_published": "2026-03-02T20:48:40-05:00",
+    "metadata": [
+     {
+      "id": 4112432003,
+      "name": "Employment_Type",
+      "value": "정규직",
+      "value_type": "single_select"
+     },
+     {
+      "id": 4169410003,
+      "name": "포지션의 소속 자회사를 선택해 주세요.",
+      "value": "토스",
+      "value_type": "single_select"
+     },
+     {
+      "id": 24623243003,
+      "name": "커리어 페이지 노출 Job Category 값을 선택해주세요",
+      "value": "ML",
+      "value_type": "single_select"
+     },
+     {
+      "id": 4194643003,
+      "name": "외부 노출용 키워드를 입력해주세요. (최대 4개  / 1번 키워드 = 포지션 카테고리 / 나머지 키워드 = 포지션 특성에 맞게 작성)",
+      "value": null,
+      "value_type": "long_text"
+     },
+     {
+      "id": 4201551003,
+      "name": "검색에 쓰일 키워드를 입력해주세요(신규 비즈니스의 초기멤버라면, 초기멤버 키워드를 작성하세요)",
+      "value": "LLM, Agent, APO, 자동프롬프트최적화, LLM as Judge, AI Engineer, AIE,ML/AI",
+      "value_type": "long_text"
+     },
+     {
+      "id": 24809743003,
+      "name": "‘더알아보기’에 자동으로 노출시킬 아티클 TCS 태그를 기입해주세요. (ex. Frontend,토스뱅크)",
+      "value": null,
+      "value_type": "multi_select"
+     },
+     {
+      "id": 4209274003,
+      "name": "더 알아보기에 노출할 링크들을 넣어주세요(띄어쓰기없이 콤마(,)로 구분. e.g. https://naver.com,https://toss.im)",
+      "value": null,
+      "value_type": "long_text"
+     },
+     {
+      "id": 4542273003,
+      "name": "지원자로부터 보험 설계사 고유번호를 입력 받아야 하나요?",
+      "value": null,
+      "value_type": "yes_no"
+     },
+     {
+      "id": 4582078003,
+      "name": "상단 노출이 필요한 Job인가요?",
+      "value": null,
+      "value_type": "yes_no"
+     },
+     {
+      "id": 5038345003,
+      "name": "커리어페이지 메뉴에 \"미노출\" 되어야 하는 Job인가요?",
+      "value": false,
+      "value_type": "yes_no"
+     },
+     {
+      "id": 11431213003,
+      "name": "커리어페이지 채용공고 클로징 일자 (서류접수 마감일이 정해진 경우)",
+      "value": "",
+      "value_type": "date"
+     },
+     {
+      "id": 20500786003,
+      "name": "커리어페이지 채용공고 클로징 시각 (자정 마감이 아닌 경우)",
+      "value": null,
+      "value_type": "single_select"
+     },
+     {
+      "id": 14258557003,
+      "name": "세부 포지션 명을 작성해주세요.",
+      "value": "Brain",
+      "value_type": "short_text"
+     },
+     {
+      "id": 15155622003,
+      "name": "Workday Job Profile",
+      "value": "Machine Learning Engineer",
+      "value_type": "single_select"
+     },
+     {
+      "id": 20595829003,
+      "name": "토스커뮤니티 공통 채용일 경우, 해당 계열사 기입",
+      "value": [],
+      "value_type": "multi_select"
+     },
+     {
+      "id": 4622371003,
+      "name": "포스터 형태의 JD인가요?",
+      "value": null,
+      "value_type": "yes_no"
+     },
+     {
+      "id": 38110468003,
+      "name": "(임원/정규직 경우) 사내추천 가능 포지션 여부",
+      "value": "Yes",
+      "value_type": "single_select"
+     },
+     {
+      "id": 38110469003,
+      "name": "(계약직/인턴 경우) 사내추천 가능 포지션 여부",
+      "value": null,
+      "value_type": "single_select"
+     }
+    ]
+   },
+   "jobs": [
+    {
+     "id": 7503655003,
+     "title": "AI Engineer (Brain, AIOC)"
+    },
+    {
+     "id": 6545457003,
+     "title": "AI Engineer (Commerce)"
+    }
+   ]
+  }
+ ]
+}

@@ -229,9 +229,17 @@ class TestHMG:
         assert "searchSecList" in sent
         assert client.calls[0]["params"]["hgrCd"] == "2"
 
-    def test_kia_is_not_exposed_to_the_app(self):
-        """이 환경에서 라이브 검증을 못 했다. 확인 전에는 노출하지 않는다."""
-        assert KiaAdapter().verified is False
+    def test_kia_sends_the_null_token_headers(self, payload, fake_client):
+        """기아 서버는 X-HKMC-TOKEN 헤더가 없으면 400, 문자열 "null" 이면 통과다.
+
+        브라우저의 axios 가 로그인 전 sessionStorage 값(null)을 그대로 실어
+        보내는 걸 서버가 기대하고 있다. 빈 문자열도 400 이다.
+        """
+        client = fake_client(payload)
+        KiaAdapter().fetch(client)
+        headers = client.calls[0]["headers"]
+        assert headers["X-HKMC-TOKEN"] == "null"
+        assert headers["X-HKMC-EMP-TOKEN"] == "null"
 
     def test_missing_identifier_raises(self, payload, fake_client):
         payload["data"]["list"][0].pop("recuCls")

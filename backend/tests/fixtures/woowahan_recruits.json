@@ -1,0 +1,156 @@
+{
+ "code": "2000",
+ "message": "OK",
+ "data": {
+  "pageSize": 6,
+  "pageNumber": 1,
+  "totalPageNumber": 1,
+  "totalSize": 6,
+  "list": [
+   {
+    "recruitSeq": 25748,
+    "recruitNumber": "R2609006",
+    "recruitCorporationNumber": "WOOWA_BROTHERS",
+    "recruitOpenDate": "2026-09-05 11:07:06",
+    "recruitEndDate": "9999-12-31 00:00:00",
+    "recruitName": "운영지원(배민상회 정산/SCM)",
+    "careerType": {
+     "recruitItemGroupCode": "BA003",
+     "recruitItemCode": "BA003004",
+     "primary": false
+    },
+    "jobGroup": {
+     "recruitItemGroupCode": "BA005",
+     "recruitItemCode": "BA005010",
+     "primary": false
+    },
+    "employmentType": {
+     "recruitItemGroupCode": "BA002",
+     "recruitItemCode": "BA002002",
+     "primary": false
+    },
+    "isHidden": false
+   },
+   {
+    "recruitSeq": 25747,
+    "recruitNumber": "R2605009",
+    "recruitCorporationNumber": "WOOWA_BROTHERS",
+    "recruitOpenDate": "2026-05-13 19:30:15",
+    "recruitEndDate": "9999-12-31 00:00:00",
+    "recruitName": "QA Engineer(Test)",
+    "careerType": {
+     "recruitItemGroupCode": "BA003",
+     "recruitItemCode": "BA003002",
+     "primary": false
+    },
+    "jobGroup": {
+     "recruitItemGroupCode": "BA005",
+     "recruitItemCode": "BA005001",
+     "primary": false
+    },
+    "employmentType": {
+     "recruitItemGroupCode": "BA002",
+     "recruitItemCode": "BA002002",
+     "primary": false
+    },
+    "isHidden": false
+   },
+   {
+    "recruitSeq": 25745,
+    "recruitNumber": "R2609005",
+    "recruitCorporationNumber": "WOOWA_BROTHERS",
+    "recruitOpenDate": "2026-09-04 12:57:03",
+    "recruitEndDate": "9999-12-31 00:00:00",
+    "recruitName": "데이터엔지니어링(데이터서비스 AI)",
+    "careerType": {
+     "recruitItemGroupCode": "BA003",
+     "recruitItemCode": "BA003002",
+     "primary": false
+    },
+    "jobGroup": {
+     "recruitItemGroupCode": "BA005",
+     "recruitItemCode": "BA005001",
+     "primary": false
+    },
+    "employmentType": {
+     "recruitItemGroupCode": "BA002",
+     "recruitItemCode": "BA002001",
+     "primary": false
+    },
+    "isHidden": false
+   },
+   {
+    "recruitSeq": 25744,
+    "recruitNumber": "R2609004",
+    "recruitCorporationNumber": "WOOWA_BROTHERS",
+    "recruitOpenDate": "2026-09-04 12:00:00",
+    "recruitEndDate": "9999-12-31 00:00:00",
+    "recruitName": "사업개발/운영(커머스광고사업)",
+    "careerType": {
+     "recruitItemGroupCode": "BA003",
+     "recruitItemCode": "BA003004",
+     "primary": false
+    },
+    "jobGroup": {
+     "recruitItemGroupCode": "BA005",
+     "recruitItemCode": "BA005010",
+     "primary": false
+    },
+    "employmentType": {
+     "recruitItemGroupCode": "BA002",
+     "recruitItemCode": "BA002002",
+     "primary": false
+    },
+    "isHidden": false
+   },
+   {
+    "recruitSeq": 25741,
+    "recruitNumber": "R2609001",
+    "recruitCorporationNumber": "WOOWA_BROTHERS",
+    "recruitOpenDate": "2026-09-03 00:10:24",
+    "recruitEndDate": "9999-12-31 00:00:00",
+    "recruitName": "AMD(배민상회)",
+    "careerType": {
+     "recruitItemGroupCode": "BA003",
+     "recruitItemCode": "BA003004",
+     "primary": false
+    },
+    "jobGroup": {
+     "recruitItemGroupCode": "BA005",
+     "recruitItemCode": "BA005010",
+     "primary": false
+    },
+    "employmentType": {
+     "recruitItemGroupCode": "BA002",
+     "recruitItemCode": "BA002002",
+     "primary": false
+    },
+    "isHidden": false
+   },
+   {
+    "recruitSeq": 25740,
+    "recruitNumber": "R2609002",
+    "recruitCorporationNumber": "WOOWA_BROTHERS",
+    "recruitOpenDate": "2026-09-03 00:22:14",
+    "recruitEndDate": "9999-12-31 00:00:00",
+    "recruitName": "운영지원(배민상회)",
+    "careerType": {
+     "recruitItemGroupCode": "BA003",
+     "recruitItemCode": "BA003004",
+     "primary": false
+    },
+    "jobGroup": {
+     "recruitItemGroupCode": "BA005",
+     "recruitItemCode": "BA005010",
+     "primary": false
+    },
+    "employmentType": {
+     "recruitItemGroupCode": "BA002",
+     "recruitItemCode": "BA002002",
+     "primary": false
+    },
+    "isHidden": false
+   }
+  ]
+ }
+}

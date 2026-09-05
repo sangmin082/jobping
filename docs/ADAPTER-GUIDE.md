@@ -16,6 +16,15 @@ curl -s -A "Mozilla/5.0" https://recruit.example.com/ | grep -ci "공고\|job"
 
 ---
 
+## 0.5. 정적 사이트(Gatsby)는 API가 없다 — 데이터 파일을 읽는다
+
+번들에 `/page-data/app-data.json`이 보이면 Gatsby다. 목록 페이지 경로를
+`/page-data/{경로}/page-data.json`으로 바꾸면 빌드 시점에 구워진 전체 데이터가
+나온다(라인: `/page-data/ko/jobs/page-data.json`). 전 세계 공고가 한 파일에
+들어 있는 경우가 많으니 도시/법인으로 추린다.
+
+---
+
 ## 1. 브라우저 없이 엔드포인트 찾기
 
 DevTools를 열 수 있으면 그게 제일 빠르다(Network → Fetch/XHR → 공고 제목이
@@ -32,7 +41,13 @@ grep -oE '"(/[A-Za-z0-9_/.-]{4,60})"' app.js | sort -u | grep -Ei 'job|list|recr
 
 # 3) 후보 경로 주변을 읽어 파라미터 이름을 확인한다
 grep -o '.\{900\}/api/your/path.\{400\}' app.js
+
+# 4) API 호스트가 페이지와 다를 수 있다 (LG: api.careers.lg.com/rmk)
+grep -oE 'baseURL[^,]{0,80}' app.js
 ```
+
+번들 스크립트 태그가 CDN을 가리키면(우아: `career-cdn.woowahan.com`) 그쪽에서
+받는다. 상대 경로만 찾으면 아무것도 안 나온다.
 
 인라인 스크립트에 그냥 있는 경우도 많다:
 
@@ -56,6 +71,13 @@ curl -s "$URL" | grep -oE '(url:|\$\.(get|post)\(|fetch\()\s*"[^"]+"'
 | **200 + 빈 목록** | 현대차 — `hgrCd` 오답. 제일 찾기 어렵다 |
 | **200 + `alert('접근권한이 없습니다')`** | 네이버 — GET인데 POST로 부름 |
 | 기술 직군 8건만 (전체는 26건) | 카카오 — `part` 기본값이 TECHNOLOGY |
+| **400, 파라미터·경로 무관** | 기아 — `X-HKMC-TOKEN: null` 헤더(문자열)가 없음. IP 차단이 아니었다 |
+| 코드만 옴 (`BA003002`) | 우아한형제들 — 코드표가 별도 엔드포인트에 있다 |
+
+**"IP 차단"으로 결론 내리기 전에** 브라우저가 보내는 헤더를 전부 흉내 내봐라.
+기아는 파라미터를 다 맞춰도 400이 나서 차단이라고 판단했는데, 원인은 axios가
+로그인 전 `sessionStorage` 값 `null`을 문자열로 실어 보내는 헤더 하나였다.
+번들의 axios 설정(`headers.common[...]`)을 통째로 옮기면 된다.
 
 그러니 **하나씩 빼면서 이등분하라.** 대조군(다른 POST 엔드포인트)을 하나
 같이 때려보면 "라우팅이 문제인가 파라미터가 문제인가"가 바로 갈린다.

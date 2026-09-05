@@ -1,0 +1,118 @@
+{
+ "status": "S",
+ "msgCd": "",
+ "msg": "Success",
+ "data": {
+  "jobNoticeList": [
+   {
+    "jobNoticeId": 1002131,
+    "careerTypeCode": "E",
+    "careerTypeName": "산학장학생",
+    "companyCode": "LGE",
+    "companyName": "LG전자",
+    "jobNoticeName": "2026년 하반기 R&D 석/박사 산학장학생 채용(LGE Members)",
+    "noticeStatus": "POSTING",
+    "jobGroupName": "연구/개발",
+    "jobGroupName2": "",
+    "workLocationName": "경기도",
+    "recEndDateTime": "2026.09.20 23:00"
+   },
+   {
+    "jobNoticeId": 1002174,
+    "careerTypeCode": "B",
+    "careerTypeName": "경력",
+    "companyCode": "LGU",
+    "companyName": "LG유플러스",
+    "jobNoticeName": "[Enterprise부문] 안전관리자 계약직 채용",
+    "noticeStatus": "POSTING",
+    "jobGroupName": "생산/품질",
+    "jobGroupName2": "",
+    "workLocationName": "전국",
+    "recEndDateTime": "2026.09.13 23:00"
+   },
+   {
+    "jobNoticeId": 1002171,
+    "careerTypeCode": "D",
+    "careerTypeName": "신입/경력",
+    "companyCode": "HIM",
+    "companyName": "하이엠솔루텍",
+    "jobNoticeName": "[정규직] HVAC 현장 서비스엔지니어 모집(청주)",
+    "noticeStatus": "POSTING",
+    "jobGroupName": "고객서비스",
+    "jobGroupName2": "",
+    "workLocationName": "충청북도",
+    "recEndDateTime": "2026.09.13 23:00"
+   },
+   {
+    "jobNoticeId": 1002172,
+    "careerTypeCode": "D",
+    "careerTypeName": "신입/경력",
+    "companyCode": "HIM",
+    "companyName": "하이엠솔루텍",
+    "jobNoticeName": "[정규직] HVAC 현장 PM 담당자 모집(대전)",
+    "noticeStatus": "POSTING",
+    "jobGroupName": "고객서비스",
+    "jobGroupName2": "",
+    "workLocationName": "대전광역시",
+    "recEndDateTime": "2026.09.13 23:00"
+   },
+   {
+    "jobNoticeId": 1001495,
+    "careerTypeCode": "B",
+    "careerTypeName": "경력",
+    "companyCode": "LGU",
+    "companyName": "LG유플러스",
+    "jobNoticeName": "[CTO] AI Scientist_음성인식/합성 경력채용",
+    "noticeStatus": "POSTING",
+    "jobGroupName": "연구/개발",
+    "jobGroupName2": "",
+    "workLocationName": "서울특별시",
+    "recEndDateTime": "2026.09.13 23:00"
+   },
+   {
+    "jobNoticeId": 1002157,
+    "careerTypeCode": "D",
+    "careerTypeName": "신입/경력",
+    "companyCode": "HIM",
+    "companyName": "하이엠솔루텍",
+    "jobNoticeName": "[하이엠솔루텍] 시스템에어컨 제품 기술상담사 모집",
+    "noticeStatus": "POSTING",
+    "jobGroupName": "고객서비스",
+    "jobGroupName2": "",
+    "workLocationName": "경상남도",
+    "recEndDateTime": "2026.09.13 23:00"
+   },
+   {
+    "jobNoticeId": 1002150,
+    "careerTypeCode": "B",
+    "careerTypeName": "경력",
+    "companyCode": "LGE",
+    "companyName": "LG전자",
+    "jobNoticeName": "[한국영업본부] D2C플랫폼 서비스 기획자",
+    "noticeStatus": "POSTING",
+    "jobGroupName": "영업/마케팅",
+    "jobGroupName2": "",
+    "workLocationName": "서울특별시",
+    "recEndDateTime": "2026.09.13 23:00"
+   },
+   {
+    "jobNoticeId": 1002151,
+    "careerTypeCode": "B",
+    "careerTypeName": "경력",
+    "companyCode": "LGE",
+    "companyName": "LG전자",
+    "jobNoticeName": "[한국영업본부] D2C플랫폼 PMO",
+    "noticeStatus": "POSTING",
+    "jobGroupName": "경영지원",
+    "jobGroupName2": "",
+    "workLocationName": "서울특별시",
+    "recEndDateTime": "2026.09.13 23:00"
+   }
+  ],
+  "noticeInfo": null,
+  "rmkMyFavorites": null,
+  "listCount": 94,
+  "mode": "JOB",
+  "themeFlag": ""
+ }
+}

@@ -100,19 +100,24 @@ POST /v1/appstore/notifications  (Apple → 우리, 갱신/해지/환불)
 
 ## 2. 수집 소스
 
-전부 실제 응답으로 검증했다. `2026-09-05` 기준 **680건 / 회사 37곳**이 흐른다.
+전부 실제 응답으로 검증했다. `2026-09-05` 기준 **14개 소스 / 1,108건 / 회사 68곳**.
 
 | 소스 | 엔드포인트 | 형식 | 회사 | 건수 |
 |---|---|---|---|---|
-| `samsung` | `POST samsungcareers.com/hr/list.data` | HTML 조각 | 26 | 2 |
+| `coupang` | Greenhouse `boards-api.greenhouse.io/v1/boards/coupang/jobs` | JSON | 1 | 359 |
+| `toss` | `GET api-public.toss.im/api/v3/ipd-eggnog/career/job-groups` | JSON(6MB) | 9 | 282 |
 | `skcareers` | `POST skcareers.com/Recruit/GetRecruitList` | JSON | 30 | 88 |
+| `lg` | `POST api.careers.lg.com/rmk/job/retrieveJobNoticesList` | JSON | 16 | 73 |
+| `hyundai` | `GET talent.hyundai.com/api/rec/AP-HM-FO-02700` | JSON | 1 | 71 |
+| `tesla_kr` | MokaHR `hire-r1.mokahr.com/api/outer/ats-apply/website/jobs/v2` | JSON | 1 | 61 |
+| `woowahan` | `GET career.woowahan.com/w1/recruits` + 코드표 | JSON | 1 | 54 |
+| `daangn` | Greenhouse `.../boards/daangn/jobs` | JSON | 1 | 42 |
 | `naver` | `GET recruit.navercorp.com/rcrt/loadJobList.do` | JSON | 5 | 31 |
 | `kakao` | `GET careers.kakao.com/public/api/job-list` | JSON | 1 | 26 |
-| `hyundai` | `GET talent.hyundai.com/api/rec/AP-HM-FO-02700` | JSON | 1 | 71 |
-| `coupang` | Greenhouse `boards-api.greenhouse.io/v1/boards/coupang/jobs` | JSON | 1 | 359 |
-| `daangn` | Greenhouse `.../boards/daangn/jobs` | JSON | 1 | 42 |
+| `line` | Gatsby `careers.linecorp.com/page-data/ko/jobs/page-data.json` | JSON | 6 | 14 |
+| `kia` | `GET career.kia.com/api/rec/AP-KM-FO-02700` | JSON | 1 | 5 |
+| `samsung` | `POST samsungcareers.com/hr/list.data` | HTML 조각 | 26 | 2 |
 | `yanolja` | Workday `yanolja.wd102.myworkdayjobs.com/wday/cxs/...` | JSON | 1 | 0 |
-| `tesla_kr` | MokaHR `hire-r1.mokahr.com/api/outer/ats-apply/website/jobs/v2` | JSON | 1 | 61 |
 
 ### 공용 ATS 어댑터가 확장의 핵심
 
@@ -156,14 +161,31 @@ POST /v1/appstore/notifications  (Apple → 우리, 갱신/해지/환불)
 **야놀자** — 엔드포인트는 맞다. 잘못된 site는 404, 여기는 200 + 빈 배열이라
 **지금 공고가 실제로 0건**이다. 둘을 구분할 수 있으므로 오류로 오해하지 않는다.
 
-**기아** — 현대차와 같은 플랫폼이고 어댑터를 공유한다. 다만 개발 환경에서
-`career.kia.com/api/*` 가 파라미터·API번호와 무관하게 전부 400을 준다(현대차는
-같은 코드로 동작). IP 차단으로 보이며, 일반 네트워크에서 확인 후
-`verified = True`로 올리면 된다.
+**기아** — 현대차와 같은 플랫폼, 같은 어댑터. 처음엔 `/api/*`가 전부 400이라
+IP 차단으로 판단했는데 **틀렸다.** 브라우저의 axios가 로그인 전 sessionStorage
+값(null)을 헤더에 그대로 실어 `X-HKMC-TOKEN: null`(문자열)로 보내고, 서버는 이
+헤더가 없으면 400, `"null"`이면 통과시킨다. 빈 문자열도 400이다.
 
-**미구현** — LG전자, 라인, 우아한형제들, 토스. 넷 다 SPA 셸이고 인라인 데이터도
-API 경로도 노출돼 있지 않아 번들을 읽어야 한다. `adapters/skeletons.py`에 각각
-어디까지 확인했는지 적어뒀다.
+**LG** — 목록 API가 별도 호스트(`api.careers.lg.com/rmk`)에 있다. 페이지는
+847바이트 셸이라 번들의 axios `baseURL`에서 찾았다. 계열사 16곳이 섞여 나오고
+`careerTypeCode` B(경력)·D(신입/경력)만 남긴다. `noticeStatus=SAVE`는 임시저장이라
+링크가 안 열려 제외.
+
+**토스** — 속은 Greenhouse(`gh_jid`)인데 공개 보드 토큰이 없고 자체 API로 감싸
+내보낸다. 응답이 **그룹** 단위("Product Designer" 그룹에 변형 공고 여럿)라
+그룹당 1건으로 낸다 — 같은 제목 넷을 알림 넷으로 보내면 스팸이다. 자회사·
+고용형태가 고정 필드가 아니라 `metadata[]`에 **한국어 질문 문구를 이름으로**
+들어 있어 부분 문자열로 찾고, 하나도 못 찾으면 예외. 응답이 6MB다(본문 전문
+포함 — 저장 안 함).
+
+**라인** — Gatsby 정적 사이트. API가 아니라 빌드된 `page-data.json`을 읽는다.
+전 세계 378건 중 한국 도시(분당·서울) 54건, 그중 `publish=True` 14건.
+`publish=False`인 한국 공고 40건은 대부분 마감이 지난 것이라 이 플래그가
+"현재 노출 중"이다.
+
+**우아한형제들** — 채용구분·고용형태·직무군이 코드(`BA003002`)로만 오고 코드표는
+`/w1/common/common-item/all`(844항목)에 따로 있다. **매 수집마다 코드표를 먼저
+받아 해석한다.** 하드코딩하면 항목이 추가됐을 때 조용히 걸러진다.
 
 ### 소스가 조용히 틀리는 방식 (전부 실제로 겪음)
 
@@ -231,7 +253,7 @@ API 경로도 노출돼 있지 않아 번들을 읽어야 한다. `adapters/skel
 
 ## 5. 운영 / 비용
 
-- 소스 9개 × 48회/일 + 페이지네이션 ≈ **700~900 요청/일**. Lambda·DynamoDB·SQS 프리티어 안. 예상 월 $1–3 (대부분 Secrets Manager $0.40 + CloudWatch)
+- 소스 14개 × 48회/일 + 페이지네이션 ≈ **1,000~1,300 요청/일**. 토스 응답이 6MB라 전송량은 토스가 대부분. Lambda·DynamoDB·SQS 프리티어 안. 예상 월 $1–3 (대부분 Secrets Manager $0.40 + CloudWatch)
 - 어댑터별 CloudWatch 지표: `fetched`, `new`, `duration_ms`, `error`
 - Slack 알림 조건 (v1의 "0건이면 알림"을 교체):
   - 어댑터 예외 → 즉시
@@ -246,7 +268,7 @@ API 경로도 노출돼 있지 않아 번들을 읽어야 한다. `adapters/skel
 | 단계 | 내용 | 상태 |
 |---|---|---|
 | 1 | 레포 구조 (`backend/`, `ios/`, `docs/`) | ✅ 완료 |
-| 2 | 어댑터 3개 + 로컬 검증 스크립트 + 오프라인 테스트 | ✅ 완료 — 라이브 177건 수집 확인 |
+| 2 | 어댑터 + 로컬 검증 스크립트 + 오프라인 테스트 | ✅ 완료 — 14소스 / 라이브 1,108건 |
 | **2.5** | **삼성전자 국내 경력 공고가 어디 올라오는지 확인** | ⏳ 2절 참고 |
 | 3 | SAM 템플릿: DynamoDB + collector + notifier + APNs | |
 | **3.5** | **읽기 API + OpenAPI 계약** (v2에서 추가) | |

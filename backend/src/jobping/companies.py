@@ -150,8 +150,66 @@ HMG: tuple[Company, ...] = (
     Company(key="kia", display_name="기아", source="kia"),
 )
 
+# LG — 그룹 통합 포털. companyCode 로 갈린다.
+LG: tuple[Company, ...] = tuple(
+    Company(key=key, display_name=name, source="lg", code=code)
+    for key, name, code in (
+        ("lg_electronics", "LG전자", "LGE"),
+        ("lg_cns", "LG CNS", "CNS"),
+        ("lg_energy", "LG에너지솔루션", "LGES"),
+        ("lg_uplus", "LG유플러스", "LGU"),
+        ("lg_display", "LG디스플레이", "LGD"),
+        ("lg_chem", "LG화학", "LGC"),
+        ("lg_innotek", "LG이노텍", "LGIT"),
+        ("lg_hnh", "LG생활건강", "LGHH"),
+        ("lg_magna", "LG Magna", "MAGNA"),
+        ("lg_bri", "LG경영연구원", "LGA"),
+        ("hsad", "HSAD", "GIIR"),
+        ("biztech_i", "비즈테크아이", "BIZ"),
+        ("hi_m_solutek", "하이엠솔루텍", "HIM"),
+        ("hi_care", "하이케어솔루션", "HIC"),
+        ("robostar", "로보스타", "RBO"),
+        ("dno", "D&O", "SVO"),
+    )
+)
+
+# 토스 — Greenhouse 메타데이터 "자회사" 값으로 갈린다.
+TOSS: tuple[Company, ...] = tuple(
+    Company(key=key, display_name=name, source="toss", code=name)
+    for key, name in (
+        ("toss", "토스"),
+        ("toss_bank", "토스뱅크"),
+        ("toss_securities", "토스증권"),
+        ("toss_payments", "토스페이먼츠"),
+        ("toss_place", "토스플레이스"),
+        ("toss_insurance", "토스인슈어런스"),
+        ("toss_cx", "토스씨엑스"),
+        ("toss_community", "토스커뮤니티"),
+        ("toss_insight", "토스인사이트"),
+    )
+)
+
+# 라인 — 한국 법인들. 데이터에 나온 companies[].name 그대로.
+LINE: tuple[Company, ...] = tuple(
+    Company(key=key, display_name=name, source="line", code=code)
+    for key, name, code in (
+        ("line_plus", "라인플러스", "LINE Plus"),
+        ("line_pay_plus", "라인페이플러스", "LINE Pay Plus"),
+        ("line_financial", "라인파이낸셜", "LINE Financial Corp."),
+        ("line_studio", "라인스튜디오", "LINE studio"),
+        ("line_friends_square", "라인프렌즈스퀘어", "LINE Friends Square"),
+        ("line_pay_thailand_kr", "라인페이 태국법인 한국오피스", "LINE Pay (Thailand) Korea Office"),
+    )
+)
+
+WOOWA: tuple[Company, ...] = (
+    Company(key="woowahan", display_name="우아한형제들", source="woowahan",
+            code="WOOWA_BROTHERS"),
+)
+
 ALL: tuple[Company, ...] = (
     SAMSUNG + SK + TESLA + NAVER + KAKAO + DAANGN + COUPANG + YANOLJA + HMG
+    + LG + TOSS + LINE + WOOWA
 )
 
 BY_KEY: dict[str, Company] = {c.key: c for c in ALL}

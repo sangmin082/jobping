@@ -1,0 +1,367 @@
+{
+ "result": {
+  "data": {
+   "allStrapiJobs": {
+    "edges": [
+     {
+      "node": {
+       "publish": true,
+       "strapiId": 3104,
+       "end_date": "2026-09-30T14:59:00.000Z",
+       "start_date": "2026-09-03T01:00:00.000Z",
+       "title": "일본어 전문 통번역 프리랜서 ",
+       "title_en": "Korean-Japanese Freelance Interpreter/Translator",
+       "until_filled": false,
+       "is_public": true,
+       "is_filters_public": true,
+       "employment_type": [
+        {
+         "id": 5,
+         "name": "Temporary"
+        }
+       ],
+       "job_unit": [
+        {
+         "id": 5,
+         "name": "Corporate"
+        }
+       ],
+       "job_fields": [
+        {
+         "id": 73,
+         "name": "Support",
+         "Priority": 50
+        }
+       ],
+       "companies": [
+        {
+         "name": "LINE Plus",
+         "id": 2
+        }
+       ],
+       "cities": [
+        {
+         "name": "Bundang",
+         "id": 2,
+         "country": 1
+        }
+       ],
+       "regions": [
+        {
+         "id": 1,
+         "name": "East Asia"
+        }
+       ]
+      }
+     },
+     {
+      "node": {
+       "publish": true,
+       "strapiId": 3103,
+       "end_date": "2999-12-31T14:30:00.000Z",
+       "start_date": "2026-09-02T00:00:00.000Z",
+       "title": "AI SaaS Sales & Business Development Manager",
+       "title_en": "AI SaaS Sales & Business Development Manager",
+       "until_filled": true,
+       "is_public": true,
+       "is_filters_public": true,
+       "employment_type": [
+        {
+         "id": 1,
+         "name": "Full-time"
+        }
+       ],
+       "job_unit": [
+        {
+         "id": 4,
+         "name": "Business & Sales"
+        }
+       ],
+       "job_fields": [
+        {
+         "id": 28,
+         "name": "Business Development",
+         "Priority": 28
+        },
+        {
+         "id": 27,
+         "name": "Sales",
+         "Priority": 31
+        }
+       ],
+       "companies": [
+        {
+         "name": "LINE Plus",
+         "id": 2
+        }
+       ],
+       "cities": [
+        {
+         "name": "Bundang",
+         "id": 2,
+         "country": 1
+        }
+       ],
+       "regions": [
+        {
+         "id": 1,
+         "name": "East Asia"
+        }
+       ]
+      }
+     },
+     {
+      "node": {
+       "publish": true,
+       "strapiId": 2430,
+       "end_date": "2999-12-31T14:30:00.000Z",
+       "start_date": "2026-09-01T05:30:00.000Z",
+       "title": "Backend Software Engineer",
+       "title_en": "Backend Software Engineer",
+       "until_filled": true,
+       "is_public": true,
+       "is_filters_public": true,
+       "employment_type": [
+        {
+         "id": 1,
+         "name": "Full-time"
+        }
+       ],
+       "job_unit": [
+        {
+         "id": 1,
+         "name": "Engineering"
+        }
+       ],
+       "job_fields": [
+        {
+         "id": 1,
+         "name": "Server-side",
+         "Priority": 3
+        }
+       ],
+       "companies": [
+        {
+         "name": "LINE Pay (Thailand) Korea Office",
+         "id": 38
+        },
+        {
+         "name": "LINE Pay (Thailand) Company Limited",
+         "id": 17
+        }
+       ],
+       "cities": [
+        {
+         "name": "Bundang",
+         "id": 2,
+         "country": 1
+        }
+       ],
+       "regions": [
+        {
+         "id": 1,
+         "name": "East Asia"
+        }
+       ]
+      }
+     },
+     {
+      "node": {
+       "publish": false,
+       "strapiId": 404,
+       "end_date": "2021-12-31T03:00:00.000Z",
+       "start_date": "2021-03-30T03:00:00.000Z",
+       "title": "Security Incident Response Engineer",
+       "title_en": null,
+       "until_filled": true,
+       "is_public": true,
+       "is_filters_public": true,
+       "employment_type": [
+        {
+         "id": 1,
+         "name": "Full-time"
+        }
+       ],
+       "job_unit": [
+        {
+         "id": 1,
+         "name": "Engineering"
+        }
+       ],
+       "job_fields": [
+        {
+         "id": 9,
+         "name": "Security Engineering",
+         "Priority": 7
+        }
+       ],
+       "companies": [
+        {
+         "name": "LINE Plus",
+         "id": 2
+        }
+       ],
+       "cities": [
+        {
+         "name": "Bundang",
+         "id": 2,
+         "country": 1
+        }
+       ],
+       "regions": []
+      }
+     },
+     {
+      "node": {
+       "publish": false,
+       "strapiId": 397,
+       "end_date": "2021-12-31T03:00:00.000Z",
+       "start_date": "2021-03-26T03:00:00.000Z",
+       "title": "일본어 전문 통역사",
+       "title_en": null,
+       "until_filled": true,
+       "is_public": true,
+       "is_filters_public": true,
+       "employment_type": [
+        {
+         "id": 5,
+         "name": "Temporary"
+        }
+       ],
+       "job_unit": [
+        {
+         "id": 5,
+         "name": "Corporate"
+        }
+       ],
+       "job_fields": [
+        {
+         "id": 39,
+         "name": "(not in use)Language Support",
+         "Priority": 132
+        }
+       ],
+       "companies": [
+        {
+         "name": "LINE Plus",
+         "id": 2
+        }
+       ],
+       "cities": [
+        {
+         "name": "Bundang",
+         "id": 2,
+         "country": 1
+        }
+       ],
+       "regions": []
+      }
+     },
+     {
+      "node": {
+       "publish": true,
+       "strapiId": 3056,
+       "end_date": null,
+       "start_date": "2026-08-18T05:00:00.000Z",
+       "title": "WEBTOON - Localization Assistant Manager / Manager (Thai Language QA)",
+       "title_en": "WEBTOON - Localization Assistant Manager / Manager (Thai Language QA)",
+       "until_filled": true,
+       "is_public": true,
+       "is_filters_public": true,
+       "employment_type": [
+        {
+         "id": 1,
+         "name": "Full-time"
+        }
+       ],
+       "job_unit": [
+        {
+         "id": 3,
+         "name": "Planning"
+        }
+       ],
+       "job_fields": [
+        {
+         "id": 29,
+         "name": "Business Strategy",
+         "Priority": 27
+        }
+       ],
+       "companies": [
+        {
+         "name": "LINE Company Thailand",
+         "id": 15
+        }
+       ],
+       "cities": [
+        {
+         "name": "Bangkok",
+         "id": 6,
+         "country": 6
+        }
+       ],
+       "regions": [
+        {
+         "id": 2,
+         "name": "Southeast Asia"
+        }
+       ]
+      }
+     },
+     {
+      "node": {
+       "publish": false,
+       "strapiId": 2894,
+       "end_date": null,
+       "start_date": "2025-10-20T05:00:00.000Z",
+       "title": "Marketing Campaign & Media Strategy Manager / Senior Manager (LINE Official Account)",
+       "title_en": "Marketing Campaign & Media Strategy Manager / Senior Manager (LINE Official Account)",
+       "until_filled": true,
+       "is_public": true,
+       "is_filters_public": true,
+       "employment_type": [
+        {
+         "id": 1,
+         "name": "Full-time"
+        }
+       ],
+       "job_unit": [
+        {
+         "id": 6,
+         "name": "Marketing & CS"
+        }
+       ],
+       "job_fields": [
+        {
+         "id": 61,
+         "name": "Marketing",
+         "Priority": 32
+        }
+       ],
+       "companies": [
+        {
+         "name": "LINE Company Thailand",
+         "id": 15
+        }
+       ],
+       "cities": [
+        {
+         "name": "Bangkok",
+         "id": 6,
+         "country": 6
+        }
+       ],
+       "regions": [
+        {
+         "id": 2,
+         "name": "Southeast Asia"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "pageContext": {}
+ }
+}

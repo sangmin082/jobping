@@ -8,7 +8,6 @@
 import pytest
 
 from jobping import registry
-from jobping.adapters import NeedsDiscovery
 from jobping.adapters.base import AdapterError, get_path, parse_date
 from jobping.adapters.mokahr import MokaHRAdapter, TeslaKoreaAdapter
 from jobping.adapters.samsung import SamsungAdapter
@@ -216,16 +215,10 @@ class TestMokaHR:
         assert len(jobs) == len(rows)
 
 
-class TestUnimplementedAdapters:
-    @pytest.mark.parametrize("key", ["lge", "line", "woowahan", "toss"])
-    def test_raise_needs_discovery_not_generic_error(self, key, fake_client):
-        """'아직 구현 안 됨'과 '망가짐'을 운영 알림에서 구분하기 위한 계약."""
-        with pytest.raises(NeedsDiscovery):
-            registry.get(key).fetch(fake_client())
-
-    def test_are_hidden_from_the_app(self):
-        hidden = {"lge", "line", "woowahan", "toss", "kia"}
-        assert not hidden & {a.key for a in registry.verified_adapters()}
+class TestNothingIsHiddenAnymore:
+    def test_every_registered_source_is_verified(self):
+        """미검증 소스가 생기면 이 테스트를 갱신하고 이유를 적어라."""
+        assert [a.key for a in registry.all_adapters() if not a.verified] == []
 
 
 class TestGetPath:
