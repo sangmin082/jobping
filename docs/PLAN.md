@@ -284,7 +284,7 @@ IP 차단으로 판단했는데 **틀렸다.** 브라우저의 axios가 로그�
 | **2.5** | **삼성전자 국내 경력 공고가 어디 올라오는지 확인** | ⏳ 2절 참고 |
 | 3 | SAM 템플릿: DynamoDB + collector + notifier + APNs | ✅ 코드·템플릿 완료, 테스트 231개. 실제 배포는 `docs/DEPLOY.md` |
 | **3.5** | **앱 API** (v2에서 추가) | ✅ HTTP API + `api.py`, 테스트 19개 |
-| 4 | iOS MVP: 온보딩 → 리스트 → 푸시 수신 | 🔶 코드 완료. CI(macOS 러너)에서 컴파일·TestFlight. `docs/IOS.md` |
+| 4 | iOS MVP: 온보딩 → 리스트 → 푸시 수신 | ✅ CI 컴파일·유닛 테스트 통과 (run #2). TestFlight 는 Apple 세팅 후 — `docs/IOS.md` |
 | 5 | StoreKit 2 구독 + 서버 검증 + App Store Server Notifications | |
 
 ### 순서에 대한 제안

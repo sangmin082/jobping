@@ -86,5 +86,5 @@ make deploy STAGE=dev      # AWS 배포 — 처음이면 docs/DEPLOY.md
 | 2. 어댑터 + 검증 도구 | ✅ 소스 14개 / 라이브 1,108건 |
 | 3. SAM 배포 | ✅ 템플릿·수집·알림 파이프라인 완성. 실제 배포는 AWS 계정에서 `make deploy` |
 | 3.5. 앱 API | ✅ `/v1/companies` `/v1/jobs` `/v1/devices` |
-| 4. iOS MVP | 🔶 코드 완료. **GitHub Actions 첫 빌드로 컴파일 확인 필요** (맥 없이 작성) |
+| 4. iOS MVP | ✅ CI(macOS 러너)에서 컴파일·유닛 테스트 통과. TestFlight 업로드는 Apple 계정 세팅 후 `docs/IOS.md` |
 | 5. StoreKit 구독 | |
