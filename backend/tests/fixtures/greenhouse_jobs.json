@@ -1,0 +1,67 @@
+{
+ "jobs": [
+  {
+   "id": 7666768003,
+   "internal_job_id": 5244070003,
+   "title": "Account Manager (인턴) - 로컬 잡스",
+   "absolute_url": "https://about.daangn.com?gh_jid=7666768003",
+   "updated_at": "2026-09-01T02:35:25-04:00",
+   "location": {
+    "name": "SEOUL"
+   },
+   "first_published": "2026-03-29T11:00:00-04:00",
+   "requisition_id": "808"
+  },
+  {
+   "id": 5458903003,
+   "internal_job_id": 4729362003,
+   "title": "AD Sales Manager - 광고 (세일즈, Agency)",
+   "absolute_url": "https://about.daangn.com?gh_jid=5458903003",
+   "updated_at": "2026-08-28T13:04:57-04:00",
+   "location": {
+    "name": "SEOUL"
+   },
+   "first_published": "2022-12-27T04:10:06-05:00",
+   "requisition_id": "382"
+  },
+  {
+   "id": 4814736003,
+   "internal_job_id": 4474186003,
+   "title": "AD Sales Manager - 광고 (세일즈, Client)",
+   "absolute_url": "https://about.daangn.com?gh_jid=4814736003",
+   "updated_at": "2026-08-28T13:04:57-04:00",
+   "location": {
+    "name": "SEOUL"
+   },
+   "first_published": "2021-11-15T08:51:41-05:00",
+   "requisition_id": "192"
+  },
+  {
+   "id": 6589282003,
+   "internal_job_id": 5219310003,
+   "title": "Brand Designer (계약직) - 브랜딩 (서비스 브랜딩 & UI)",
+   "absolute_url": "https://about.daangn.com?gh_jid=6589282003",
+   "updated_at": "2026-08-28T13:04:57-04:00",
+   "location": {
+    "name": "SEOUL"
+   },
+   "first_published": "2025-05-27T05:04:06-04:00",
+   "requisition_id": "769"
+  },
+  {
+   "id": 5090389003,
+   "internal_job_id": 4590476003,
+   "title": "Character Designer, Illustrator - 브랜딩",
+   "absolute_url": "https://about.daangn.com?gh_jid=5090389003",
+   "updated_at": "2026-08-28T13:04:57-04:00",
+   "location": {
+    "name": "SEOUL"
+   },
+   "first_published": "2022-04-21T08:41:47-04:00",
+   "requisition_id": "290"
+  }
+ ],
+ "meta": {
+  "total": 5
+ }
+}

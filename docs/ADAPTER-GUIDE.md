@@ -52,6 +52,10 @@ curl -s "$URL" | grep -oE '(url:|\$\.(get|post)\(|fetch\()\s*"[^"]+"'
 | `{"code":500,"message":"Internal server error"}` | 삼성 — 9개 파라미터 중 일부 누락 |
 | **404 HTML 페이지** | SK — 7개 파라미터 중 일부 누락 (ASP.NET 모델 바인딩 실패) |
 | 302 리다이렉트 루프 | MokaHR — 세션 쿠키 없음 |
+| **HTTP 500 + 채용 사이트 HTML** | 현대차 — 파라미터 누락 |
+| **200 + 빈 목록** | 현대차 — `hgrCd` 오답. 제일 찾기 어렵다 |
+| **200 + `alert('접근권한이 없습니다')`** | 네이버 — GET인데 POST로 부름 |
+| 기술 직군 8건만 (전체는 26건) | 카카오 — `part` 기본값이 TECHNOLOGY |
 
 그러니 **하나씩 빼면서 이등분하라.** 대조군(다른 POST 엔드포인트)을 하나
 같이 때려보면 "라우팅이 문제인가 파라미터가 문제인가"가 바로 갈린다.
@@ -99,12 +103,51 @@ P "sort=0&searchText=&..."    # 전부
 
 ---
 
+## 4.5. 먼저 공용 ATS인지 본다
+
+새 어댑터를 쓰기 전에 **채용 URL만 보고** 판별되는 것들이 있다. 맞으면
+설정 두세 줄로 끝난다.
+
+| URL 모양 | 어댑터 | 설정 |
+|---|---|---|
+| `boards.greenhouse.io/{token}` 또는 지원 링크에 `gh_jid=` | `GreenhouseAdapter` | `board_token` |
+| `{tenant}.wd{N}.myworkdayjobs.com/{locale}/{site}` | `WorkdayAdapter` | `tenant`, `wd_host`, `site` |
+| `hire-r1.mokahr.com/social-recruitment/{org}/{site}` | `MokaHRAdapter` | `org_id`, `site_id` |
+
+Greenhouse 토큰은 회사명 그대로인 경우가 많아서 그냥 찔러보면 된다:
+
+```bash
+for t in acme acme-inc acmecorp; do
+  printf "%-12s" "$t"
+  curl -sS -o /dev/null -w "%{http_code}\n" \
+    "https://boards-api.greenhouse.io/v1/boards/$t/jobs?content=false"
+done
+```
+
+쿠팡을 이렇게 찾았다. 쿠팡 채용 **웹사이트**는 403을 주는데 Greenhouse 보드
+API는 열려 있다 — 사이트가 막혔다고 포기하기 전에 ATS를 확인할 것.
+
+Lever(`api.lever.co/v0/postings/{token}?mode=json`)도 같은 식으로 확인한다.
+
+---
+
 ## 5. 공고 하나에 직무가 여럿인 경우
 
 삼성 공고 하나("R&D분야 경력사원 채용")에는 세부 직무가 10여 개 붙어 있고,
 사용자가 찾는 "데이터 엔지니어링"은 **제목이 아니라 거기에** 있다. 제목만
 매칭하면 거의 아무것도 안 걸린다. 그래서 `Job.roles`로 함께 가져오고
 `matching.haystack()`이 이걸 본다. 새 어댑터를 쓸 때 꼭 채워라.
+카카오 `skillSetList`, 현대차 `fldCodeNm`, SK `jobRole`, 네이버 `subJobCdNm`이
+같은 역할을 한다.
+
+**다만 직무처럼 생긴 게 다 직무는 아니다.** 현대차 `hashTag`는
+"9월 신입채용" 같은 캠페인 라벨이라 뺐다. 넣었더니 키워드 '경력'이 모든 공고에
+걸리고, 우리가 남긴 경력 공고의 `roles`에 '신입채용'이 섞여 들어갔다. 필드를
+`roles`에 넣기 전에 **값 분포를 한 번 찍어보고** 판단해라:
+
+```bash
+python scripts/verify.py <adapter> --json --limit 50 | grep -o '"roles".*'
+```
 
 ---
 

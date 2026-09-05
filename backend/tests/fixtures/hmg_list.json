@@ -1,0 +1,79 @@
+{
+ "status": 200,
+ "message": "OK",
+ "data": {
+  "listCnt": 5,
+  "list": [
+   {
+    "recuYy": "2026",
+    "recuType": "N2",
+    "recuCls": 296,
+    "recuNoticeNm": "항공용 전기추진시스템 고장진단 SW 개발",
+    "applyStartDt": "20260815",
+    "applyEndDt": "20260906",
+    "secCodeNm": "연구개발",
+    "fldCodeNm": "모빌리티 선행개발",
+    "workPlaceCodeNm": "서울(원효로)",
+    "channelCodeNm": "경력",
+    "jdRecuCateNm": "일반공고",
+    "hashTag": "8월 경력 채용"
+   },
+   {
+    "recuYy": "2026",
+    "recuType": "N2",
+    "recuCls": 300,
+    "recuNoticeNm": "[통합보안] Mobility Security Engineer - 차량보안",
+    "applyStartDt": "20260815",
+    "applyEndDt": "20260906",
+    "secCodeNm": "IT",
+    "fldCodeNm": "Security Engineering",
+    "workPlaceCodeNm": "양재본사",
+    "channelCodeNm": "경력",
+    "jdRecuCateNm": "일반공고",
+    "hashTag": "8월 경력 채용"
+   },
+   {
+    "recuYy": "2026",
+    "recuType": "N2",
+    "recuCls": 302,
+    "recuNoticeNm": "[통합보안] Mobility Security Engineer - AD보안",
+    "applyStartDt": "20260815",
+    "applyEndDt": "20260906",
+    "secCodeNm": "IT",
+    "fldCodeNm": "Security Engineering",
+    "workPlaceCodeNm": "양재본사",
+    "channelCodeNm": "경력",
+    "jdRecuCateNm": "일반공고",
+    "hashTag": "8월 경력 채용"
+   },
+   {
+    "recuYy": "2026",
+    "recuType": "N5",
+    "recuCls": 193,
+    "recuNoticeNm": "[계약직] 남부하이테크센터 파츠딜리버리",
+    "applyStartDt": "20260828",
+    "applyEndDt": "20260906",
+    "secCodeNm": "기타",
+    "fldCodeNm": "기타",
+    "workPlaceCodeNm": "남부하이테크센터",
+    "channelCodeNm": "계약직",
+    "jdRecuCateNm": "일반공고",
+    "hashTag": null
+   },
+   {
+    "recuYy": "2026",
+    "recuType": "N5",
+    "recuCls": 194,
+    "recuNoticeNm": "[계약직] 남부하이테크센터 고객응대 및 수납",
+    "applyStartDt": "20260828",
+    "applyEndDt": "20260906",
+    "secCodeNm": "기타",
+    "fldCodeNm": "기타",
+    "workPlaceCodeNm": "남부하이테크센터",
+    "channelCodeNm": "계약직",
+    "jdRecuCateNm": "일반공고",
+    "hashTag": null
+   }
+  ]
+ }
+}

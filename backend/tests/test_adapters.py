@@ -217,14 +217,14 @@ class TestMokaHR:
 
 
 class TestUnimplementedAdapters:
-    @pytest.mark.parametrize("key", ["hyundai", "kia", "lge", "naver", "kakao"])
+    @pytest.mark.parametrize("key", ["lge", "line", "woowahan", "toss"])
     def test_raise_needs_discovery_not_generic_error(self, key, fake_client):
         """'아직 구현 안 됨'과 '망가짐'을 운영 알림에서 구분하기 위한 계약."""
         with pytest.raises(NeedsDiscovery):
             registry.get(key).fetch(fake_client())
 
     def test_are_hidden_from_the_app(self):
-        hidden = {"hyundai", "kia", "lge", "naver", "kakao"}
+        hidden = {"lge", "line", "woowahan", "toss", "kia"}
         assert not hidden & {a.key for a in registry.verified_adapters()}
 
 

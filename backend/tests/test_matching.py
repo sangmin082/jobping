@@ -123,3 +123,66 @@ class TestNotificationPlan:
         plan = notification_plan(hits)
         assert len(plan) == 1
         assert f"{MAX_PUSH_PER_RUN + 1}건" in plan[0]
+
+
+class TestAsciiBoundaries:
+    """영문 키워드는 알파벳/숫자 경계를 지켜야 한다.
+
+    한국어는 "반도체공정엔지니어"처럼 붙여 쓰므로 부분문자열 매칭이 필요하지만,
+    영어에 같은 규칙을 쓰면 엉뚱하게 걸린다. 전부 라이브 데이터에서 나온 것들이다.
+    """
+
+    @pytest.mark.parametrize("title", [
+        "Sr. Employee Relation Specialist",
+        "Senior Employee Experience Lead",
+    ])
+    def test_short_acronym_does_not_cross_word_boundaries(self, title):
+        assert match(job(title), ["SRE"]) is None
+
+    @pytest.mark.parametrize("title", [
+        "Site Reliability Engineer (SRE)",
+        "SRE 엔지니어",
+        "Platform SRE, Seoul",
+    ])
+    def test_short_acronym_still_matches_as_a_word(self, title):
+        assert match(job(title), ["SRE"]) is not None
+
+    def test_ml_does_not_match_html(self):
+        assert match(job("HTML 퍼블리셔"), ["ML"]) is None
+
+    def test_ml_synonym_still_reaches_ml_engineer(self):
+        assert match(job("ML Engineer"), ["머신러닝"]) is not None
+
+    def test_long_keywords_keep_separator_insensitive_matching(self):
+        """긴 키워드는 기존대로 붙여쓰기/띄어쓰기를 무시한다."""
+        assert match(job("Dev-Ops 엔지니어"), ["DevOps"]) is not None
+
+    def test_korean_keywords_are_unaffected(self):
+        assert match(job("데이터 품질 관리"), ["품질"]) is not None
+
+    @pytest.mark.parametrize("title", [
+        "Internal Tools Engineer", "International Sales Manager", "Internal Audit Lead",
+    ])
+    def test_intern_exclusion_does_not_swallow_internal_postings(self, title):
+        """제외어 오작동은 오탐보다 나쁘다.
+
+        오탐은 알림 하나로 끝나지만, 잘못된 제외는 공고가 조용히 사라져서
+        아무도 눈치채지 못한다.
+        """
+        assert match(job(title), ["engineer", "sales", "audit"]) is not None
+
+    def test_intern_exclusion_still_catches_real_internships(self):
+        assert match(job("Software Engineering Internship"), ["engineer"]) is None
+
+    @pytest.mark.parametrize("keyword,title", [
+        ("engineer", "Software Engineering Manager"),
+        ("develop", "Backend Developers"),
+        ("manage", "Product Management Lead"),
+    ])
+    def test_common_english_suffixes_are_allowed(self, keyword, title):
+        """경계만 엄격히 걸면 'engineer' 가 'Engineering' 을 놓친다."""
+        assert match(job(title), [keyword]) is not None
+
+    def test_ascii_keyword_matches_inside_a_korean_compound(self):
+        """한글은 파이썬 정규식에서 단어문자라 \\b 로는 못 잡는다."""
+        assert match(job("AI개발자 채용"), ["AI"]) is not None

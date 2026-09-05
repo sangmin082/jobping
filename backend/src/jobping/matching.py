@@ -14,8 +14,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+import re
+
 from .companies import BY_KEY
-from .models import Job, normalize_text
+from .models import Job, normalize_text, spaced_text
 
 #: 한 그룹 안의 단어는 서로 같은 것으로 본다. 사용자가 어느 쪽을 넣든 매칭된다.
 SYNONYM_GROUPS: tuple[tuple[str, ...], ...] = (
@@ -56,10 +58,58 @@ def expand(keyword: str) -> frozenset[str]:
     return _SYNONYMS.get(norm, frozenset({norm})) if norm else frozenset()
 
 
+# 영문 키워드는 **알파벳/숫자 경계**를 요구한다. 한국어는 요구하지 않는다.
+#
+# 이유는 두 언어가 다르게 붙기 때문이다. 한국어는 "반도체공정엔지니어"처럼
+# 띄어쓰기 없이 합성되므로 부분문자열 매칭이 꼭 필요하다. 영어는 그렇지
+# 않아서, 같은 규칙을 적용하면 엉뚱한 데 걸린다. 라이브 데이터에서 실제로
+# 나온 것들:
+#
+#   "SRE"    가 "Sr. Employee Relation Specialist" 에 걸림 (Sr.+Employee)
+#   "ML"     이 "HTML 퍼블리셔" 에 걸림
+#   "intern" 이 "Internal Tools Engineer" 를 **제외어로** 걸러냄
+#
+# 마지막 것이 특히 나쁘다. 오탐은 알림 하나로 끝나지만, 잘못된 제외는 공고가
+# 조용히 사라져서 아무도 눈치채지 못한다.
+#
+# 경계는 `\b` 가 아니라 "앞뒤가 영숫자가 아닐 것"으로 잡는다. 파이썬에서
+# 한글은 `\w` 라서 `\b` 를 쓰면 "AI개발자" 의 "AI" 를 못 찾는다.
+
+_ASCII_ONLY = re.compile(r"^[a-z0-9]+$")
+
+#: 영문 키워드 뒤에 붙어도 같은 뜻으로 볼 어미들.
+#: 경계만 엄격히 걸면 "engineer" 가 "Engineering" 을 놓친다. 영문 공고가
+#: 전체의 절반 가까이라(쿠팡·테슬라) 그냥 두면 손실이 크다.
+#: 이 목록에 "al" 은 없다 — 있으면 "intern" 이 "Internal" 을 다시 잡는다.
+ASCII_SUFFIXES = ("s", "es", "ing", "er", "ers", "ed", "ment", "ments", "ship", "ships")
+
+
+def _ascii_bounded(variant: str) -> re.Pattern:
+    suffixes = "|".join(ASCII_SUFFIXES)
+    return re.compile(
+        rf"(?<![a-z0-9]){re.escape(variant)}(?:{suffixes})?(?![a-z0-9])"
+    )
+
+
+def _contains(variant: str, collapsed: str, spaced: str) -> bool:
+    if not _ASCII_ONLY.match(variant):
+        return variant in collapsed
+    pattern = _ascii_bounded(variant)
+    # 두 형태를 다 본다. 공백을 지운 형태에서만 보이는 것("Dev Ops" → devops)과
+    # 공백을 남긴 형태에서만 보이는 것("…Engineer (SRE)" → … sre)이 둘 다 있다.
+    return bool(pattern.search(spaced) or pattern.search(collapsed))
+
+
 @dataclass(frozen=True, slots=True)
 class MatchResult:
     job: Job
     keyword: str  # 사용자가 입력한 원래 표기. 알림 문구에 그대로 쓴다
+
+
+def spaced_haystack(job: Job) -> str:
+    """단어 경계 검사를 위한, 구분자를 공백으로만 바꾼 형태."""
+    parts = (job.title, job.department, *job.roles)
+    return spaced_text(" ".join(filter(None, parts)))
 
 
 def haystack(job: Job) -> str:
@@ -84,11 +134,14 @@ def match(
 
     제외어가 먼저 적용된다. "DevOps 인턴"은 DevOps 키워드가 있어도 걸러진다.
     """
-    text = haystack(job)
-    if any(normalize_text(x) in text for x in excludes if normalize_text(x)):
-        return None
+    collapsed = haystack(job)
+    spaced = spaced_haystack(job)
+    for raw in excludes:
+        excluded = normalize_text(raw)
+        if excluded and _contains(excluded, collapsed, spaced):
+            return None
     for keyword in keywords:
-        if any(variant in text for variant in expand(keyword)):
+        if any(_contains(v, collapsed, spaced) for v in expand(keyword)):
             return MatchResult(job=job, keyword=keyword)
     return None
 

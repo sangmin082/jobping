@@ -4,14 +4,20 @@ from __future__ import annotations
 
 from .adapters import (
     Adapter,
+    CoupangAdapter,
+    DaangnAdapter,
     HyundaiAdapter,
     KakaoAdapter,
     KiaAdapter,
     LGAdapter,
+    LineAdapter,
     NaverAdapter,
     SamsungAdapter,
     SKCareersAdapter,
     TeslaKoreaAdapter,
+    TossAdapter,
+    WoowahanAdapter,
+    YanoljaAdapter,
 )
 from .companies import Company
 
@@ -19,12 +25,18 @@ from .companies import Company
 _CLASSES: tuple[type[Adapter], ...] = (
     SamsungAdapter,
     SKCareersAdapter,
-    TeslaKoreaAdapter,
-    HyundaiAdapter,
-    KiaAdapter,
-    LGAdapter,
     NaverAdapter,
     KakaoAdapter,
+    HyundaiAdapter,
+    CoupangAdapter,
+    DaangnAdapter,
+    YanoljaAdapter,
+    TeslaKoreaAdapter,
+    KiaAdapter,
+    LGAdapter,
+    LineAdapter,
+    WoowahanAdapter,
+    TossAdapter,
 )
 
 ADAPTERS: dict[str, Adapter] = {cls.key: cls() for cls in _CLASSES}

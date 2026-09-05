@@ -1,0 +1,23 @@
+{
+ "total": 2,
+ "jobPostings": [
+  {
+   "title": "Staff Infrastructure Engineer",
+   "externalPath": "/job/Seoul/Staff-Infrastructure-Engineer_JR-1001",
+   "locationsText": "Seoul, Korea",
+   "postedOn": "Posted 3 Days Ago",
+   "bulletFields": [
+    "JR-1001"
+   ]
+  },
+  {
+   "title": "데이터 플랫폼 엔지니어",
+   "externalPath": "/job/Seoul/Data-Platform-Engineer_JR-1002",
+   "locationsText": "서울",
+   "postedOn": "Posted Today",
+   "bulletFields": [
+    "JR-1002"
+   ]
+  }
+ ]
+}

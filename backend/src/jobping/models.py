@@ -68,6 +68,17 @@ def normalize_text(text: str) -> str:
     return re.sub(r"[\s\-_./·ㆍ,()\[\]]+", "", text)
 
 
+def spaced_text(text: str) -> str:
+    """NFKC → 소문자 → 구분자를 **공백 하나로** 바꾼다.
+
+    `normalize_text` 는 구분자를 아예 지우기 때문에 "Sr. Employee" 가
+    "sremployee" 가 되고, 짧은 약어("SRE")가 단어를 가로질러 걸린다.
+    단어 경계가 필요한 매칭은 이 형태를 쓴다.
+    """
+    text = unicodedata.normalize("NFKC", text).casefold()
+    return re.sub(r"[\s\-_./·ㆍ,()\[\]]+", " ", text).strip()
+
+
 @dataclass(frozen=True, slots=True)
 class Job:
     company: str

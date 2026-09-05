@@ -1,8 +1,8 @@
 """아직 구현하지 않은 회사들의 자리표시자.
 
-각 회사가 어떤 방식으로 공고를 내보내는지 조사 결과를 주석으로 남긴다.
-구현 순서를 정할 때 이 메모가 근거가 된다. 이들은 레지스트리에는 등록되지만
-`verified=False`이므로 앱의 회사 목록에는 노출되지 않는다.
+각 회사를 조사하면서 알아낸 것을 주석으로 남긴다. 구현 순서를 정할 때 이
+메모가 근거가 된다. 레지스트리에는 등록되지만 `verified=False`이므로 앱의
+회사 목록에는 노출되지 않는다.
 """
 
 from __future__ import annotations
@@ -19,31 +19,27 @@ class _Skeleton(Adapter):
         raise NeedsDiscovery(f"{self.key}: 미구현. {self.note}")
 
 
-class HyundaiAdapter(_Skeleton):
-    key, display_name = "hyundai", "현대자동차"
-    site_url = "https://careers.hyundai.com"
-    note = "구조 미확인. 삼성·SK처럼 그룹 통합 포털일 가능성이 높다."
-
-
-class KiaAdapter(_Skeleton):
-    key, display_name = "kia", "기아"
-    site_url = "https://careers.kia.com"
-    note = "현대차와 채용 플랫폼을 공유할 가능성이 높다. 현대차 확정 후 재사용 검토."
-
-
 class LGAdapter(_Skeleton):
     key, display_name = "lge", "LG전자"
-    site_url = "https://careers.lg.com"
-    note = "LG그룹 통합 채용 포털. 계열사 필터가 필요하다(LG전자만 뽑아야 함)."
+    site_url = "https://careers.lg.com/apply"
+    note = ("응답이 847바이트짜리 SPA 셸이라 목록 XHR을 찾아야 한다. "
+            "LG그룹 통합 포털이므로 계열사 필터(LG전자만)가 필요할 것이다.")
 
 
-class NaverAdapter(_Skeleton):
-    key, display_name = "naver", "네이버"
-    site_url = "https://recruit.navercorp.com"
-    note = "HTML 200 응답 확인됨(101KB). 세 곳 중 서버 렌더링 가능성이 가장 높아 다음 구현 1순위."
+class LineAdapter(_Skeleton):
+    key, display_name = "line", "라인"
+    site_url = "https://careers.linecorp.com/ko/jobs/"
+    note = "SPA 셸(33KB). 인라인 데이터도 API 경로도 노출돼 있지 않아 번들을 읽어야 한다."
 
 
-class KakaoAdapter(_Skeleton):
-    key, display_name = "kakao", "카카오"
-    site_url = "https://careers.kakao.com"
-    note = "HTML 200 응답 확인됨. 목록은 XHR일 가능성이 있어 확인 필요."
+class WoowahanAdapter(_Skeleton):
+    key, display_name = "woowahan", "우아한형제들"
+    site_url = "https://career.woowahan.com/recruitment/"
+    note = "SPA 셸(22KB). 위와 동일."
+
+
+class TossAdapter(_Skeleton):
+    key, display_name = "toss", "토스"
+    site_url = "https://toss.im/career/jobs"
+    note = ("Next.js. __NEXT_DATA__ 는 있는데 prefetch 에 공고가 없고 "
+            "색상 설정 등만 들어 있다. 목록은 클라이언트에서 별도 API로 가져온다.")

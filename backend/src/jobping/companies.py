@@ -99,6 +99,10 @@ SK: tuple[Company, ...] = tuple(
         ("sk_ons", "SK오앤에스", "SK ons"),
         ("sk_forest", "SK임업", "SK forest"),
         ("sk_leaveo", "SK리비오", "SK Leaveo"),
+        ("sk_pinx", "SK핀크스", "SK pinx"),
+        ("sk_intellix", "SK인텔릭스", "SK intellix"),
+        ("sk_eco_eng", "SK에코엔지니어링", "SK ecoengineering"),
+        ("narae_energy", "나래에너지서비스", "Narae Energy Service"),
         ("tmap", "티맵모빌리티", "Tmap Mobility"),
         ("isc", "아이에스시", "ISC"),
         ("ige", "아이지이", "IGE"),
@@ -111,7 +115,44 @@ TESLA: tuple[Company, ...] = (
     Company(key="tesla_kr", display_name="테슬라 코리아", source="tesla_kr"),
 )
 
-ALL: tuple[Company, ...] = SAMSUNG + SK + TESLA
+# 네이버 — 소스 하나에 계열사 다섯이 섞여 나온다(sysCompanyCdNm).
+NAVER: tuple[Company, ...] = tuple(
+    Company(key=key, display_name=name, source="naver", code=code)
+    for key, name, code in (
+        ("naver", "네이버", "NAVER"),
+        ("naver_webtoon", "네이버웹툰", "NAVER WEBTOON"),
+        ("naver_cloud", "네이버클라우드", "NAVER Cloud"),
+        ("naver_labs", "네이버랩스", "NAVER LABS"),
+        ("snow", "스노우", "SNOW"),
+    )
+)
+
+# 카카오 — 지금은 '카카오' 하나만 나오지만 companyName 필드가 있으므로
+# 계열사가 추가되면 슬러그로 수집되고 여기 등록만 하면 된다.
+KAKAO: tuple[Company, ...] = (
+    Company(key="kakao", display_name="카카오", source="kakao", code="카카오"),
+)
+
+DAANGN: tuple[Company, ...] = (
+    Company(key="daangn", display_name="당근", source="daangn"),
+)
+
+COUPANG: tuple[Company, ...] = (
+    Company(key="coupang", display_name="쿠팡", source="coupang"),
+)
+
+YANOLJA: tuple[Company, ...] = (
+    Company(key="yanolja", display_name="야놀자", source="yanolja"),
+)
+
+HMG: tuple[Company, ...] = (
+    Company(key="hyundai", display_name="현대자동차", source="hyundai"),
+    Company(key="kia", display_name="기아", source="kia"),
+)
+
+ALL: tuple[Company, ...] = (
+    SAMSUNG + SK + TESLA + NAVER + KAKAO + DAANGN + COUPANG + YANOLJA + HMG
+)
 
 BY_KEY: dict[str, Company] = {c.key: c for c in ALL}
 

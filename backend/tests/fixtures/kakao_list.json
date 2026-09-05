@@ -1,0 +1,116 @@
+{
+ "jobList": [
+  {
+   "realId": "P-14472",
+   "jobOfferId": 14472,
+   "jobOfferTitle": "AI 추론/학습 효율화 Engineer (경력)",
+   "uptDate": "2026-08-26T16:29:21",
+   "regDate": "2026-06-12T17:24:29",
+   "endDate": null,
+   "jobPartName": "테크",
+   "jobTypeName": "테크",
+   "companyName": "카카오",
+   "locationName": "판교",
+   "employeeTypeName": "정규직",
+   "skillSetList": [
+    {
+     "id": 16909,
+     "skillSetType": "Algorithm_ML",
+     "skillSetName": "Algorithm/ML",
+     "skillSetNameEn": "Algorithm/ML",
+     "sortNo": 6
+    }
+   ],
+   "closeFlag": false,
+   "introduction": "우리 조직은 AI 모델의 서버나 모바일 등 다양한 환경에 추론 적용을 담당하고 있습니다.<br/>추론과 학습 효율을 개선하여 카카오의 AI 경쟁력을 증진시키는 데 기여하고 있습니다.",
+   "qualification": "- Python 언어 능숙자<br/>- 관련 업계 경력 2년 이상인 분 <br/>- LLM/LMM 서버 추론 운영 및 효율 개선 경험이 있으신 분<br/>- NVIDIA GPU 아키텍처, 메모리 계층 구조, 멀티 GPU 통신 등에 대한 실무 지식을 보유하신 분<br/><br/>◆ 우대사항<br/>- CUDA, CUTLASS, Triton, CuTe 등 하위 수준 프로그래밍 경험이 있으신 분<br/>- LLM/LMM 서버 추론 기술에 익숙하신 분<br/>- LLM/LMM의 모바일(iOS/aOS) 환경 추론 기술 경험이 있으신 분<br/>- LLM/LMM 학습 프레임워크에 익숙하신 분<br/>- 오픈소스 프로젝트 기여 경험이 있으신 분<br/>- NeurIPS, ICML, ICLR, ACL, CVPR 등 주요 학회 논문 게재 경험이 있으신 분<br/>- 관련 분야 석사 또는 박사 학위를 보유하신 분<br/>- Docker, Kubernetes등 클라우드 환경에 익숙하신 분"
+  },
+  {
+   "realId": "P-14276",
+   "jobOfferId": 14276,
+   "jobOfferTitle": "Data Analytics Engineer (경력)",
+   "uptDate": "2026-08-26T10:18:10",
+   "regDate": "2025-10-27T18:44:42",
+   "endDate": null,
+   "jobPartName": "테크",
+   "jobTypeName": "테크",
+   "companyName": "카카오",
+   "locationName": "판교",
+   "employeeTypeName": "정규직",
+   "skillSetList": [
+    {
+     "id": 16713,
+     "skillSetType": "etc",
+     "skillSetName": "기타",
+     "skillSetNameEn": "etc",
+     "sortNo": 15
+    }
+   ],
+   "closeFlag": false,
+   "introduction": "제품분석엔지니어링팀은 데이터를 활용하는데 필요한 데이터, 플랫폼, 도구를 담당합니다. <br/>데이터 기반 의사결정에 필요한 다양한 데이터 레이어를 설계하고 운영합니다.<br/>데이터를 소비하는 다양한 구성원의 필요 사항에 맞는 데이터와 환경을 제공하고, 그 과정에서 발생하는 기술적 요구사항들을 해결합니다.<br/>데이터 활용 조직(분석, 제품, 전략), 데이터 플랫폼 조직(인프라, 수집, BI, 데이터 제품)과 밀접하게 협업합니다.",
+   "qualification": "- 데이터 직무 경력 3년 이상<br/>- 데이터 모델링: 제품을 이해하고 명확한 데이터 구조와 활용 관점에서 마트를 디자인할 수 있는 분<br/>- SQL: SQL을 능숙하게 활용할 수 있고, 최적화가 가능한 분<br/>- Python: 기존 코드나 Airflow DAG을 수정하거나 새로 작성할 수 있는 분<br/>- 대규모 병렬 처리엔진 (Trino, Impala, Hive, SparkSQL 등) 활용 경험이 있는 분<br/>- 여러 관점의 이해관계자를 이해하고, 공통의 언어로 원활하게 소통할 수 있는 분<br/><br/>**◆ 우대사항**<br/>- Hadoop Ecosystem에서 데이터 업무 경험이 있는 분<br/>- 초대용량 데이터 처리 경험이 있는 분<br/>- 크고 복잡한 문제를 효율적으로 해결해 본 경험이 있는 분<br/>- 업무 자동화나 사용자 편의를 위한 어플리케이션 개발, 운영 경험이 있는 분"
+  },
+  {
+   "realId": "P-14519",
+   "jobOfferId": 14519,
+   "jobOfferTitle": "AI Research Engineer (Search & Agent) (경력)",
+   "uptDate": "2026-08-06T14:40:52",
+   "regDate": "2026-08-05T09:46:52",
+   "endDate": null,
+   "jobPartName": "테크",
+   "jobTypeName": "테크",
+   "companyName": "카카오",
+   "locationName": "판교",
+   "employeeTypeName": "정규직",
+   "skillSetList": [
+    {
+     "id": 16956,
+     "skillSetType": "Algorithm_ML",
+     "skillSetName": "Algorithm/ML",
+     "skillSetNameEn": "Algorithm/ML",
+     "sortNo": 6
+    }
+   ],
+   "closeFlag": false,
+   "introduction": "카카오의 다양한 서비스에는 매일 방대한 규모의 상품, 장소, 콘텐츠, 대화 데이터가 쌓이고 있습니다.<br/>우리는 이 데이터를 단순히 검색하는 것을 넘어, 사용자의 의도를 이해하고 필요한 정보를 탐색하며 여러 도구와 서비스를 활용해 답을 완성하는 Agentic Search 환경을 만들고 있습니다.<br/>이를 위해 Agentic Search LLM과 Embedding Model, Cross Encoder, 데이터 품질 모델을 연구합니다. 이러한 기술로 차세대 검색 시스템을 함께 만들어갈 AI Research Engineer를 찾습니다.<br/><br/>**[주요 연구 성과]**<br/>우리 조직은 대화형 Agent, Planning, Tool Use 및 Agent Orchestration 분야의 연구를 지속하고 있습니다.<br/><br/>**OrchestrationBench: LLM-Driven Agentic Planning and Tool Use in Multi-Domain Scenarios**<br/>ICLR 2026<br/>[https://openreview.net/forum?id=Oljnxmf4pc](https://openreview.net/forum?id=Oljnxmf4pc)<br/><br/>**A Practical Approach for Building Production-Grade Conversational Agents with Workflow Graphs**<br/>ACL 2025 Industry Track<br/>[https://arxiv.org/abs/2505.23006](https://arxiv.org/abs/2505.23006)",
+   "qualification": "본 포지션은 아래 기술한 Search Ranking Model, Agentic Search LLM, Search Data Modeling 중 한 분야의 전문가를 모집합니다. 모든 분야의 경험을 요구하지 않으며, 가장 자신 있는 영역에서 문제를 정의하고 모델 개선을 만들어본 경험을 중요하게 봅니다.<br/><br/>**[공통 필수 역량]**<br/>특정 모델이나 프레임워크의 사용 경험 못지않게, 머신러닝의 기본 원리를 이해하고 이를 바탕으로 문제와 실험 결과를 설명하는 역량을 중요하게 생각합니다.<br/><br/>• 머신러닝의 기본 개념을 이해하고 모델의 학습 원리를 설명할 수 있는 분<br/>• Loss, Optimization, Sampling, Evaluation Metric의 선택 이유를 설명할 수 있는 분<br/>• 학습이 잘되지 않을 때 가설을 세우고 재현 가능한 실험으로 원인을 좁혀나간 경험이 있는 분<br/>• 오프라인 지표와 실제 서비스 품질의 차이를 이해하고, 학습부터 추론·평가·배포까지 고려해 문제를 풀어본 분<br/>• 관련 경력을 2년 이상 보유하신 분<br/><br/>**1. Agentic Search LLM**<br/>[필수 경험]<br/>• PPO·GRPO 등 Policy Optimization 방법을 활용한 LLM 강화학습 경험<br/>• LLM 학습 결과를 분석하고 실험을 통해 성능을 개선한 경험<br/><br/>[우대 경험]<br/>• 실제 환경과 상호작용하는 Dynamic Environment 기반 강화학습 경험<br/>• 검색·브라우징·Tool Use Agent 연구 경험<br/>• BrowseComp 등 Search LLM Benchmark 를 활용한 모델 평가 및 개선 경험<br/>• Agent의 Planning, Tool Calling, Long-Horizon Reasoning 연구 경험<br/>• 대규모 LLM 학습 또는 분산 학습 파이프라인 구축 경험<br/><br/>**2. Search Ranking Model**<br/>[필수 경험] <br/>• Embedding Model, Bi-Encoder 또는 Cross Encoder를 학습하고 성능을 개선한 경험<br/>• 검색 모델의 학습 데이터 구성, Negative Sampling 및 평가 경험<br/><br/>[우대 경험]<br/>• Web Search 또는 대규모 Information Retrieval 모델 연구 경험<br/>• MTEB, RTEB 등 검색·임베딩 벤치마크를 활용한 모델 평가 및 개선 경험<br/>• Dense Retrieval, Reranking 또는 Hybrid Search 연구 경험<br/>• Hard Negative Mining, Knowledge Distillation, Contrastive Learning 경험<br/>• 대규모 검색 모델의 서빙 및 추론 최적화 경험<br/><br/>**3. Search Data Modeling**<br/>[필수 경험]<br/>• LLM, Embedding Model 또는 분류 모델을 학습해 데이터 품질 문제를 해결한 경험<br/>• 주관적이거나 모호한 데이터 품질 기준에 대해 평가 데이터셋과 지표를 직접 설계하고 구현한 경험<br/><br/>[우대 경험]<br/>• LLM-as-a-Judge 기반 평가 체계를 구축하고, human eval 과의 alignment 검증 경험<br/>• 어뷰징·스팸·광고성 콘텐츠, 중복·유사 상품 및 문서 등 저품질 데이터 탐지 경험<br/>• 데이터 개선이 downstream 검색·랭킹 모델의 성능 향상으로 이어졌음을 정량적으로 입증한 경험<br/>• 연관검색어·검색어 추천 등 검색어 품질을 모델링한 경험<br/>• 대용량 상품·웹 문서 데이터의 속성 추출 및 정규화를 모델링으로 해결한 경험<br/><br/>**◆ 공통 우대사항**<br/>• 새로운 논문을 빠르게 이해하고 실제 모델과 시스템으로 구현하는 것을 즐기는 분<br/>• 정답이 정해지지 않은 문제를 스스로 정의하고 풀어본 분<br/>• 연구 결과를 동료들과 투명하게 공유하고 함께 더 나은 방향을 찾아가는 분"
+  },
+  {
+   "realId": "P-14469",
+   "jobOfferId": 14469,
+   "jobOfferTitle": "AI Platform 추론 최적화 Engineer(경력)",
+   "uptDate": "2026-07-20T16:13:38",
+   "regDate": "2026-06-11T09:34:19",
+   "endDate": null,
+   "jobPartName": "테크",
+   "jobTypeName": "테크",
+   "companyName": "카카오",
+   "locationName": "판교",
+   "employeeTypeName": "정규직",
+   "skillSetList": [
+    {
+     "id": 16906,
+     "skillSetType": "Server",
+     "skillSetName": "Server",
+     "skillSetNameEn": "Server",
+     "sortNo": 8
+    }
+   ],
+   "closeFlag": false,
+   "introduction": "AI플랫폼팀은 카카오의 모든 AI 서비스가 안정적으로 동작하도록 기반을 설계하고 운영하는 팀으로, Kakao AI Platform(이하 KAP)을 만들어 수천 장 규모의 GPU 클러스터 위에서 추론 서비스의 효율적이고 안정적인 서빙을 책임지고 있습니다.<br/>MLOps/LLMOps의 역할을 담당하며 전통적인 ML 워크로드부터 오픈소스 LLM, kanana 모델까지 카카오 내 AI 서비스들의 배포와 운영을 효율화하는 것을 핵심 미션으로 삼고 있습니다.   <br/><br/>참고) <br/>🔗 IF KAKAO 2024: Kakao AI Platform 소개 [(link)](https://www.youtube.com/watch?v=F3FQr1cpdCM)<br/>🔗 IF KAKAO 2025: GenAI를 위한 Gateway [(link)](https://if.kakao.com/2025/session?tab=day2&sessionId=55)",
+   "qualification": "- Python 또는 Go을 활용한 시스템/백엔드/ML 시스템 개발 경력이 5년 이상인 분<br/>- Transformer 아키텍처 및 LLM 동작 원리(어텐션, KV cache, 디코딩 전략 등)에 대한 깊은 이해가 있는 분<br/>- vLLM, SGLang, TensorRT-LLM, TGI 중 하나 이상을 실제 프로덕션 또는 대규모 실험 환경에서 운영해 본 경험이 있는 분<br/>- GPU 환경에서의 성능 프로파일링 및 최적화 경험이 있는 분 (Nsight, NCU, PyTorch Profiler 등)<br/>- K8s에 대한 이해도가 높은 분<br/>- 클라우드 환경에서의 CI/CD 경험이 있는 분<br/>- 새로운 환경에 도전하는 오픈 마인드를 가진 분<br/><br/>**◆ 우대사항**<br/>- vLLM, SGLang, TensorRT-LLM, Hugging Face Transformers, PyTorch 등 LLM/ML 오픈소스 프로젝트에 의미 있는 컨트리뷰션 경험이 있는 분 (PR 머지, RFC 작성, 메인테이너 활동, 이슈 트리아지 등)<br/>- CUDA / Triton 커널을 직접 작성하거나 튜닝해 본 경험이 있는 분<br/>- LLM 추론 가속 기법(Speculative Decoding, Mixture-of-Experts, FlashAttention, PagedAttention, RadixAttention 등)을 실무에 적용해 본 경험이 있는 분<br/>- 모델 양자화 / 압축 (AWQ, GPTQ, FP8, INT4, SmoothQuant, Pruning, Distillation 등) 실무 경험이 있는 분<br/>- 대규모 분산 추론(Tensor / Pipeline / Expert Parallelism, Disaggregated Prefill-Decode 등)을 설계·운영해 본 경험이 있는 분<br/>- NVIDIA Triton Inference Server, KServe, Ray Serve, vLLM Production Stack, LLM-D 등 서빙 플랫폼 구축 경험이 있는 분<br/>- 대규모 GPU 클러스터(수십~수백 GPU 이상) 환경에서의 추론 워크로드 운영 경험이 있는 분<br/>- 고성능 네트워킹(RDMA, RoCE, InfiniBand, NCCL 튜닝) 또는 네트워크 트러블 슈팅 경험이 있는 분<br/>- ML 또는 AI 동작에 대한 이해도가 높은 분<br/>- 다양한 프로그래밍 언어 사용에 대한 거부감이 없는 분 (Python / C++ / CUDA / Go / Rust 등)<br/>- LLM 추론 성능 관련 논문을 읽고 구현/재현해 본 경험이 있는 분"
+  }
+ ],
+ "jobTypeCountDtoList": [
+  {
+   "jobType": "TECHNOLOGY",
+   "jobCount": 4
+  },
+  {
+   "jobType": "DESIGN",
+   "jobCount": 0
+  }
+ ],
+ "totalJobCount": 4,
+ "totalPage": 1
+}

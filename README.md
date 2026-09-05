@@ -10,14 +10,26 @@
 
 ## 지금 수집되는 것
 
-| 소스 | 계열사 | 경력 공고 |
-|---|---|---|
-| 삼성 (`samsungcareers.com`) | 26곳 | 16건 |
-| SK (`skcareers.com`) | 27곳 | 96건 |
-| 테슬라 코리아 (MokaHR) | 1곳 | 65건 |
+`2026-09-05` 기준 **680건 / 회사 37곳**.
 
-삼성·SK는 **그룹 통합 포털**이라 소스 하나가 계열사 수십 곳을 내보낸다.
-사용자가 구독하는 단위는 그룹이 아니라 계열사(`samsung_ds`, `sk_hynix`)다.
+| 소스 | 회사 | 경력 공고 |
+|---|---|---|
+| SK (`skcareers.com`) | 30 | 88 |
+| 삼성 (`samsungcareers.com`) | 26 | 2 |
+| 네이버 (+웹툰·클라우드·랩스·SNOW) | 5 | 31 |
+| 쿠팡 (Greenhouse) | 1 | 359 |
+| 현대자동차 | 1 | 71 |
+| 테슬라 코리아 (MokaHR) | 1 | 61 |
+| 당근 (Greenhouse) | 1 | 42 |
+| 카카오 | 1 | 26 |
+| 야놀자 (Workday) | 1 | 0 |
+
+미구현: 기아(코드는 있으나 미검증), LG전자, 라인, 우아한형제들, 토스 —
+앱의 회사 목록에는 노출되지 않는다.
+
+회사별이 아니라 **채용 시스템별**로 어댑터를 쓴다. `GreenhouseAdapter`,
+`WorkdayAdapter`, `MokaHRAdapter`, `HMGAdapter`를 상속하면 설정 두세 줄로
+새 회사가 붙는다.
 
 ## 구조
 
@@ -29,7 +41,8 @@ backend/
     http.py        공용 HTTP 클라이언트
     matching.py    키워드 매칭 (정규화 + 동의어 + 제외어)
     registry.py    어댑터 레지스트리
-    adapters/      samsung / skcareers / mokahr(tesla_kr) + 스켈레톤
+    adapters/      공용 ATS: greenhouse / workday / mokahr / hmg
+                   자체 포털: samsung / skcareers / naver / kakao
   scripts/verify.py  어댑터를 실제 사이트에 붙여 확인하는 도구
   tests/             실제 응답 픽스처 기반 오프라인 테스트
 ios/               SwiftUI 앱 (4단계)
@@ -42,7 +55,7 @@ docs/
 cd backend
 make install               # .venv 생성 + 의존성
 make test                  # 오프라인 테스트 (네트워크 불필요)
-make verify A=samsung      # 실제 사이트에 붙여 확인
+make verify A=naver        # 실제 사이트에 붙여 확인
 python scripts/verify.py --all --limit 1
 ```
 
@@ -51,7 +64,7 @@ python scripts/verify.py --all --limit 1
 | 단계 | 상태 |
 |---|---|
 | 1. 레포 구조 | ✅ |
-| 2. 어댑터 3개 + 검증 도구 | ✅ 라이브 177건 수집 확인 |
+| 2. 어댑터 + 검증 도구 | ✅ 소스 9개 / 라이브 680건 |
 | 3. SAM 배포 | |
 | 3.5. 읽기 API | |
 | 4. iOS MVP | |
