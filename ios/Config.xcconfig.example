@@ -1,0 +1,4 @@
+// 로컬에서 Xcode 로 열 때만 필요. 복사해서 Config.xcconfig 로 쓰고 값을 채운다.
+// xcconfig 에서 // 는 주석이라 URL 은 $() 로 끊어 쓴다.
+API_BASE_URL = https:/$()/xxxxxxxxxx.execute-api.ap-northeast-2.amazonaws.com/dev
+DEVELOPMENT_TEAM = ABCDE12345

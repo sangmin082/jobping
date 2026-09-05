@@ -33,6 +33,10 @@ class Store(Protocol):
     def mark_delivery_sent(self, install_id: str, job_id: str, now: datetime) -> None: ...
     def get_health(self, adapter: str) -> dict | None: ...
     def put_health(self, adapter: str, record: dict) -> None: ...
+    def get_device(self, install_id: str) -> dict | None: ...
+    def put_device(self, device: dict) -> None: ...
+    def query_jobs(self, company: str, *, limit: int, since: str | None = None) -> list[dict]: ...
+    def list_health(self) -> list[dict]: ...
 
 
 # ---------------------------------------------------------------- in-memory
@@ -83,6 +87,22 @@ class MemoryStore:
 
     def put_health(self, adapter, record):
         self.health[adapter] = dict(record)
+
+    def get_device(self, install_id):
+        return self.devices.get(install_id)
+
+    def put_device(self, device):
+        self.devices[device["install_id"]] = dict(device)
+
+    def query_jobs(self, company, *, limit, since=None):
+        rows = [v for (c, _), v in self.jobs.items() if c == company]
+        if since:
+            rows = [r for r in rows if r["first_seen_at"] > since]
+        rows.sort(key=lambda r: r["first_seen_at"], reverse=True)
+        return rows[:limit]
+
+    def list_health(self):
+        return [{"adapter": k, **v} for k, v in self.health.items()]
 
 
 # ---------------------------------------------------------------- DynamoDB
@@ -184,3 +204,23 @@ class DynamoStore:
 
     def put_health(self, adapter, record):
         self._health.put_item(Item={"adapter": adapter, **record})
+
+    def get_device(self, install_id):
+        return self._devices.get_item(Key={"install_id": install_id}).get("Item")
+
+    def put_device(self, device):
+        self._devices.put_item(Item=device)
+
+    def query_jobs(self, company, *, limit, since=None):
+        from boto3.dynamodb.conditions import Key
+        cond = Key("company").eq(company)
+        if since:
+            cond = cond & Key("first_seen_at").gt(since)
+        resp = self._jobs.query(
+            IndexName="by_first_seen", KeyConditionExpression=cond,
+            ScanIndexForward=False, Limit=limit,
+        )
+        return resp.get("Items", [])
+
+    def list_health(self):
+        return self._health.scan().get("Items", [])

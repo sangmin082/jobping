@@ -177,6 +177,49 @@ Resources:
         - SSMParameterReadPolicy:
             ParameterName: !Sub jobping/${Stage}/*
 
+  # ------------------------------------------------------------ 앱 API
+  HttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: !Ref Stage
+      # 로그인이 없으므로 스로틀링이 1차 방어다. 앱 하나가 초당 수십 번 부를 일은 없다.
+      DefaultRouteSettings:
+        ThrottlingBurstLimit: 50
+        ThrottlingRateLimit: 20
+      CorsConfiguration:
+        AllowOrigins: ["*"]
+        AllowMethods: [GET, POST, OPTIONS]
+        AllowHeaders: [content-type, x-install-id]
+
+  ApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub jobping-${Stage}-api
+      CodeUri: src/
+      Handler: jobping.handlers.api.handler
+      Timeout: 15
+      MemorySize: 512
+      Events:
+        Companies:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Path: /v1/companies, Method: GET }
+        Jobs:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Path: /v1/jobs, Method: GET }
+        Devices:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Path: /v1/devices, Method: POST }
+        Health:
+          Type: HttpApi
+          Properties: { ApiId: !Ref HttpApi, Path: /v1/health, Method: GET }
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref JobsTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DevicesTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref HealthTable
+
   # ------------------------------------------------------------ 관측
   CollectorErrorsAlarm:
     Type: AWS::CloudWatch::Alarm
@@ -211,6 +254,9 @@ Resources:
       TreatMissingData: notBreaching
 
 Outputs:
+  ApiUrl:
+    Description: 앱의 API_BASE_URL 에 넣는 값
+    Value: !Sub https://${HttpApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}
   JobsTable: { Value: !Ref JobsTable }
   DevicesTable: { Value: !Ref DevicesTable }
   NewJobsQueue: { Value: !Ref NewJobsQueue }

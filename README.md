@@ -7,7 +7,9 @@
 
 - 계획 및 아키텍처: [`docs/PLAN.md`](docs/PLAN.md)
 - 회사 추가하기: [`docs/ADAPTER-GUIDE.md`](docs/ADAPTER-GUIDE.md)
-- 배포하기: [`docs/DEPLOY.md`](docs/DEPLOY.md)
+- 백엔드 배포: [`docs/DEPLOY.md`](docs/DEPLOY.md)
+- iOS 빌드·TestFlight (맥 없이): [`docs/IOS.md`](docs/IOS.md)
+- 개인정보 처리방침: [`docs/PRIVACY.md`](docs/PRIVACY.md)
 
 ## 지금 수집되는 것
 
@@ -50,12 +52,15 @@ backend/
     notifier.py    매칭 → 알림 계획(티어·상한·묶음·조용한 시간) → APNs 발송
     store.py       DynamoDB + 인메모리 구현 (같은 인터페이스)
     apns.py        APNs HTTP/2 클라이언트 (토큰 인증)
+    api.py         앱 API: /v1/companies, /v1/jobs, /v1/devices
     handlers/      Lambda 진입점
-  template.yaml    SAM — DynamoDB 4개, SQS, Lambda 2개, EventBridge, 알람
+  template.yaml    SAM — DynamoDB 4개, SQS, Lambda 3개, HTTP API, EventBridge, 알람
   scripts/verify.py   어댑터를 실제 사이트에 붙여 확인
   scripts/dry_run.py  전체 파이프라인을 로컬에서, 아무것도 보내지 않고
   tests/              실제 응답 픽스처 기반 오프라인 테스트
-ios/               SwiftUI 앱 (4단계)
+ios/               SwiftUI 앱. .xcodeproj 없음 — project.yml 에서 XcodeGen 이 생성
+  JobPing/         App / Models / Services / Views
+.github/workflows/ backend(pytest+sam validate), ios(시뮬레이터 빌드·테스트, TestFlight 업로드)
 docs/
 ```
 
@@ -80,6 +85,6 @@ make deploy STAGE=dev      # AWS 배포 — 처음이면 docs/DEPLOY.md
 | 1. 레포 구조 | ✅ |
 | 2. 어댑터 + 검증 도구 | ✅ 소스 14개 / 라이브 1,108건 |
 | 3. SAM 배포 | ✅ 템플릿·수집·알림 파이프라인 완성. 실제 배포는 AWS 계정에서 `make deploy` |
-| 3.5. 읽기 API | |
-| 4. iOS MVP | |
+| 3.5. 앱 API | ✅ `/v1/companies` `/v1/jobs` `/v1/devices` |
+| 4. iOS MVP | 🔶 코드 완료. **GitHub Actions 첫 빌드로 컴파일 확인 필요** (맥 없이 작성) |
 | 5. StoreKit 구독 | |

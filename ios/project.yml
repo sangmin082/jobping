@@ -1,0 +1,73 @@
+# XcodeGen 프로젝트 정의. .xcodeproj 는 저장소에 없다 — CI 가 매번 여기서 만든다.
+# 맥 없이 개발하기 위한 선택이다. Xcode 를 열 일이 생기면 `xcodegen generate` 한 줄이다.
+name: JobPing
+options:
+  bundleIdPrefix: com.sangmin082
+  deploymentTarget:
+    iOS: "17.0"
+  xcodeVersion: "16.0"
+  createIntermediateGroups: true
+  generateEmptyDirectories: true
+
+configs:
+  Debug: debug
+  Release: release
+
+settings:
+  base:
+    SWIFT_VERSION: "5.10"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    DEVELOPMENT_TEAM: ${DEVELOPMENT_TEAM}
+    # 서버 주소. CI 가 환경 변수로 넣는다. 로컬에선 Config.xcconfig 참고.
+    API_BASE_URL: ${API_BASE_URL}
+
+targets:
+  JobPing:
+    type: application
+    platform: iOS
+    sources:
+      - path: JobPing
+        excludes: ["Resources/Info.plist"]
+    info:
+      path: JobPing/Resources/Info.plist
+      properties:
+        CFBundleDisplayName: 잡핑
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        APIBaseURL: $(API_BASE_URL)
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        UIBackgroundModes: [remote-notification]
+        ITSAppUsesNonExemptEncryption: false
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: false
+    entitlements:
+      path: JobPing/Resources/JobPing.entitlements
+      properties:
+        aps-environment: development
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.sangmin082.jobping
+        TARGETED_DEVICE_FAMILY: "1"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        CODE_SIGN_STYLE: Automatic
+        ENABLE_USER_SCRIPT_SANDBOXING: true
+      configs:
+        Release:
+          # 배포 빌드는 aps-environment 를 production 으로. TestFlight 도 production 이다.
+          CODE_SIGN_ENTITLEMENTS: JobPing/Resources/JobPing.release.entitlements
+    scheme:
+      testTargets: [JobPingTests]
+      gatherCoverageData: false
+
+  JobPingTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources: [JobPingTests]
+    dependencies:
+      - target: JobPing
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.sangmin082.jobping.tests

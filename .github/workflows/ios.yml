@@ -1,0 +1,165 @@
+name: iOS
+
+# 맥이 없어도 앱을 빌드하고 TestFlight 에 올린다.
+#  - build:      푸시/PR 마다. 시뮬레이터용으로 컴파일 + 유닛 테스트. 서명 불필요.
+#  - testflight: 수동 실행. 서명 → 아카이브 → App Store Connect 업로드. 시크릿 필요(docs/IOS.md).
+
+on:
+  push:
+    branches: [main, "claude/**"]
+    paths: ["ios/**", ".github/workflows/ios.yml"]
+  pull_request:
+    paths: ["ios/**", ".github/workflows/ios.yml"]
+  workflow_dispatch:
+    inputs:
+      upload:
+        description: "TestFlight 에 업로드"
+        type: boolean
+        default: false
+
+concurrency:
+  group: ios-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build & test (simulator)
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      # 러너 기본 Xcode 를 쓴다. 버전을 박아두면 이미지가 갱신될 때 경로가 사라져 깨진다.
+      - name: Toolchain
+        run: |
+          xcodebuild -version
+          brew install xcodegen xcbeautify
+
+      - name: Generate project
+        working-directory: ios
+        env:
+          API_BASE_URL: https://example.invalid/dev
+          DEVELOPMENT_TEAM: ""
+        run: xcodegen generate
+
+      - name: Build for simulator
+        working-directory: ios
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project JobPing.xcodeproj -scheme JobPing \
+            -destination 'generic/platform=iOS Simulator' \
+            -configuration Debug \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO \
+            | xcbeautify --renderer github-actions
+
+      - name: Unit tests
+        working-directory: ios
+        run: |
+          set -o pipefail
+          SIM=$(xcrun simctl list -j devices available | python3 -c "
+          import json, sys
+          d = json.load(sys.stdin)['devices']
+          ids = [x['udid'] for rt in sorted(d) for x in d[rt] if x.get('isAvailable') and x['name'].startswith('iPhone')]
+          print(ids[-1])")
+          echo "simulator: $SIM"
+          xcodebuild test \
+            -project JobPing.xcodeproj -scheme JobPing \
+            -destination "id=$SIM" \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO \
+            | xcbeautify --renderer github-actions
+
+  testflight:
+    name: Archive & upload to TestFlight
+    if: github.event_name == 'workflow_dispatch' && inputs.upload
+    needs: build
+    runs-on: macos-15
+    timeout-minutes: 45
+    environment: testflight
+    steps:
+      - uses: actions/checkout@v4
+
+      # 러너 기본 Xcode 를 쓴다. 버전을 박아두면 이미지가 갱신될 때 경로가 사라져 깨진다.
+      - name: Toolchain
+        run: |
+          xcodebuild -version
+          brew install xcodegen xcbeautify
+
+      - name: Generate project
+        working-directory: ios
+        env:
+          API_BASE_URL: ${{ vars.API_BASE_URL }}
+          DEVELOPMENT_TEAM: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          test -n "$API_BASE_URL" || { echo "::error::vars.API_BASE_URL 이 비어 있다"; exit 1; }
+          xcodegen generate
+
+      # App Store Connect API 키 하나로 인증서·프로비저닝 프로파일을 Xcode 가 알아서 만든다
+      # (cloud-managed signing). .p12 를 따로 관리하지 않아도 된다.
+      - name: Write App Store Connect API key
+        env:
+          KEY: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/private_keys
+          printf '%s' "$KEY" > ~/private_keys/AuthKey.p8
+          test -s ~/private_keys/AuthKey.p8
+
+      - name: Bump build number
+        working-directory: ios
+        run: |
+          # 빌드 번호는 단조 증가해야 App Store Connect 가 받는다. 워크플로 실행 번호를 쓴다.
+          sed -i '' "s/CURRENT_PROJECT_VERSION: \"1\"/CURRENT_PROJECT_VERSION: \"${{ github.run_number }}\"/" project.yml
+          xcodegen generate
+
+      - name: Archive
+        working-directory: ios
+        run: |
+          set -o pipefail
+          xcodebuild archive \
+            -project JobPing.xcodeproj -scheme JobPing \
+            -destination 'generic/platform=iOS' \
+            -configuration Release \
+            -archivePath build/JobPing.xcarchive \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath ~/private_keys/AuthKey.p8 \
+            -authenticationKeyID "${{ secrets.APPSTORE_API_KEY_ID }}" \
+            -authenticationKeyIssuerID "${{ secrets.APPSTORE_API_ISSUER_ID }}" \
+            | xcbeautify --renderer github-actions
+
+      - name: Export IPA
+        working-directory: ios
+        run: |
+          cat > ExportOptions.plist <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0"><dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>destination</key><string>export</string>
+            <key>signingStyle</key><string>automatic</string>
+            <key>teamID</key><string>${{ secrets.APPLE_TEAM_ID }}</string>
+          </dict></plist>
+          EOF
+          xcodebuild -exportArchive \
+            -archivePath build/JobPing.xcarchive \
+            -exportOptionsPlist ExportOptions.plist \
+            -exportPath build/export \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath ~/private_keys/AuthKey.p8 \
+            -authenticationKeyID "${{ secrets.APPSTORE_API_KEY_ID }}" \
+            -authenticationKeyIssuerID "${{ secrets.APPSTORE_API_ISSUER_ID }}"
+          ls -la build/export
+
+      - name: Upload to TestFlight
+        working-directory: ios
+        run: |
+          xcrun altool --upload-app --type ios \
+            -f build/export/JobPing.ipa \
+            --apiKey "${{ secrets.APPSTORE_API_KEY_ID }}" \
+            --apiIssuer "${{ secrets.APPSTORE_API_ISSUER_ID }}"
+
+      - name: Keep the archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: JobPing-${{ github.run_number }}
+          path: ios/build/export/*.ipa
+          retention-days: 14

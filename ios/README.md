@@ -1,16 +1,22 @@
 # 잡핑 iOS 앱
 
-4단계에서 구현한다. 계획은 [`../docs/PLAN.md`](../docs/PLAN.md) 7절 참고.
+SwiftUI, iOS 17+. `.xcodeproj` 는 없고 `project.yml` 에서 XcodeGen 이 만든다.
+빌드·배포는 GitHub Actions 에서 — 절차는 [`../docs/IOS.md`](../docs/IOS.md).
 
-먼저 확정돼야 하는 것:
+```
+JobPing/
+  App/          진입점, AppDelegate(푸시 등록·알림 탭), AppModel(상태)
+  Models/       서버 응답 Codable
+  Services/     APIClient, InstallID(Keychain), Bookmarks
+  Views/        Onboarding → Jobs / Bookmarks / Settings
+  Resources/    Info.plist(자리표시자), entitlements, 에셋
+JobPingTests/   모델 디코딩 테스트
+```
 
-- 3.5단계의 읽기 API 계약 (`GET /v1/jobs`, `POST /v1/devices`)
-- 최소 한 개 이상의 `verified=True` 어댑터 — 실제 공고가 흐르지 않으면
-  온보딩에서 고를 회사가 없다
+설계 메모:
 
-기술 선택:
-
-- SwiftUI, iOS 17+, `@Observable`
-- `install_id`: Keychain UUID (재설치해도 유지). APNs 토큰은 별도 속성
-- 공고 열기: `SFSafariViewController`
-- 로컬 캐시는 오프라인 표시용 JSON이면 충분 (SwiftData는 과함)
+- 식별자는 Keychain 의 UUID(`InstallID`). APNs 토큰은 바뀌므로 식별자로 쓰지 않는다
+- 푸시 권한은 온보딩 **마지막**에, 이유를 보여준 뒤 묻는다
+- 공고 원문은 `SFSafariViewController` 로 회사 사이트에서 연다. 본문을 앱에 담지 않는다
+- 북마크는 기기에만 저장한다
+- 회사 로고·워드마크는 어디에도 쓰지 않는다(심사 5.2). 앱 아이콘은 단색 자리표시자다
