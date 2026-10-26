@@ -205,7 +205,6 @@ private struct WelcomeStep: View {
                     .offset(x: 170, y: -40)
             }
             .ignoresSafeArea()
-            .clipped()
             .allowsHitTesting(false)
         }
         .environment(\.colorScheme, .dark)
@@ -247,16 +246,10 @@ private struct NotificationPreview: View {
         .padding(.bottom, 14)
         .padding(.horizontal, 12)
         .frame(maxWidth: .infinity)
-        .background {
-            ZStack(alignment: .topTrailing) {
-                LinearGradient(colors: [Theme.navyDeep, Theme.navy], startPoint: .top, endPoint: .bottom)
-                BrandMark()
-                    .frame(width: 360, height: 360)
-                    .opacity(0.06)
-                    .offset(x: 120, y: -60)
-            }
-            .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
-        }
+        .background(
+            LinearGradient(colors: [Theme.navyDeep, Theme.navy], startPoint: .top, endPoint: .bottom),
+            in: RoundedRectangle(cornerRadius: 30, style: .continuous)
+        )
     }
 
     /// 잠금화면 알림 모양. 앱의 다크/라이트와 상관없이 밝은 반투명 카드다.
