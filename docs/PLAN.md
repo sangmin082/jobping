@@ -289,7 +289,7 @@ EventBridge → systemd 타이머, SQS → 같은 프로세스에서 수집 직�
 | 1 | 레포 구조 (`backend/`, `ios/`, `docs/`) | ✅ 완료 |
 | 2 | 어댑터 + 로컬 검증 스크립트 + 오프라인 테스트 | ✅ 완료 — 14소스 / 라이브 1,108건 |
 | **2.5** | **삼성전자 국내 경력 공고가 어디 올라오는지 확인** | ⏳ 2절 참고 |
-| 3 | 서버: collector + notifier + APNs | ✅ 코드 완료. **배포처는 오라클 VM(무료)** — `deploy/oracle/install.sh`, `docs/DEPLOY-ORACLE.md`. AWS 판(`template.yaml`)도 유지 |
+| 3 | 서버: collector + notifier + APNs | ✅ **오라클 VM에서 운영 중** (2026-10-26, `https://138-2-124-116.sslip.io`). `deploy/oracle/`, `docs/DEPLOY-ORACLE.md`. AWS 판(`template.yaml`)도 유지 |
 | **3.5** | **앱 API** (v2에서 추가) | ✅ HTTP API + `api.py`, 테스트 19개 |
 | 4 | iOS MVP: 온보딩 → 리스트 → 푸시 수신 | ✅ CI 컴파일·유닛 테스트 통과 (run #2). TestFlight 는 Apple 세팅 후 — `docs/IOS.md` |
 | 5 | StoreKit 2 구독 + 서버 검증 + App Store Server Notifications | |

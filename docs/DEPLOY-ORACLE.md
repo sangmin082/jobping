@@ -11,8 +11,9 @@ AWS 판(`docs/DEPLOY.md`)과 수집·매칭·알림 코드는 같고, 실행 방
 | API Gateway + Lambda | 파이썬 내장 HTTP 서버 + Caddy(HTTPS 자동) |
 | SSM Parameter Store | `/etc/jobping/env` |
 
-확인된 VM 사양(2026-10-26): Ubuntu 24.04, Python 3.12, 메모리 954MB, 공인 IP
-`138.2.124.116`. 채용 사이트 접속 정상.
+**운영 중 (2026-10-26~)**: `https://138-2-124-116.sslip.io` — 14개 소스 수집, HTTPS
+정상, 바깥에서 접속 확인. VM: Ubuntu 24.04, Python 3.12, 메모리 954MB(+스왑 2GB),
+춘천 리전.
 
 ## 1. 설치 — 명령 한 줄
 
@@ -79,8 +80,11 @@ GitHub ▸ 저장소 ▸ Settings ▸ Secrets and variables ▸ Actions ▸ **Va
 ## 인증서가 안 나올 때 — DuckDNS
 
 `sslip.io` 는 공개 접미사 목록에 없어서 Let's Encrypt 발급 한도(도메인당 주 50개)를
-전 세계 사용자가 나눠 쓴다. 대부분은 되지만 한도가 차 있으면 막힌다. 설치 스크립트가
-`rateLimited` 를 감지하면 아래를 안내한다.
+전 세계 사용자가 나눠 쓴다. Caddy 는 기본 발급처가 Let's Encrypt 와 ZeroSSL 둘이라
+**먼저 포트를 열고 `sudo systemctl restart caddy` 를 해본다.** 2026-10-26 첫 설치 때
+한도 메시지가 떴지만, 포트를 연 뒤 재시작하자 정상 발급됐다(어느 발급처였는지는 확인
+안 함).
+그래도 안 될 때만 아래로 간다.
 
 1. https://www.duckdns.org 에 GitHub 로 로그인
 2. 서브도메인 하나 추가 (예: `jobping`). 화면 위쪽 **token** 복사

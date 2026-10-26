@@ -201,9 +201,20 @@ if [ "$HTTPS_OK" = 1 ]; then
   echo
   echo "     https://$DOMAIN"
 elif journalctl -u caddy --since "-10min" --no-pager -o cat 2>/dev/null | grep -qiE 'rateLimited|too many certificates'; then
-  echo " 인증서 발급 한도에 걸렸다 (sslip.io 를 전 세계가 나눠 쓴다)."
+  # Let's Encrypt 는 포트 확인 전에 한도부터 본다. 그래서 포트가 닫힌 첫 설치에서도
+  # 이 메시지가 뜬다. Caddy 는 기본 발급처가 Let's Encrypt 와 ZeroSSL 둘이라 다른 쪽으로도
+  # 시도한다. 2026-10-26 첫 설치 때 이 메시지가 떴고, 포트를 연 뒤 재시작하자 정상
+  # 발급됐다(어느 발급처였는지는 확인 안 함). DuckDNS 는 그래도 안 될 때의 대안이다.
+  echo " Let's Encrypt 가 발급 한도를 알려왔다 (sslip.io 를 전 세계가 나눠 쓴다)."
+  echo " Caddy 는 다른 발급처(ZeroSSL)로도 시도하니, 바깥쪽 포트부터 열고 재시작해본다:"
   echo
-  echo " DuckDNS 로 바꾸면 된다 (무료, 2분):"
+  echo "   오라클 웹 콘솔 오른쪽 위 '>_' (Cloud Shell) 에서:"
+  echo "   curl -fsSL https://raw.githubusercontent.com/sangmin082/jobping/$BRANCH/deploy/oracle/open-ports.sh | bash -s $PUBLIC_IP"
+  echo
+  echo "   이 VM 에서:"
+  echo "   sudo systemctl restart caddy && sleep 30 && curl https://$DOMAIN/v1/health"
+  echo
+  echo " {\"ok\": true} 가 나오면 끝이다. 그래도 안 되면 DuckDNS 로 (무료, 2분):"
   echo "   1) https://www.duckdns.org 에 GitHub 로 로그인"
   echo "   2) 서브도메인 하나 추가 (예: jobping)  — 화면 위쪽 token 을 복사"
   echo "   3) 이 VM 에서:"
