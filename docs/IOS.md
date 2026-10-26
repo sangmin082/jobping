@@ -60,6 +60,8 @@ Settings ▸ Environments ▸ **New environment** ▸ 이름 `testflight`
 |---|---|
 | `API_BASE_URL` | 서버 주소. 오라클 VM 이면 `https://138-2-124-116.sslip.io` (또는 DuckDNS 주소). AWS 면 배포 출력의 `ApiUrl` |
 
+Secret 으로 넣어도 된다. 둘 다 없으면 워크플로가 오라클 서버 주소(`https://138-2-124-116.sslip.io`)를 쓴다.
+
 ## 배포하기
 
 1. 워크플로 실행 (`upload` = true). 방법은 둘 중 하나:

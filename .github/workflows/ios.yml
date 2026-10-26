@@ -78,7 +78,9 @@ jobs:
     environment: testflight
     env:
       # 원본 값. 붙여넣다 섞인 공백·줄바꿈은 아래 Prepare 단계에서 지운다.
-      RAW_API_BASE_URL: ${{ vars.API_BASE_URL }}
+      # 서버 주소는 Variable 이든 Secret 이든 받는다. 둘 다 없으면 운영 중인 오라클 서버.
+      # (앱 바이너리에 그대로 들어가는 공개 값이라 여기 적어도 된다.)
+      RAW_API_BASE_URL: ${{ vars.API_BASE_URL || secrets.API_BASE_URL || 'https://138-2-124-116.sslip.io' }}
       RAW_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
       RAW_KEY_ID: ${{ secrets.APPSTORE_API_KEY_ID }}
       RAW_ISSUER_ID: ${{ secrets.APPSTORE_API_ISSUER_ID }}
@@ -105,7 +107,7 @@ jobs:
           ISSUER_ID=$(trim "$RAW_ISSUER_ID")
 
           fail=0
-          case "$API_BASE_URL" in https://*) ;; *) echo "::error::vars.API_BASE_URL 이 https:// 로 시작해야 한다 (지금: '$API_BASE_URL')"; fail=1;; esac
+          case "$API_BASE_URL" in https://*) ;; *) echo "::error::API_BASE_URL 이 https:// 로 시작해야 한다 (지금: '$API_BASE_URL')"; fail=1;; esac
           [ ${#DEVELOPMENT_TEAM} -eq 10 ] || { echo "::error::secrets.APPLE_TEAM_ID 는 10자리여야 한다 (지금 ${#DEVELOPMENT_TEAM}자)"; fail=1; }
           [ -n "$KEY_ID" ]    || { echo "::error::secrets.APPSTORE_API_KEY_ID 가 비어 있다"; fail=1; }
           [ -n "$ISSUER_ID" ] || { echo "::error::secrets.APPSTORE_API_ISSUER_ID 가 비어 있다"; fail=1; }
