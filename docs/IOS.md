@@ -52,7 +52,7 @@ App Store Connect API 로 직접 한다 (`.github/scripts/asc_signing.py`). 기�
 openssl genrsa -out ~/jobping-dist.key 2048 && cat ~/jobping-dist.key
 ```
 
-출력 전체(`-----BEGIN PRIVATE KEY-----` 부터 `-----END PRIVATE KEY-----` 까지)를 아래
+출력 전체(`-----BEGIN` 으로 시작하는 줄부터 `-----END` 줄까지)를 아래
 GitHub 시크릿 `DIST_CERT_PRIVATE_KEY` 에 넣는다. 파일은 Cloud Shell 홈에 백업으로 남는다.
 **채팅이나 다른 곳에 붙여넣지 않는다.**
 
