@@ -212,11 +212,10 @@ elif journalctl -u caddy --since "-10min" --no-pager -o cat 2>/dev/null | grep -
 else
   echo " 거의 다 됐다. 바깥에서 HTTPS 가 아직 안 열린다."
   echo
-  echo " 오라클 콘솔에서 포트 두 개를 열어야 한다 (VM 안쪽은 이미 열었다):"
-  echo "   Networking ▸ Virtual cloud networks ▸ (VCN) ▸ Subnets ▸ (서브넷)"
-  echo "   ▸ Security Lists ▸ Default Security List ▸ Add Ingress Rules"
-  echo "       Source CIDR 0.0.0.0/0, IP Protocol TCP, Destination Port 80"
-  echo "       Source CIDR 0.0.0.0/0, IP Protocol TCP, Destination Port 443"
+  echo " 오라클 바깥쪽 방화벽에서 80/443 을 열어야 한다 (VM 안쪽은 이미 열었다)."
+  echo " 오라클 웹 콘솔 오른쪽 위 '>_' (Cloud Shell) 을 열고 붙여넣는다:"
+  echo
+  echo "   curl -fsSL https://raw.githubusercontent.com/sangmin082/jobping/$BRANCH/deploy/oracle/open-ports.sh | bash -s $PUBLIC_IP"
   echo
   echo " 연 다음 Caddy 를 재시작하면 1분 안에 인증서를 받는다:"
   echo "   sudo systemctl restart caddy"

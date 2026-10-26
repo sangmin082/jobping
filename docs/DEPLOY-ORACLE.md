@@ -32,22 +32,26 @@ curl -fsSL https://raw.githubusercontent.com/sangmin082/jobping/claude/jobping-i
 6. API 서버, 수집 타이머(30분), 발송 타이머(매일 08:00 KST) 시작
 7. **첫 수집 = 시딩.** 공고 ~1,200건을 저장만 하고 알림은 안 보낸다
 
-## 2. 오라클 콘솔에서 포트 열기 — 한 번만
+## 2. 바깥쪽 포트 열기 — 명령 한 줄, 한 번만
 
-VM 안쪽 방화벽은 스크립트가 열었지만, 오라클 네트워크 바깥쪽 방화벽은 콘솔에서만
-열 수 있다. 이게 닫혀 있으면 인증서도 못 받고 앱도 서버에 못 붙는다.
+VM 안쪽 방화벽은 설치 스크립트가 열었지만, 오라클 네트워크의 바깥쪽 방화벽은
+오라클 API 로만 열 수 있다. 이게 닫혀 있으면 인증서도 못 받고 앱도 서버에 못 붙는다.
 
 1. https://cloud.oracle.com 로그인
-2. 메뉴 ▸ **Networking** ▸ **Virtual cloud networks** ▸ VCN 클릭
-3. **Subnets** ▸ 서브넷 클릭 ▸ **Security Lists** ▸ **Default Security List…** 클릭
-4. **Add Ingress Rules** 를 눌러 두 줄 추가:
+2. 오른쪽 위 **`>_` 아이콘(Cloud Shell)** 클릭. 아래쪽에 터미널이 열린다. 로그인된
+   `oci` 명령이 이미 들어 있어서 설정할 게 없다
+3. 붙여넣기:
 
-   | Source CIDR | IP Protocol | Destination Port Range |
-   |---|---|---|
-   | `0.0.0.0/0` | TCP | `80` |
-   | `0.0.0.0/0` | TCP | `443` |
+   ```bash
+   curl -fsSL https://raw.githubusercontent.com/sangmin082/jobping/claude/jobping-ios-plan-lqbny6/deploy/oracle/open-ports.sh | bash -s 138.2.124.116
+   ```
 
-5. VM 터미널에서:
+   공인 IP 로 VM 을 찾아(모든 리전), 네트워크 보안 그룹 `jobping-web` 을 만들고 TCP
+   80·443 을 열어 VM 에 붙인다. **서브넷 보안 목록은 건드리지 않는다** — 그 API 는 규칙
+   전체를 덮어쓰는 방식이라 잘못되면 22번(SSH)까지 날아간다. 이미 붙어 있던 보안 그룹도
+   그대로 둔다. 다시 실행해도 안전하다.
+
+4. VM 터미널(VS Code)로 돌아와서:
 
    ```bash
    sudo systemctl restart caddy
@@ -56,6 +60,14 @@ VM 안쪽 방화벽은 스크립트가 열었지만, 오라클 네트워크 바�
    ```
 
    `{"ok": true}` 가 나오면 끝이다.
+
+<details>
+<summary>콘솔에서 손으로 하려면</summary>
+
+Networking ▸ Virtual cloud networks ▸ VCN ▸ Subnets ▸ 서브넷 ▸ Security Lists ▸
+Default Security List ▸ Add Ingress Rules — Source `0.0.0.0/0`, TCP, 포트 `80` 과 `443`
+두 줄.
+</details>
 
 ## 3. 앱에 주소 알려주기
 
