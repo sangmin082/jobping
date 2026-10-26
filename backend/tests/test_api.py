@@ -30,7 +30,8 @@ def store():
     for i, (company, t) in enumerate([("sk_hynix", 1), ("sk_hynix", 3), ("tesla_kr", 2), ("samsung_ds", 4)]):
         job = Job.make(company=company, title=f"Job {i}", url=f"https://x.com/{company}/{i}", source_id=str(i))
         s.put_job_if_new(job, datetime(2026, 9, t, tzinfo=timezone.utc))
-    s.put_health("skcareers", {"last_success_at": "2026-09-05T02:30:00+00:00", "last_fetched": 88})
+    s.put_health("skcareers", {"last_success_at": "2026-09-05T02:30:00+00:00", "last_fetched": 88,
+                               "company_counts": {"sk_hynix": 31, "sk_telecom": 12}})
     return s
 
 
@@ -39,7 +40,11 @@ class TestCompanies:
         status, body = call(store, "GET", "/v1/companies")
         assert status == 200
         by = {c["key"]: c for c in body["companies"]}
-        assert by["sk_hynix"]["last_fetched"] == 88
+        # 계열사별 건수다. 소스 전체(88)가 아니다.
+        assert by["sk_hynix"]["last_fetched"] == 31
+        assert by["sk_telecom"]["last_fetched"] == 12
+        assert by["sk_innovation"]["last_fetched"] == 0      # 집계는 있는데 공고가 없다
+        assert by["tesla_kr"]["last_fetched"] is None         # 아직 수집 전
         assert by["sk_hynix"]["group"] == "SK"
         assert by["tesla_kr"]["last_success_at"] is None
         # 예전 앱 호환용. 값은 사실상 무제한(키워드 상한 20, 회사는 전체)이다.

@@ -67,7 +67,7 @@ def get_companies(store: Store) -> dict:
             "key": c.key, "display_name": c.display_name, "source": c.source,
             "group": _group_of(c.source),
             "last_success_at": h.get("last_success_at"),
-            "last_fetched": _int(h.get("last_fetched")),
+            "last_fetched": _company_count(h, c.key),
         })
     # free_tier 는 전면 무료 전에 나간 앱(빌드 12)이 필수 필드로 읽는다. 빼면 그 앱의
     # 회사 목록이 깨진다. 값은 API 입력 상한이라 그 앱에서도 사실상 제한이 없다.
@@ -201,6 +201,16 @@ def _plain(v):
 
 def _int(v):
     return int(v) if isinstance(v, (int, Decimal)) else None
+
+
+def _company_count(health: dict, company: str) -> int | None:
+    """이 계열사의 현재 공고 수. 소스 전체 건수(last_fetched)가 아니다 — 그걸 쓰면 삼성
+    계열사 26곳이 전부 삼성 포털 전체 건수를 보여준다. 계열사별 집계가 아직 없으면
+    (업데이트 직후 첫 수집 전) None 이라 앱이 숫자를 안 보여준다."""
+    counts = health.get("company_counts")
+    if not isinstance(counts, dict):
+        return None
+    return _int(counts.get(company, 0))
 
 
 def _group_of(source: str) -> str:

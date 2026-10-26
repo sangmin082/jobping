@@ -57,6 +57,21 @@ class TestSeeding:
         assert [j.source_id for j in r.notify] == ["3"]
 
 
+class TestCompanyCounts:
+    def test_health_counts_jobs_per_affiliate(self, store, alerts):
+        """소스 하나가 계열사 여럿을 낸다. 앱은 계열사별 공고 수를 보여준다."""
+        jobs = [job(1, "acme_a"), job(2, "acme_a"), job(3, "acme_b")]
+        collector.run(store, [Fake(jobs)], now=NOW, alerts=alerts)
+        h = store.get_health("acme")
+        assert h["last_fetched"] == 3
+        assert h["company_counts"] == {"acme_a": 2, "acme_b": 1}
+
+    def test_affiliate_with_no_jobs_drops_out(self, store, alerts):
+        collector.run(store, [Fake([job(1, "acme_a"), job(2, "acme_b")])], now=NOW, alerts=alerts)
+        collector.run(store, [Fake([job(1, "acme_a")])], now=NOW, alerts=alerts)
+        assert store.get_health("acme")["company_counts"] == {"acme_a": 1}
+
+
 class TestStormGuard:
     def test_sudden_flood_is_held_back_and_reported(self, store, alerts):
         """job_id 체계가 바뀌면 전부 신규로 잡힌다. 그걸 알림으로 보내면 안 된다."""

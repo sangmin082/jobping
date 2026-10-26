@@ -142,9 +142,16 @@ def _absorb(store: Store, adapter: Adapter, jobs: list[Job] | None,
     else:
         consecutive_zero = 0
 
+    # 소스 하나가 계열사 여럿을 낸다(삼성 포털 → 삼성전자·삼성SDI…). 앱의 "현재 공고 N건"은
+    # 계열사 단위여야 해서 계열사별로도 센다. 0건인 계열사는 키가 없다.
+    counts: dict[str, int] = {}
+    for job in jobs:
+        counts[job.company] = counts.get(job.company, 0) + 1
+
     store.put_health(adapter.key, {
         "last_success_at": now.isoformat(),
         "last_fetched": result.fetched,
+        "company_counts": counts,
         "last_new": result.new,
         "consecutive_failures": 0,
         "consecutive_zero": consecutive_zero,
