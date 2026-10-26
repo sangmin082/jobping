@@ -1,0 +1,24 @@
+[Unit]
+Description=JobPing app API (127.0.0.1:8080, Caddy 뒤)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=jobping
+Group=jobping
+EnvironmentFile=/etc/jobping/env
+Environment=PYTHONPATH=/opt/jobping/backend/src
+WorkingDirectory=/opt/jobping/backend
+ExecStart=/opt/jobping/venv/bin/python -m jobping.selfhost serve --host 127.0.0.1 --port 8080
+Restart=always
+RestartSec=3
+# 1GB VM 이라 상한을 둔다. 넘으면 이 서비스만 재시작되고 VM 은 안전하다.
+MemoryMax=200M
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/var/lib/jobping
+
+[Install]
+WantedBy=multi-user.target

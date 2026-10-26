@@ -57,7 +57,7 @@ Settings ▸ Environments ▸ **New environment** ▸ 이름 `testflight`
 
 | Variable | 값 |
 |---|---|
-| `API_BASE_URL` | 백엔드 배포 후 나오는 `ApiUrl` (예: `https://xxxx.execute-api.ap-northeast-2.amazonaws.com/dev`) |
+| `API_BASE_URL` | 서버 주소. 오라클 VM 이면 `https://138-2-124-116.sslip.io` (또는 DuckDNS 주소). AWS 면 배포 출력의 `ApiUrl` |
 
 ## 배포하기
 
@@ -69,8 +69,9 @@ Settings ▸ Environments ▸ **New environment** ▸ 이름 `testflight`
 
 ## 백엔드와 맞추기
 
-TestFlight 빌드는 `aps-environment: production` 이다. 백엔드의 `ApnsEnvironment`
-파라미터도 **`production`** 이어야 푸시가 간다. `sandbox` 로 두면 APNs 가
+TestFlight 빌드는 `aps-environment: production` 이다. 서버의 APNs 환경도
+**`production`** 이어야 푸시가 간다 (오라클 VM: `/etc/jobping/env` 의 `APNS_ENVIRONMENT`,
+이미 production 이 기본값이다. AWS: `ApnsEnvironment` 파라미터). `sandbox` 로 두면 APNs 가
 `BadDeviceToken` 을 돌려주고 notifier 가 그 기기를 삭제해버린다.
 
 ```bash

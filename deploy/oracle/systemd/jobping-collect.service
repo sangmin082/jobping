@@ -1,0 +1,21 @@
+[Unit]
+Description=JobPing 수집 → 매칭 → 발송
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=jobping
+Group=jobping
+EnvironmentFile=/etc/jobping/env
+Environment=PYTHONPATH=/opt/jobping/backend/src
+WorkingDirectory=/opt/jobping/backend
+ExecStart=/opt/jobping/venv/bin/python -m jobping.selfhost collect
+TimeoutStartSec=600
+# 토스 응답이 6MB 다. 파싱 중 잠깐 커진다.
+MemoryMax=400M
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/var/lib/jobping

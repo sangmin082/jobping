@@ -1,0 +1,9 @@
+[Unit]
+Description=JobPing 매일 08:00 KST 보류분 발송
+
+[Timer]
+OnCalendar=*-*-* 08:00:00 Asia/Seoul
+Persistent=true
+
+[Install]
+WantedBy=timers.target

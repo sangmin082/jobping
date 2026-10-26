@@ -1,0 +1,20 @@
+[Unit]
+Description=JobPing 조용한 시간(23–08 KST) 보류분 발송
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=jobping
+Group=jobping
+EnvironmentFile=/etc/jobping/env
+Environment=PYTHONPATH=/opt/jobping/backend/src
+WorkingDirectory=/opt/jobping/backend
+ExecStart=/opt/jobping/venv/bin/python -m jobping.selfhost flush
+TimeoutStartSec=300
+MemoryMax=200M
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/var/lib/jobping

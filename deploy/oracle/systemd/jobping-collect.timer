@@ -1,0 +1,12 @@
+[Unit]
+Description=JobPing 수집 30분마다
+
+[Timer]
+OnCalendar=*:0/30
+# 채용 사이트를 정각에 일제히 때리지 않도록 조금 흩는다.
+RandomizedDelaySec=120
+# VM 이 재부팅돼 놓친 실행은 부팅 직후 한 번 돈다.
+Persistent=true
+
+[Install]
+WantedBy=timers.target

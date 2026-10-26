@@ -265,6 +265,13 @@ IP 차단으로 판단했는데 **틀렸다.** 브라우저의 axios가 로그�
 
 ## 5. 운영 / 비용
 
+**배포처: 오라클 Always Free VM** (2026-10-26 결정). 사용자가 이미 VM 을 갖고 있어서
+카드·비용 문제가 없다. 로직은 AWS 판과 같고 연결부만 바꿨다: DynamoDB → SQLite
+(`sqlite_store.py`, 같은 `Store` 계약을 MemoryStore 와 함께 계약 테스트로 검증),
+EventBridge → systemd 타이머, SQS → 같은 프로세스에서 수집 직후 발송, API Gateway →
+내장 HTTP 서버 + Caddy. HTTPS 도메인은 `sslip.io` 기본, 발급 한도에 걸리면 DuckDNS
+(공개 접미사 목록에 있어 한도가 서브도메인별이다). 아래 비용 항목은 AWS 판 기준이다.
+
 - 소스 14개 × 48회/일 + 페이지네이션 ≈ **1,000~1,300 요청/일**. 토스 응답이 6MB라 전송량은 토스가 대부분. Lambda·DynamoDB·SQS 프리티어 안. 예상 월 $1–3 (대부분 Secrets Manager $0.40 + CloudWatch)
 - 어댑터별 CloudWatch 지표: `fetched`, `new`, `duration_ms`, `error`
 - Slack 알림 조건 (v1의 "0건이면 알림"을 교체):
@@ -282,7 +289,7 @@ IP 차단으로 판단했는데 **틀렸다.** 브라우저의 axios가 로그�
 | 1 | 레포 구조 (`backend/`, `ios/`, `docs/`) | ✅ 완료 |
 | 2 | 어댑터 + 로컬 검증 스크립트 + 오프라인 테스트 | ✅ 완료 — 14소스 / 라이브 1,108건 |
 | **2.5** | **삼성전자 국내 경력 공고가 어디 올라오는지 확인** | ⏳ 2절 참고 |
-| 3 | SAM 템플릿: DynamoDB + collector + notifier + APNs | ✅ 코드·템플릿 완료, 테스트 231개. 실제 배포는 `docs/DEPLOY.md` |
+| 3 | 서버: collector + notifier + APNs | ✅ 코드 완료. **배포처는 오라클 VM(무료)** — `deploy/oracle/install.sh`, `docs/DEPLOY-ORACLE.md`. AWS 판(`template.yaml`)도 유지 |
 | **3.5** | **앱 API** (v2에서 추가) | ✅ HTTP API + `api.py`, 테스트 19개 |
 | 4 | iOS MVP: 온보딩 → 리스트 → 푸시 수신 | ✅ CI 컴파일·유닛 테스트 통과 (run #2). TestFlight 는 Apple 세팅 후 — `docs/IOS.md` |
 | 5 | StoreKit 2 구독 + 서버 검증 + App Store Server Notifications | |
