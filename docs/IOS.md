@@ -34,7 +34,8 @@ TestFlight 와 푸시 알림 둘 다 이게 필요하다. 가입 후:
 
 - **앱 등록** — My Apps ▸ `+` ▸ 이름 `잡핑`, 위 Bundle ID 선택
 - **API 키 만들기** — Users and Access ▸ Integrations ▸ App Store Connect API ▸ `+`
-  - Access: **App Manager** (인증서를 자동으로 만들려면 Developer 이상 필요)
+  - Access: **Admin** — CI 가 배포 인증서와 프로비저닝 프로파일을 자동으로 만든다.
+    그보다 낮은 권한이면 아카이브 단계에서 인증서를 못 만들어 실패할 수 있다
   - `.p8` 다운로드, **Key ID** 와 **Issuer ID** 적어두기
 
 이 키 하나로 CI 가 배포 인증서와 프로비저닝 프로파일을 알아서 만든다
@@ -61,7 +62,11 @@ Settings ▸ Environments ▸ **New environment** ▸ 이름 `testflight`
 
 ## 배포하기
 
-1. Actions ▸ **iOS** ▸ Run workflow ▸ `upload` 체크 ▸ Run
+1. 워크플로 실행 (`upload` = true). 방법은 둘 중 하나:
+   - **Claude 에게 "업로드 돌려줘"** — API 로 실행한다. 지금은 이게 기본이다
+   - Actions ▸ **iOS** ▸ Run workflow ▸ 브랜치 선택 ▸ `upload` 체크 ▸ Run. 단 이 버튼은
+     워크플로가 **기본 브랜치(main)에 있을 때만** 보인다. 작업 브랜치를 main 에 합치기
+     전에는 안 보인다
 2. 30분쯤 뒤 App Store Connect ▸ TestFlight 에 빌드가 뜬다. 처음엔 "규정 준수" 질문이 뜰 수 있다 — 암호화 없음(`ITSAppUsesNonExemptEncryption=false` 로 이미 답해뒀다)
 3. Internal Testing 그룹에 본인 Apple ID 추가 → 아이폰 TestFlight 앱에서 설치
 
@@ -87,6 +92,7 @@ cd backend && make deploy STAGE=dev   # samconfig.toml 의 parameter_overrides �
 | `Authentication credentials are invalid` | API 키 역할이 Developer 미만이거나 Issuer ID 가 틀렸다 |
 | 업로드는 됐는데 TestFlight 에 안 뜸 | 처리 중(최대 30분). 그 이상이면 App Store Connect 이메일 확인 |
 | 앱은 뜨는데 공고가 안 옴 | `API_BASE_URL` 변수를 안 넣었거나 백엔드가 아직 시딩 중 |
+| Prepare 단계에서 `::error::` | 시크릿 값 문제. 메시지가 어느 값이 어떻게 틀렸는지 말해준다 (공백·끝 슬래시는 자동으로 지운다) |
 | 푸시가 안 옴 | 백엔드 `ApnsEnvironment=production` 인지, SSM 에 APNs 키가 있는지 |
 
 ## 로컬에서 Xcode 로 열고 싶을 때
