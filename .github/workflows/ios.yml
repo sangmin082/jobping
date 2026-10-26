@@ -76,6 +76,13 @@ jobs:
     runs-on: macos-15
     timeout-minutes: 45
     environment: testflight
+    env:
+      # 원본 값. 붙여넣다 섞인 공백·줄바꿈은 아래 Prepare 단계에서 지운다.
+      RAW_API_BASE_URL: ${{ vars.API_BASE_URL }}
+      RAW_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      RAW_KEY_ID: ${{ secrets.APPSTORE_API_KEY_ID }}
+      RAW_ISSUER_ID: ${{ secrets.APPSTORE_API_ISSUER_ID }}
+      APPSTORE_API_PRIVATE_KEY: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
     steps:
       - uses: actions/checkout@v4
 
@@ -85,32 +92,51 @@ jobs:
           xcodebuild -version
           brew install xcodegen xcbeautify
 
-      - name: Generate project
+      # 설정값을 정리·검증하고, 이후 단계가 쓸 값을 GITHUB_ENV 로 넘긴다.
+      # 프로젝트 생성은 여기서 한 번만 한다 — 두 번 하면 두 번째에 환경 변수가 빠져서
+      # 서버 주소와 팀 ID 가 빈 앱이 만들어진다.
+      - name: Prepare
         working-directory: ios
-        env:
-          API_BASE_URL: ${{ vars.API_BASE_URL }}
-          DEVELOPMENT_TEAM: ${{ secrets.APPLE_TEAM_ID }}
         run: |
-          test -n "$API_BASE_URL" || { echo "::error::vars.API_BASE_URL 이 비어 있다"; exit 1; }
+          trim() { printf '%s' "$1" | tr -d '[:space:]'; }
+          API_BASE_URL=$(trim "$RAW_API_BASE_URL"); API_BASE_URL="${API_BASE_URL%/}"
+          DEVELOPMENT_TEAM=$(trim "$RAW_TEAM_ID")
+          KEY_ID=$(trim "$RAW_KEY_ID")
+          ISSUER_ID=$(trim "$RAW_ISSUER_ID")
+
+          fail=0
+          case "$API_BASE_URL" in https://*) ;; *) echo "::error::vars.API_BASE_URL 이 https:// 로 시작해야 한다 (지금: '$API_BASE_URL')"; fail=1;; esac
+          [ ${#DEVELOPMENT_TEAM} -eq 10 ] || { echo "::error::secrets.APPLE_TEAM_ID 는 10자리여야 한다 (지금 ${#DEVELOPMENT_TEAM}자)"; fail=1; }
+          [ -n "$KEY_ID" ]    || { echo "::error::secrets.APPSTORE_API_KEY_ID 가 비어 있다"; fail=1; }
+          [ -n "$ISSUER_ID" ] || { echo "::error::secrets.APPSTORE_API_ISSUER_ID 가 비어 있다"; fail=1; }
+          printf '%s' "$APPSTORE_API_PRIVATE_KEY" | grep -q 'BEGIN PRIVATE KEY' \
+            || { echo "::error::secrets.APPSTORE_API_PRIVATE_KEY 는 .p8 파일 내용 전체여야 한다 (-----BEGIN PRIVATE KEY----- 포함)"; fail=1; }
+          [ "$fail" = 0 ] || exit 1
+          echo "서버: $API_BASE_URL"
+
+          # altool 은 키 파일 이름이 정확히 AuthKey_<키ID>.p8 이어야 찾는다.
+          mkdir -p ~/private_keys
+          KEY_PATH="$HOME/private_keys/AuthKey_${KEY_ID}.p8"
+          printf '%s\n' "$APPSTORE_API_PRIVATE_KEY" > "$KEY_PATH"
+          chmod 600 "$KEY_PATH"
+
+          {
+            echo "KEY_ID=$KEY_ID"
+            echo "ISSUER_ID=$ISSUER_ID"
+            echo "TEAM_ID=$DEVELOPMENT_TEAM"
+            echo "KEY_PATH=$KEY_PATH"
+          } >> "$GITHUB_ENV"
+
+          # 빌드 번호는 단조 증가해야 App Store Connect 가 받는다. 워크플로 실행 번호를 쓴다.
+          sed -i '' "s/CURRENT_PROJECT_VERSION: \"1\"/CURRENT_PROJECT_VERSION: \"${{ github.run_number }}\"/" project.yml
+          export API_BASE_URL DEVELOPMENT_TEAM
           xcodegen generate
+          # 생성된 Info.plist 에 서버 주소가 실제로 들어갔는지 확인한다.
+          grep -q "$API_BASE_URL" JobPing.xcodeproj/project.pbxproj \
+            || { echo "::error::프로젝트에 API_BASE_URL 이 안 들어갔다"; exit 1; }
 
       # App Store Connect API 키 하나로 인증서·프로비저닝 프로파일을 Xcode 가 알아서 만든다
       # (cloud-managed signing). .p12 를 따로 관리하지 않아도 된다.
-      - name: Write App Store Connect API key
-        env:
-          KEY: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
-        run: |
-          mkdir -p ~/private_keys
-          printf '%s' "$KEY" > ~/private_keys/AuthKey.p8
-          test -s ~/private_keys/AuthKey.p8
-
-      - name: Bump build number
-        working-directory: ios
-        run: |
-          # 빌드 번호는 단조 증가해야 App Store Connect 가 받는다. 워크플로 실행 번호를 쓴다.
-          sed -i '' "s/CURRENT_PROJECT_VERSION: \"1\"/CURRENT_PROJECT_VERSION: \"${{ github.run_number }}\"/" project.yml
-          xcodegen generate
-
       - name: Archive
         working-directory: ios
         run: |
@@ -121,9 +147,9 @@ jobs:
             -configuration Release \
             -archivePath build/JobPing.xcarchive \
             -allowProvisioningUpdates \
-            -authenticationKeyPath ~/private_keys/AuthKey.p8 \
-            -authenticationKeyID "${{ secrets.APPSTORE_API_KEY_ID }}" \
-            -authenticationKeyIssuerID "${{ secrets.APPSTORE_API_ISSUER_ID }}" \
+            -authenticationKeyPath "$KEY_PATH" \
+            -authenticationKeyID "$KEY_ID" \
+            -authenticationKeyIssuerID "$ISSUER_ID" \
             | xcbeautify --renderer github-actions
 
       - name: Export IPA
@@ -136,7 +162,7 @@ jobs:
             <key>method</key><string>app-store-connect</string>
             <key>destination</key><string>export</string>
             <key>signingStyle</key><string>automatic</string>
-            <key>teamID</key><string>${{ secrets.APPLE_TEAM_ID }}</string>
+            <key>teamID</key><string>$TEAM_ID</string>
           </dict></plist>
           EOF
           xcodebuild -exportArchive \
@@ -144,9 +170,9 @@ jobs:
             -exportOptionsPlist ExportOptions.plist \
             -exportPath build/export \
             -allowProvisioningUpdates \
-            -authenticationKeyPath ~/private_keys/AuthKey.p8 \
-            -authenticationKeyID "${{ secrets.APPSTORE_API_KEY_ID }}" \
-            -authenticationKeyIssuerID "${{ secrets.APPSTORE_API_ISSUER_ID }}"
+            -authenticationKeyPath "$KEY_PATH" \
+            -authenticationKeyID "$KEY_ID" \
+            -authenticationKeyIssuerID "$ISSUER_ID"
           ls -la build/export
 
       - name: Upload to TestFlight
@@ -154,12 +180,16 @@ jobs:
         run: |
           xcrun altool --upload-app --type ios \
             -f build/export/JobPing.ipa \
-            --apiKey "${{ secrets.APPSTORE_API_KEY_ID }}" \
-            --apiIssuer "${{ secrets.APPSTORE_API_ISSUER_ID }}"
+            --apiKey "$KEY_ID" \
+            --apiIssuer "$ISSUER_ID"
 
-      - name: Keep the archive
+      - name: Keep the IPA
         uses: actions/upload-artifact@v4
         with:
           name: JobPing-${{ github.run_number }}
           path: ios/build/export/*.ipa
           retention-days: 14
+
+      - name: Remove the key
+        if: always()
+        run: rm -f ~/private_keys/AuthKey_*.p8
