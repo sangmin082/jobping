@@ -92,6 +92,7 @@ cd backend && make deploy STAGE=dev   # samconfig.toml 의 parameter_overrides �
 | `Authentication credentials are invalid` | API 키 역할이 Developer 미만이거나 Issuer ID 가 틀렸다 |
 | 업로드는 됐는데 TestFlight 에 안 뜸 | 처리 중(최대 30분). 그 이상이면 App Store Connect 이메일 확인 |
 | 앱은 뜨는데 공고가 안 옴 | `API_BASE_URL` 변수를 안 넣었거나 백엔드가 아직 시딩 중 |
+| Archive/Export 에서 인증서 한도 오류. Developer 사이트 인증서 추가 화면에 "Maximum number of certificates generated" | 배포 인증서가 한도(3개)까지 찼다. CI 가 만든 인증서(만든 이 `API Key: …`)는 러너와 함께 비밀키가 사라져 쓸모없으니 오래된 것부터 Revoke. **Distribution Managed 는 남긴다** — 클라우드 서명이 쓴다. 다시 쌓이는 건 API 키가 Admin 이 아니어서 클라우드 서명을 못 쓸 때다 |
 | Prepare 단계에서 `::error::` | 시크릿 값 문제. 메시지가 어느 값이 어떻게 틀렸는지 말해준다 (공백·끝 슬래시는 자동으로 지운다) |
 | 푸시가 안 옴 | 백엔드 `ApnsEnvironment=production` 인지, SSM 에 APNs 키가 있는지 |
 
