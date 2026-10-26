@@ -35,21 +35,30 @@ TestFlight 와 푸시 알림 둘 다 이게 필요하다. 가입 후:
 - **앱 등록** — My Apps ▸ `+` ▸ 이름 `잡핑`, 위 Bundle ID 선택
 - **API 키 만들기** — Users and Access ▸ Integrations ▸ App Store Connect API ▸ `+`
   - Access: **Admin** — CI 가 배포 인증서와 프로비저닝 프로파일을 자동으로 만든다.
-    그보다 낮은 권한이면 아카이브 단계에서 인증서를 못 만들어 실패할 수 있다
+    그보다 낮은 권한이면 Signing 단계에서 인증서·프로파일을 못 만들어 실패한다
   - `.p8` 다운로드, **Key ID** 와 **Issuer ID** 적어두기
 
-이 키 하나로 CI 가 배포 인증서와 프로비저닝 프로파일을 알아서 만든다
-(`xcodebuild -allowProvisioningUpdates`). `.p12` 인증서를 손으로 뽑아 올릴 필요가 없다.
+이 키로 CI 가 인증서 발급, 프로비저닝 프로파일 생성, App ID 의 Push 기능 켜기까지
+App Store Connect API 로 직접 한다 (`.github/scripts/asc_signing.py`). 기기 등록은 필요 없다.
 
-### 2-1. 아이폰 1대 등록 (Devices)
+### 2-1. 배포 인증서 비밀키 (한 번만)
 
-아카이브는 개발용 프로파일로 서명하고, 업로드할 때 배포용으로 다시 서명한다.
-개발용 프로파일은 **등록된 기기가 한 대도 없으면 만들 수 없다**. 그래서 아이폰 하나를 등록해 둔다.
+배포 인증서의 비밀키 하나만 사람이 만든다. 인증서 자체는 CI 첫 실행 때 이 키로 발급받고,
+그 뒤로는 같은 인증서를 계속 쓴다 (실행마다 인증서가 쌓이지 않는다).
 
-1. 아이폰 UDID 알아내기 (맥 없이)
-   - 윈도우 PC: *Apple Devices* 앱(또는 iTunes)에 아이폰 연결 ▸ 일련번호를 클릭하면 UDID 가 보인다
-   - PC 가 없으면: 아이폰 Safari 로 `https://udid.tech` ▸ 프로파일 설치 ▸ UDID 표시 (설치한 프로파일은 나중에 설정 ▸ 일반 ▸ VPN 및 기기 관리에서 지운다)
-2. developer.apple.com ▸ Certificates, Identifiers & Profiles ▸ **Devices** ▸ `+` ▸ Platform iOS, 이름, UDID ▸ Register
+오라클 Cloud Shell (또는 openssl 이 있는 아무 리눅스) 에서:
+
+```bash
+openssl genrsa -out ~/jobping-dist.key 2048 && cat ~/jobping-dist.key
+```
+
+출력 전체(`-----BEGIN PRIVATE KEY-----` 부터 `-----END PRIVATE KEY-----` 까지)를 아래
+GitHub 시크릿 `DIST_CERT_PRIVATE_KEY` 에 넣는다. 파일은 Cloud Shell 홈에 백업으로 남는다.
+**채팅이나 다른 곳에 붙여넣지 않는다.**
+
+배포 인증서는 계정당 3개가 한도다. developer.apple.com ▸ Certificates 에 배포 인증서가
+이미 3개면 CI 가 만든 것(만든 이 `API Key: …`) 하나를 Revoke 해서 자리를 비워 둔다.
+안 비워 두면 첫 실행이 그 내용을 적은 오류로 멈춘다.
 
 ### 3. GitHub 저장소 설정
 
@@ -63,6 +72,7 @@ Settings ▸ Environments ▸ **New environment** ▸ 이름 `testflight`
 | `APPSTORE_API_KEY_ID` | App Store Connect API Key ID |
 | `APPSTORE_API_ISSUER_ID` | Issuer ID |
 | `APPSTORE_API_PRIVATE_KEY` | `.p8` 파일 **내용 전체** (`-----BEGIN PRIVATE KEY-----` 부터) |
+| `DIST_CERT_PRIVATE_KEY` | 위 2-1 에서 만든 비밀키 **내용 전체** |
 
 그리고 Settings ▸ Secrets and variables ▸ Actions ▸ **Variables**:
 
@@ -100,12 +110,14 @@ cd backend && make deploy STAGE=dev   # samconfig.toml 의 parameter_overrides �
 | 증상 | 원인 |
 |---|---|
 | build 잡에서 컴파일 에러 | 코드 문제. 맥 없이 쓴 코드라 첫 실행에서 몇 개 날 수 있다. 로그의 파일:줄 보고 고친다 |
-| `Your team has no devices from which to generate a provisioning profile` | 등록된 기기가 없다. 위 2-1 |
-| `No profiles for 'com.sangmin082.jobping'` | 바로 위 오류와 같이 나오면 기기 문제. 혼자 나오면 App ID 를 안 만들었거나 Bundle ID 가 다르다 |
+| Signing 단계 `배포 인증서를 더 만들 수 없다` | 배포 인증서 한도(3개). 오류에 지금 있는 인증서 목록이 나온다. CI 가 만든 것 하나를 Revoke 하고 다시 실행 |
+| Signing 단계 `RSA 키가 아니다` | `DIST_CERT_PRIVATE_KEY` 에 .p8 키를 넣었다. 2-1 의 openssl 명령으로 만든 키를 넣는다 |
+| Signing 단계 `App ID … 가 없다` | Identifiers 에 `com.sangmin082.jobping` 이 없거나 Bundle ID 가 다르다 |
+| `Your team has no devices from which to generate a provisioning profile` | 예전 방식(자동 서명)의 오류. 지금 워크플로에선 안 난다 — 워크플로가 최신인지 확인 |
 | `Authentication credentials are invalid` | API 키 역할이 Developer 미만이거나 Issuer ID 가 틀렸다 |
 | 업로드는 됐는데 TestFlight 에 안 뜸 | 처리 중(최대 30분). 그 이상이면 App Store Connect 이메일 확인 |
 | 앱은 뜨는데 공고가 안 옴 | `API_BASE_URL` 변수를 안 넣었거나 백엔드가 아직 시딩 중 |
-| Archive/Export 에서 인증서 한도 오류. Developer 사이트 인증서 추가 화면에 "Maximum number of certificates generated" | 배포 인증서가 한도(3개)까지 찼다. CI 가 만든 인증서(만든 이 `API Key: …`)는 러너와 함께 비밀키가 사라져 쓸모없으니 오래된 것부터 Revoke. **Distribution Managed 는 남긴다** — 클라우드 서명이 쓴다. 다시 쌓이는 건 API 키가 Admin 이 아니어서 클라우드 서명을 못 쓸 때다 |
+| Developer 사이트 인증서 추가 화면에 "Maximum number of certificates generated" | 배포 인증서가 한도(3개)까지 찼다. 비밀키를 잃은 인증서(만든 이 `API Key: …` 인데 `DIST_CERT_PRIVATE_KEY` 로 만든 게 아닌 것)는 쓸모없으니 오래된 것부터 Revoke. **CI 가 지금 쓰는 인증서는 남긴다** — Signing 단계 로그에 이름과 만료일이 찍힌다 |
 | Prepare 단계에서 `::error::` | 시크릿 값 문제. 메시지가 어느 값이 어떻게 틀렸는지 말해준다 (공백·끝 슬래시는 자동으로 지운다) |
 | 푸시가 안 옴 | 백엔드 `ApnsEnvironment=production` 인지, SSM 에 APNs 키가 있는지 |
 
