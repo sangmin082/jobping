@@ -41,6 +41,16 @@ TestFlight 와 푸시 알림 둘 다 이게 필요하다. 가입 후:
 이 키 하나로 CI 가 배포 인증서와 프로비저닝 프로파일을 알아서 만든다
 (`xcodebuild -allowProvisioningUpdates`). `.p12` 인증서를 손으로 뽑아 올릴 필요가 없다.
 
+### 2-1. 아이폰 1대 등록 (Devices)
+
+아카이브는 개발용 프로파일로 서명하고, 업로드할 때 배포용으로 다시 서명한다.
+개발용 프로파일은 **등록된 기기가 한 대도 없으면 만들 수 없다**. 그래서 아이폰 하나를 등록해 둔다.
+
+1. 아이폰 UDID 알아내기 (맥 없이)
+   - 윈도우 PC: *Apple Devices* 앱(또는 iTunes)에 아이폰 연결 ▸ 일련번호를 클릭하면 UDID 가 보인다
+   - PC 가 없으면: 아이폰 Safari 로 `https://udid.tech` ▸ 프로파일 설치 ▸ UDID 표시 (설치한 프로파일은 나중에 설정 ▸ 일반 ▸ VPN 및 기기 관리에서 지운다)
+2. developer.apple.com ▸ Certificates, Identifiers & Profiles ▸ **Devices** ▸ `+` ▸ Platform iOS, 이름, UDID ▸ Register
+
 ### 3. GitHub 저장소 설정
 
 Settings ▸ Environments ▸ **New environment** ▸ 이름 `testflight`
@@ -90,7 +100,8 @@ cd backend && make deploy STAGE=dev   # samconfig.toml 의 parameter_overrides �
 | 증상 | 원인 |
 |---|---|
 | build 잡에서 컴파일 에러 | 코드 문제. 맥 없이 쓴 코드라 첫 실행에서 몇 개 날 수 있다. 로그의 파일:줄 보고 고친다 |
-| `No profiles for 'com.sangmin082.jobping'` | App ID 를 안 만들었거나 Bundle ID 가 다르다 |
+| `Your team has no devices from which to generate a provisioning profile` | 등록된 기기가 없다. 위 2-1 |
+| `No profiles for 'com.sangmin082.jobping'` | 바로 위 오류와 같이 나오면 기기 문제. 혼자 나오면 App ID 를 안 만들었거나 Bundle ID 가 다르다 |
 | `Authentication credentials are invalid` | API 키 역할이 Developer 미만이거나 Issuer ID 가 틀렸다 |
 | 업로드는 됐는데 TestFlight 에 안 뜸 | 처리 중(최대 30분). 그 이상이면 App Store Connect 이메일 확인 |
 | 앱은 뜨는데 공고가 안 옴 | `API_BASE_URL` 변수를 안 넣었거나 백엔드가 아직 시딩 중 |
