@@ -8,10 +8,10 @@ struct PrimaryButtonStyle: ButtonStyle {
     var text: Color = Theme.onAccent
 
     func makeBody(configuration: Configuration) -> some View {
-        Body(configuration: configuration, fill: fill, text: text)
+        Styled(configuration: configuration, fill: fill, text: text)
     }
 
-    private struct Body: View {
+    private struct Styled: View {
         let configuration: Configuration
         let fill: Color
         let text: Color
