@@ -201,7 +201,8 @@ def find_bundle_id(asc: Asc, identifier: str) -> str:
 
 
 def ensure_push(asc: Asc, bundle_id: str) -> None:
-    res = asc.call("GET", f"/bundleIds/{bundle_id}/bundleIdCapabilities", query={"limit": "200"})
+    # 관계 경로라 limit 를 받지 않는다 (넣으면 400).
+    res = asc.call("GET", f"/bundleIds/{bundle_id}/bundleIdCapabilities")
     kinds = {c["attributes"].get("capabilityType") for c in res.get("data", [])}
     if "PUSH_NOTIFICATIONS" in kinds:
         print("App ID: Push Notifications 켜져 있음")
