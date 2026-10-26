@@ -122,9 +122,9 @@ struct JobListView: View {
     private var keywordChips: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
-                SelectChip(title: "전체", isOn: filter == nil) { filter = nil }
+                SelectChip(title: "전체", showsCheck: false, isOn: filter == nil) { filter = nil }
                 ForEach(model.keywords, id: \.self) { k in
-                    SelectChip(title: k, isOn: filter == k) { filter = (filter == k) ? nil : k }
+                    SelectChip(title: k, showsCheck: false, isOn: filter == k) { filter = (filter == k) ? nil : k }
                 }
             }
             .padding(.horizontal, 16)
@@ -145,25 +145,25 @@ struct JobCard: View {
             VStack(alignment: .leading, spacing: 6) {
                 HStack(spacing: 6) {
                     Text(company?.displayName ?? job.company)
-                        .font(.footnote.weight(.semibold))
+                        .font(.jp(13, .semibold, relativeTo: .footnote))
                         .foregroundStyle(Theme.muted)
                         .lineLimit(1)
                     if isNew { NewBadge() }
                     Spacer(minLength: 4)
                     if model.bookmarks.contains(job) {
                         Image(systemName: "bookmark.fill")
-                            .font(.caption2)
+                            .font(.jp(11, relativeTo: .caption2))
                             .foregroundStyle(Theme.accent)
                     }
                     if let d = job.firstSeenDate {
                         Text(RelTime.string(d))
-                            .font(.caption)
+                            .font(.jp(12, relativeTo: .caption))
                             .foregroundStyle(Theme.muted)
                             .monospacedDigit()
                     }
                 }
                 Text(job.title)
-                    .font(.body.weight(.semibold))
+                    .font(.jp(16, .semibold, relativeTo: .body))
                     .foregroundStyle(.primary)
                     .lineLimit(2)
                     .multilineTextAlignment(.leading)

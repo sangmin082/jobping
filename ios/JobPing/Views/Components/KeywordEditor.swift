@@ -32,10 +32,10 @@ struct KeywordEditor: View {
                             ForEach(rest, id: \.self) { s in
                                 Button { keywords.append(s) } label: {
                                     HStack(spacing: 4) {
-                                        Image(systemName: "plus").font(.caption.weight(.bold))
+                                        Image(systemName: "plus").font(.jp(12, .bold, relativeTo: .caption))
                                         Text(s)
                                     }
-                                    .font(.subheadline.weight(.medium))
+                                    .font(.jp(14, .medium, relativeTo: .subheadline))
                                     .foregroundStyle(.primary)
                                     .padding(.horizontal, 12)
                                     .padding(.vertical, 8)
@@ -49,7 +49,7 @@ struct KeywordEditor: View {
                 }
 
                 Text("띄어쓰기·대소문자는 상관없어요. 영어/한국어 동의어(인프라 ↔ infra)도 같이 찾아요. 공고 제목과 세부 직무에서 찾아요.")
-                    .font(.footnote)
+                    .font(.jp(13, relativeTo: .footnote))
                     .foregroundStyle(Theme.muted)
             }
             .padding(.horizontal, 16)
@@ -68,7 +68,7 @@ struct KeywordEditor: View {
                 .textInputAutocapitalization(.never)
             Button(action: add) {
                 Image(systemName: "plus")
-                    .font(.body.weight(.bold))
+                    .font(.jp(16, .bold, relativeTo: .body))
                     .foregroundStyle(Theme.onAccent)
                     .frame(width: 36, height: 36)
                     .background(Theme.accent, in: Circle())
@@ -101,12 +101,12 @@ private struct RemovableChip: View {
         HStack(spacing: 6) {
             Text(title).lineLimit(1)
             Button(action: remove) {
-                Image(systemName: "xmark").font(.caption2.weight(.bold))
+                Image(systemName: "xmark").font(.jp(11, .bold, relativeTo: .caption2))
             }
             .buttonStyle(.plain)
             .accessibilityLabel("\(title) 지우기")
         }
-        .font(.subheadline.weight(.semibold))
+        .font(.jp(14, .semibold, relativeTo: .subheadline))
         .foregroundStyle(Theme.onAccent)
         .padding(.leading, 14)
         .padding(.trailing, 10)

@@ -87,9 +87,9 @@ private struct GroupCard: View {
             HStack(spacing: 10) {
                 CompanyBadge(group: group.group, size: 34)
                 VStack(alignment: .leading, spacing: 1) {
-                    Text(group.group).font(.headline)
-                    Text(count == 0 ? "계열사 \(keys.count)곳" : "\(keys.count)곳 중 \(count)곳 선택")
-                        .font(.caption)
+                    Text(group.group).font(.jp(17, .semibold, relativeTo: .headline))
+                    Text(count == 0 ? summary : "\(keys.count)곳 중 \(count)곳 선택")
+                        .font(.jp(12, relativeTo: .caption))
                         .foregroundStyle(count == 0 ? Theme.muted : Theme.accent)
                         .monospacedDigit()
                 }
@@ -101,19 +101,27 @@ private struct GroupCard: View {
                         selected += keys.filter { !selected.contains($0) }
                     }
                 }
-                .font(.footnote.weight(.semibold))
+                .font(.jp(13, .semibold, relativeTo: .footnote))
                 .foregroundStyle(Theme.accent)
                 .buttonStyle(.plain)
             }
             FlowLayout(spacing: 8) {
                 ForEach(group.companies) { c in
-                    SelectChip(title: c.displayName, isOn: selected.contains(c.key)) {
+                    SelectChip(title: c.displayName, detail: c.lastFetched.map(String.init),
+                               isOn: selected.contains(c.key)) {
                         if let i = selected.firstIndex(of: c.key) { selected.remove(at: i) } else { selected.append(c.key) }
                     }
                 }
             }
         }
         .card()
+    }
+
+    /// "계열사 6곳 · 공고 128건". 공고 수는 계열사별 현재 경력 공고의 합이다.
+    private var summary: String {
+        let counts = group.companies.compactMap(\.lastFetched)
+        let base = "계열사 \(group.companies.count)곳"
+        return counts.isEmpty ? base : "\(base) · 공고 \(counts.reduce(0, +))건"
     }
 }
 
@@ -126,15 +134,23 @@ private struct CompanyTile: View {
     var body: some View {
         Button(action: action) {
             HStack(spacing: 10) {
-                CompanyBadge(group: company.group, size: 32)
-                Text(company.displayName)
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.primary)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.8)
+                CompanyBadge(group: company.group, size: 34)
+                VStack(alignment: .leading, spacing: 1) {
+                    Text(company.displayName)
+                        .font(.jp(14, .semibold, relativeTo: .subheadline))
+                        .foregroundStyle(.primary)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
+                    if let n = company.lastFetched {
+                        Text(n == 0 ? "지금 공고 없음" : "공고 \(n)건")
+                            .font(.jp(12, relativeTo: .caption))
+                            .foregroundStyle(Theme.muted)
+                            .monospacedDigit()
+                    }
+                }
                 Spacer(minLength: 0)
                 Image(systemName: isOn ? "checkmark.circle.fill" : "circle")
-                    .font(.title3)
+                    .font(.jp(19, relativeTo: .title3))
                     .foregroundStyle(isOn ? Theme.accent : Theme.line)
             }
             .padding(12)

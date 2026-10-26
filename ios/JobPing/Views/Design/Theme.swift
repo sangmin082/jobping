@@ -105,3 +105,25 @@ enum RelTime {
         return f
     }()
 }
+
+// MARK: - 글꼴
+
+/// Pretendard. 시스템 한글(Apple SD 산돌고딕 Neo)보다 자간·굵기 단계가 고르게 잡혀 있어
+/// 한국어 UI 에서 사실상 표준이다. SIL OFL 1.1 — 라이선스는 Resources/Fonts/Pretendard-OFL.txt.
+extension Font {
+    /// `relativeTo` 로 Dynamic Type(글자 크기 설정)을 따라간다.
+    static func jp(_ size: CGFloat, _ weight: Font.Weight = .regular,
+                   relativeTo style: Font.TextStyle = .body) -> Font {
+        .custom(pretendard(weight), size: size, relativeTo: style)
+    }
+
+    private static func pretendard(_ weight: Font.Weight) -> String {
+        switch weight {
+        case .heavy, .black: "Pretendard-ExtraBold"
+        case .bold: "Pretendard-Bold"
+        case .semibold: "Pretendard-SemiBold"
+        case .medium: "Pretendard-Medium"
+        default: "Pretendard-Regular"
+        }
+    }
+}

@@ -107,7 +107,7 @@ struct OnboardingView: View {
                 step -= 1
             } label: {
                 Image(systemName: "chevron.left")
-                    .font(.body.weight(.semibold))
+                    .font(.jp(16, .semibold, relativeTo: .body))
                     .foregroundStyle(.primary)
                     .frame(width: 40, height: 40)
             }
@@ -142,10 +142,12 @@ private struct StepTitle: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
-                .font(.system(size: 28, weight: .bold))
+                .font(.jp(28, .bold, relativeTo: .title))
+                .tracking(-0.5)
+                .lineSpacing(2)
                 .fixedSize(horizontal: false, vertical: true)
             Text(subtitle)
-                .font(.subheadline)
+                .font(.jp(14, relativeTo: .subheadline))
                 .foregroundStyle(Theme.muted)
                 .fixedSize(horizontal: false, vertical: true)
         }
@@ -161,52 +163,58 @@ private struct WelcomeStep: View {
     let next: () -> Void
 
     var body: some View {
-        ZStack {
-            LinearGradient(colors: [Theme.navyDeep, Theme.navy], startPoint: .topLeading, endPoint: .bottomTrailing)
-                .ignoresSafeArea()
-            // 아이콘의 핑 물결을 배경에 크게 깐다. 장식이라 아주 옅게.
-            BrandMark()
-                .frame(width: 560, height: 560)
-                .opacity(0.06)
-                .offset(x: 150, y: -250)
-                .allowsHitTesting(false)
-
-            VStack(alignment: .leading, spacing: 0) {
-                Spacer()
-                AppIconView(size: 76)
-                    .overlay(RoundedRectangle(cornerRadius: 76 * 0.2237, style: .continuous)
-                        .strokeBorder(.white.opacity(0.15), lineWidth: 1))
-                    .shadow(color: .black.opacity(0.3), radius: 16, y: 8)
-                Text("관심 회사에\n새 경력 공고가 뜨면,\n가장 먼저.")
-                    .font(.system(size: 36, weight: .bold))
-                    .foregroundStyle(.white)
-                    .lineSpacing(2)
-                    .padding(.top, 28)
-                Text("삼성·SK·LG·네이버·토스 등 100여 개 회사의 채용 페이지를 30분마다 확인해서 알려드려요.")
-                    .font(.body)
-                    .foregroundStyle(.white.opacity(0.7))
-                    .fixedSize(horizontal: false, vertical: true)
-                    .padding(.top, 14)
-                Spacer()
-                HStack(spacing: 8) {
-                    pill("완전 무료")
-                    pill("가입 없음")
-                    pill("광고 없음")
-                }
-                Button("시작하기", action: next)
-                    .buttonStyle(PrimaryButtonStyle(fill: Theme.mint, text: Theme.navyDeep))
-                    .padding(.top, 20)
+        VStack(alignment: .leading, spacing: 0) {
+            Spacer()
+            AppIconView(size: 72)
+                .overlay(RoundedRectangle(cornerRadius: 72 * 0.2237, style: .continuous)
+                    .strokeBorder(.white.opacity(0.15), lineWidth: 1))
+                .shadow(color: .black.opacity(0.35), radius: 18, y: 10)
+            (Text("관심 회사에\n새 경력 공고가 뜨면,\n") + Text("가장 먼저.").foregroundStyle(Theme.mint))
+                .font(.jp(34, .bold, relativeTo: .largeTitle))
+                .tracking(-0.6)
+                .lineSpacing(4)
+                .foregroundStyle(.white)
+                .padding(.top, 28)
+            Text("삼성·SK·LG·네이버·토스 등 100여 개 회사의 채용 페이지를 30분마다 확인해서 알려드려요.")
+                .font(.jp(16, relativeTo: .body))
+                .lineSpacing(3)
+                .foregroundStyle(.white.opacity(0.68))
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.top, 16)
+            Spacer()
+            HStack(spacing: 8) {
+                pill("완전 무료")
+                pill("가입 없음")
+                pill("광고 없음")
             }
-            .padding(.horizontal, 24)
-            .padding(.bottom, 12)
+            Button("시작하기", action: next)
+                .buttonStyle(PrimaryButtonStyle(fill: Theme.mint, text: Theme.navyDeep))
+                .padding(.top, 20)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 24)
+        .padding(.bottom, 12)
+        // 배경은 레이아웃 크기에 안 들어가게 background 로 깐다. ZStack 에 넣으면 큰 장식이
+        // 화면 폭을 키워서 글자가 왼쪽으로 밀려 잘린다.
+        .background {
+            ZStack(alignment: .topTrailing) {
+                LinearGradient(colors: [Theme.navyDeep, Theme.navy], startPoint: .topLeading, endPoint: .bottomTrailing)
+                BrandMark()
+                    .frame(width: 520, height: 520)
+                    .opacity(0.07)
+                    .offset(x: 170, y: -40)
+            }
+            .ignoresSafeArea()
+            .clipped()
+            .allowsHitTesting(false)
         }
         .environment(\.colorScheme, .dark)
     }
 
     private func pill(_ text: String) -> some View {
         HStack(spacing: 5) {
-            Image(systemName: "checkmark").font(.caption2.weight(.heavy)).foregroundStyle(Theme.mint)
-            Text(text).font(.footnote.weight(.semibold)).foregroundStyle(.white.opacity(0.85))
+            Image(systemName: "checkmark").font(.jp(11, .heavy, relativeTo: .caption2)).foregroundStyle(Theme.mint)
+            Text(text).font(.jp(13, .semibold, relativeTo: .footnote)).foregroundStyle(.white.opacity(0.85))
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 7)
@@ -214,37 +222,59 @@ private struct WelcomeStep: View {
     }
 }
 
-/// 잠금화면 알림처럼 생긴 미리보기. 뒤에 한 장 더 겹쳐 "계속 온다"는 느낌을 준다.
+/// 잠금화면 미리보기. 고른 회사로 만든 알림이 시계 아래 떠 있다 — "이렇게 온다"를 바로 보여준다.
 private struct NotificationPreview: View {
     let company: String
     let title: String
 
     var body: some View {
-        ZStack(alignment: .top) {
-            banner(company: "네이버", title: "백엔드 개발자 (검색 플랫폼)", time: "28분 전")
-                .scaleEffect(0.92)
-                .offset(y: 22)
-                .opacity(0.55)
-            banner(company: company, title: title, time: "지금")
+        VStack(spacing: 0) {
+            Text(RelTime.today())
+                .font(.jp(15, .semibold, relativeTo: .subheadline))
+                .foregroundStyle(.white.opacity(0.75))
+            Text("9:41")
+                .font(.jp(64, .bold, relativeTo: .largeTitle))
+                .tracking(-1)
+                .foregroundStyle(.white)
+            VStack(spacing: 8) {
+                banner(company: company, title: title, time: "지금")
+                banner(company: "네이버", title: "백엔드 개발자 (검색 플랫폼)", time: "28분 전")
+                    .opacity(0.8)
+            }
+            .padding(.top, 20)
         }
-        .padding(.bottom, 22)
+        .padding(.top, 24)
+        .padding(.bottom, 14)
+        .padding(.horizontal, 12)
+        .frame(maxWidth: .infinity)
+        .background {
+            ZStack(alignment: .topTrailing) {
+                LinearGradient(colors: [Theme.navyDeep, Theme.navy], startPoint: .top, endPoint: .bottom)
+                BrandMark()
+                    .frame(width: 360, height: 360)
+                    .opacity(0.06)
+                    .offset(x: 120, y: -60)
+            }
+            .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
+        }
     }
 
+    /// 잠금화면 알림 모양. 앱의 다크/라이트와 상관없이 밝은 반투명 카드다.
     private func banner(company: String, title: String, time: String) -> some View {
-        HStack(alignment: .top, spacing: 12) {
-            AppIconView(size: 40)
-            VStack(alignment: .leading, spacing: 2) {
+        HStack(alignment: .center, spacing: 10) {
+            AppIconView(size: 36)
+            VStack(alignment: .leading, spacing: 1) {
                 HStack {
-                    Text(company).font(.subheadline.weight(.semibold)).lineLimit(1)
+                    Text(company).font(.jp(14, .semibold, relativeTo: .subheadline)).lineLimit(1)
                     Spacer()
-                    Text(time).font(.caption).foregroundStyle(Theme.muted)
+                    Text(time).font(.jp(12, relativeTo: .caption)).foregroundStyle(Color.black.opacity(0.45))
                 }
-                Text(title).font(.subheadline).lineLimit(2)
+                Text(title).font(.jp(14, relativeTo: .subheadline)).lineLimit(1)
             }
+            .foregroundStyle(Color.black.opacity(0.88))
         }
-        .padding(14)
-        .background(Theme.card, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous).strokeBorder(Theme.line, lineWidth: 1))
-        .shadow(color: .black.opacity(0.08), radius: 20, y: 10)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 11)
+        .background(Color.white.opacity(0.9), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
     }
 }

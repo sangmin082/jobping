@@ -40,6 +40,13 @@ targets:
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
         UIBackgroundModes: [remote-notification]
         ITSAppUsesNonExemptEncryption: false
+        # Pretendard (SIL OFL). Resources/Fonts 의 파일 이름.
+        UIAppFonts:
+          - Pretendard-Regular.otf
+          - Pretendard-Medium.otf
+          - Pretendard-SemiBold.otf
+          - Pretendard-Bold.otf
+          - Pretendard-ExtraBold.otf
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: false
     entitlements:

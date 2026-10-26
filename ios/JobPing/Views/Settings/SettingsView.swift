@@ -36,9 +36,6 @@ struct SettingsView: View {
                         }
                         .buttonStyle(.plain)
                         .card(padding: 0)
-                        if !model.selectedCompanies.isEmpty {
-                            companyStrip
-                        }
                     }
 
                     VStack(alignment: .leading, spacing: 10) {
@@ -46,7 +43,7 @@ struct SettingsView: View {
                         HStack(spacing: 14) {
                             IconTile(icon: "bell.fill", tint: Color(hex: 0xE5484D))
                             Toggle("새 공고 알림", isOn: $model.pushEnabled)
-                                .font(.body.weight(.medium))
+                                .font(.jp(16, .medium, relativeTo: .body))
                                 .tint(Theme.accent)
                                 .onChange(of: model.pushEnabled) { _, on in
                                     Task {
@@ -59,7 +56,7 @@ struct SettingsView: View {
                         .padding(.horizontal, 14)
                         .card(padding: 0)
                         Text("밤 11시~아침 8시엔 모아뒀다가 아침에 한 번에 보내요. 한 번에 5건이 넘으면 묶어서 알려요.")
-                            .font(.footnote)
+                            .font(.jp(13, relativeTo: .footnote))
                             .foregroundStyle(Theme.muted)
                             .padding(.horizontal, 4)
                     }
@@ -79,14 +76,14 @@ struct SettingsView: View {
                         .buttonStyle(.plain)
                         .card(padding: 0)
                         Text("잡핑은 각 기업과 무관한 비공식 앱이에요. 공고는 각 회사의 공식 채용 페이지에서 가져오고, 원문은 해당 페이지에서 확인해주세요. 잡핑은 무료예요.")
-                            .font(.footnote)
+                            .font(.jp(13, relativeTo: .footnote))
                             .foregroundStyle(Theme.muted)
                             .padding(.horizontal, 4)
                     }
 
                     if let err = model.lastError {
                         Text(err)
-                            .font(.footnote)
+                            .font(.jp(13, relativeTo: .footnote))
                             .foregroundStyle(Color(hex: 0xE5484D))
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .card(padding: 14)
@@ -99,28 +96,6 @@ struct SettingsView: View {
             .toolbar(.hidden, for: .navigationBar)
         }
     }
-
-    /// 고른 회사 타일 줄. 몇 곳인지 숫자보다 빨리 읽힌다.
-    private var companyStrip: some View {
-        let picked = model.selectedCompanies.compactMap { model.company(for: $0) }
-        let groups = picked.reduce(into: [String]()) { if !$0.contains($1.group) { $0.append($1.group) } }
-        return ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: -6) {
-                ForEach(groups.prefix(8), id: \.self) { g in
-                    CompanyBadge(group: g, size: 30)
-                        .overlay(RoundedRectangle(cornerRadius: 30 * 0.28, style: .continuous)
-                            .strokeBorder(Theme.bg, lineWidth: 2))
-                }
-                if groups.count > 8 {
-                    Text("+\(groups.count - 8)")
-                        .font(.caption.weight(.bold))
-                        .foregroundStyle(Theme.muted)
-                        .padding(.leading, 12)
-                }
-            }
-            .padding(.horizontal, 4)
-        }
-    }
 }
 
 private struct IconTile: View {
@@ -129,7 +104,7 @@ private struct IconTile: View {
 
     var body: some View {
         Image(systemName: icon)
-            .font(.system(size: 14, weight: .semibold))
+            .font(.jp(14, .semibold))
             .foregroundStyle(.white)
             .frame(width: 28, height: 28)
             .background(tint, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
@@ -148,18 +123,18 @@ private struct SettingRow: View {
         HStack(spacing: 14) {
             IconTile(icon: icon, tint: tint)
             Text(title)
-                .font(.body.weight(.medium))
+                .font(.jp(16, .medium, relativeTo: .body))
                 .foregroundStyle(.primary)
             Spacer(minLength: 8)
             if let value {
                 Text(value)
-                    .font(.subheadline)
+                    .font(.jp(14, relativeTo: .subheadline))
                     .foregroundStyle(Theme.muted)
                     .lineLimit(1)
             }
             if chevron {
                 Image(systemName: external ? "arrow.up.right" : "chevron.right")
-                    .font(.footnote.weight(.semibold))
+                    .font(.jp(13, .semibold, relativeTo: .footnote))
                     .foregroundStyle(Theme.muted.opacity(0.7))
             }
         }

@@ -19,7 +19,7 @@ struct PrimaryButtonStyle: ButtonStyle {
 
         var body: some View {
             configuration.label
-                .font(.body.weight(.semibold))
+                .font(.jp(16, .semibold, relativeTo: .body))
                 .frame(maxWidth: .infinity, minHeight: 54)
                 .foregroundStyle(enabled ? text : Theme.muted)
                 .background(enabled ? fill : Theme.chip,
@@ -35,7 +35,7 @@ struct PrimaryButtonStyle: ButtonStyle {
 struct QuietButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.subheadline.weight(.semibold))
+            .font(.jp(14, .semibold, relativeTo: .subheadline))
             .foregroundStyle(Theme.muted)
             .frame(maxWidth: .infinity, minHeight: 44)
             .opacity(configuration.isPressed ? 0.5 : 1)
@@ -74,11 +74,11 @@ struct SectionLabel: View {
     var body: some View {
         HStack(alignment: .firstTextBaseline) {
             Text(title)
-                .font(.subheadline.weight(.bold))
+                .font(.jp(14, .bold, relativeTo: .subheadline))
                 .foregroundStyle(.primary)
             if let trailing {
                 Text(trailing)
-                    .font(.subheadline.weight(.semibold))
+                    .font(.jp(14, .semibold, relativeTo: .subheadline))
                     .foregroundStyle(Theme.muted)
                     .monospacedDigit()
             }
@@ -99,18 +99,19 @@ struct ScreenHeader: View {
             HStack {
                 if let eyebrow {
                     Text(eyebrow)
-                        .font(.footnote.weight(.semibold))
+                        .font(.jp(13, .semibold, relativeTo: .footnote))
                         .foregroundStyle(Theme.muted)
                 }
                 Spacer()
                 if loading { ProgressView().controlSize(.small) }
             }
             Text(title)
-                .font(.system(size: 32, weight: .bold))
+                .font(.jp(32, .bold, relativeTo: .largeTitle))
+                .tracking(-0.6)
                 .foregroundStyle(.primary)
             if let subtitle {
                 Text(subtitle)
-                    .font(.subheadline)
+                    .font(.jp(14, relativeTo: .subheadline))
                     .foregroundStyle(Theme.muted)
                     .padding(.top, 2)
             }
@@ -130,14 +131,14 @@ struct EmptyState: View {
     var body: some View {
         VStack(spacing: 12) {
             Image(systemName: icon)
-                .font(.title2.weight(.semibold))
+                .font(.jp(21, .semibold, relativeTo: .title2))
                 .foregroundStyle(Theme.accent)
                 .frame(width: 64, height: 64)
                 .background(Theme.chip, in: Circle())
             Text(title)
-                .font(.headline)
+                .font(.jp(17, .semibold, relativeTo: .headline))
             Text(message)
-                .font(.subheadline)
+                .font(.jp(14, relativeTo: .subheadline))
                 .foregroundStyle(Theme.muted)
                 .multilineTextAlignment(.center)
         }
@@ -157,7 +158,7 @@ struct CompanyBadge: View {
     var body: some View {
         let s = GroupStyle.of(group)
         Text(s.label)
-            .font(.system(size: size * 0.3, weight: .heavy))
+            .font(.jp(size * 0.3, .heavy))
             .minimumScaleFactor(0.4)
             .lineLimit(1)
             .padding(.horizontal, size * 0.1)
@@ -174,7 +175,7 @@ struct JobTag: View {
 
     var body: some View {
         Text(text)
-            .font(.caption.weight(.medium))
+            .font(.jp(12, .medium, relativeTo: .caption))
             .foregroundStyle(Theme.muted)
             .lineLimit(1)
             .padding(.horizontal, 8)
@@ -187,30 +188,38 @@ struct JobTag: View {
 struct NewBadge: View {
     var body: some View {
         Text("NEW")
-            .font(.system(size: 10, weight: .heavy))
-            .tracking(0.5)
+            .font(.jp(10, .heavy))
+            .tracking(0.4)
             .foregroundStyle(Theme.fresh)
-            .padding(.horizontal, 5)
-            .padding(.vertical, 2)
-            .overlay(Capsule().strokeBorder(Theme.fresh, lineWidth: 1.2))
+            .padding(.horizontal, 6)
+            .padding(.vertical, 2.5)
+            .background(Theme.fresh.opacity(0.12), in: Capsule())
     }
 }
 
-/// 켜고 끄는 칩. 회사·키워드 필터에 쓴다.
+/// 켜고 끄는 칩. 회사 고르기(체크 표시 + 공고 수)와 키워드 필터(체크 없음)에 쓴다.
 struct SelectChip: View {
     let title: String
+    var detail: String? = nil
+    var showsCheck = true
     let isOn: Bool
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
             HStack(spacing: 5) {
-                if isOn {
-                    Image(systemName: "checkmark").font(.caption.weight(.bold))
+                if isOn && showsCheck {
+                    Image(systemName: "checkmark").font(.jp(12, .bold, relativeTo: .caption))
                 }
                 Text(title).lineLimit(1)
+                if let detail {
+                    Text(detail)
+                        .font(.jp(12, .medium, relativeTo: .caption))
+                        .foregroundStyle(isOn ? Theme.onAccent.opacity(0.7) : Theme.muted)
+                        .monospacedDigit()
+                }
             }
-            .font(.subheadline.weight(isOn ? .semibold : .medium))
+            .font(.jp(14, isOn ? .semibold : .medium, relativeTo: .subheadline))
             .foregroundStyle(isOn ? Theme.onAccent : Color.primary)
             .padding(.horizontal, 14)
             .padding(.vertical, 9)

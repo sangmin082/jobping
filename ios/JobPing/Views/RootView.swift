@@ -12,6 +12,7 @@ struct RootView: View {
             }
         }
         .tint(Theme.accent)
+        .font(.jp(16))      // 글꼴을 따로 안 정한 글자(TextField, Toggle 이름…)도 Pretendard
         .task { await model.loadCompanies() }
     }
 }
