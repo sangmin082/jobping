@@ -26,24 +26,9 @@ struct CompanyGroup: Identifiable, Hashable {
     var id: String { group }
 }
 
-struct FreeTier: Codable, Hashable {
-    let maxKeywords: Int
-    let maxCompanies: Int
-
-    enum CodingKeys: String, CodingKey {
-        case maxKeywords = "max_keywords"
-        case maxCompanies = "max_companies"
-    }
-}
-
+/// 서버는 예전 앱을 위해 `free_tier` 도 보내지만 전면 무료라 읽지 않는다.
 struct CompaniesResponse: Codable {
     let companies: [Company]
-    let freeTier: FreeTier
-
-    enum CodingKeys: String, CodingKey {
-        case companies
-        case freeTier = "free_tier"
-    }
 }
 
 /// 서버의 공고. 본문은 없다 — 원문은 항상 회사 사이트에서 연다.
@@ -102,11 +87,9 @@ struct DeviceRegistration: Codable {
 
 struct DeviceResponse: Codable {
     let installId: String
-    let tier: String
     let pushRegistered: Bool
 
     enum CodingKeys: String, CodingKey {
-        case tier
         case installId = "install_id"
         case pushRegistered = "push_registered"
     }

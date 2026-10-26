@@ -5,7 +5,8 @@
 순수 함수라 테스트하기 쉽고, 드라이런에서 실제 발송 없이 결과를 볼 수 있어서다.
 
 규칙:
-* 무료 티어는 서버에서 자른다 — 키워드 1개, 회사 3곳. 앱이 막아도 서버가 막는다
+* 전면 무료다. 키워드·회사 개수 제한이 없다 (상한은 API 입력 검증의 20개·전체 계열사)
+* 키워드는 선택이다. 없으면 고른 회사의 새 공고를 전부 보낸다. 회사도 키워드도 없으면 안 보낸다
 * 디바이스당 1회 실행 최대 5건. 넘으면 "새 공고 N건" 묶음 하나
 * 조용한 시간(23–08 KST)엔 보류(`pending`)했다가 아침에 묶어 보낸다
 * `deliveries` 조건부 쓰기로 같은 (사람, 공고) 는 한 번만 보낸다
@@ -28,8 +29,6 @@ log = logging.getLogger(__name__)
 
 KST = timezone(timedelta(hours=9))
 
-FREE_MAX_KEYWORDS = 1
-FREE_MAX_COMPANIES = 3
 
 
 @dataclass
@@ -57,11 +56,9 @@ def is_quiet(now: datetime, start_hour: int = 23, end_hour: int = 8) -> bool:
 
 
 def effective_filters(device: dict) -> tuple[list[str], list[str]]:
-    """티어에 따라 키워드·회사를 자른다. 순서는 사용자가 등록한 순서다."""
+    """디바이스의 키워드·회사. 빈 값만 거른다 — 티어 제한은 없다(전면 무료)."""
     keywords = [k for k in device.get("keywords") or [] if k]
     companies = [c for c in device.get("companies") or [] if c]
-    if device.get("tier", "free") != "pro":
-        keywords, companies = keywords[:FREE_MAX_KEYWORDS], companies[:FREE_MAX_COMPANIES]
     return keywords, companies
 
 
@@ -76,8 +73,8 @@ def plan(store: Store, devices: list[dict], jobs: list[Job], *, now: datetime,
         if not token or not install_id:
             continue
         keywords, companies = effective_filters(device)
-        if not keywords:
-            continue
+        if not keywords and not companies:
+            continue  # 아무것도 안 골랐다. 전체 공고를 다 보내면 스팸이다
         hits = match_all(jobs, keywords, companies=companies or None)
         # 이미 보냈거나 보류 중인 공고는 뺀다. 조건부 쓰기라 동시 실행에도 안전하다.
         fresh = []

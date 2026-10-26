@@ -15,7 +15,7 @@ final class ModelTests: XCTestCase {
         XCTAssertNil(resp.jobs[0].postedDate)
     }
 
-    func testDecodesCompaniesWithFreeTier() throws {
+    func testDecodesCompaniesIgnoringLegacyFreeTier() throws {
         let json = """
         {"companies":[{"key":"sk_hynix","display_name":"SK하이닉스","source":"skcareers","group":"SK",
                        "last_success_at":null,"last_fetched":88}],
@@ -23,7 +23,6 @@ final class ModelTests: XCTestCase {
         """
         let resp = try JSONDecoder().decode(CompaniesResponse.self, from: Data(json.utf8))
         XCTAssertEqual(resp.companies[0].displayName, "SK하이닉스")
-        XCTAssertEqual(resp.freeTier.maxCompanies, 3)
     }
 
     func testISO8601AcceptsBothShapes() {

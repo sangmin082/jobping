@@ -14,9 +14,7 @@ final class AppModel {
 
     // 서버에서 받은 것
     var companies: [Company] = []
-    var freeTier = FreeTier(maxKeywords: 1, maxCompanies: 3)
     var jobs: [Job] = []
-    var tier: String = "free"
 
     // 상태
     var isLoading = false
@@ -52,12 +50,6 @@ final class AppModel {
         defaults.set(onboardingDone, forKey: "onboardingDone")
     }
 
-    var isPro: Bool { tier == "pro" }
-
-    /// 무료 티어는 서버도 자르지만, 앱이 먼저 보여줘야 사용자가 왜 안 오는지 안다.
-    var effectiveKeywords: [String] { isPro ? keywords : Array(keywords.prefix(freeTier.maxKeywords)) }
-    var effectiveCompanies: [String] { isPro ? selectedCompanies : Array(selectedCompanies.prefix(freeTier.maxCompanies)) }
-
     var companiesByGroup: [CompanyGroup] {
         let grouped = Dictionary(grouping: companies, by: \.group)
         return grouped.keys.sorted().map { CompanyGroup(group: $0, companies: grouped[$0] ?? []) }
@@ -72,7 +64,6 @@ final class AppModel {
         do {
             let resp = try await api.companies()
             companies = resp.companies
-            freeTier = resp.freeTier
             if let data = try? JSONEncoder().encode(companies) {
                 defaults.set(data, forKey: "companies.cache")
             }
@@ -83,11 +74,11 @@ final class AppModel {
 
     func refreshJobs() async {
         guard let api else { lastError = APIError.badURL.localizedDescription; return }
-        guard !effectiveCompanies.isEmpty else { jobs = []; return }
+        guard !selectedCompanies.isEmpty else { jobs = []; return }
         isLoading = true
         defer { isLoading = false }
         do {
-            let resp = try await api.jobs(companies: effectiveCompanies)
+            let resp = try await api.jobs(companies: selectedCompanies)
             jobs = resp.jobs
             lastError = nil
             if let data = try? JSONEncoder().encode(jobs) {
@@ -109,8 +100,7 @@ final class AppModel {
             appVersion: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
         )
         do {
-            let resp = try await api.register(reg)
-            tier = resp.tier
+            _ = try await api.register(reg)
         } catch {
             lastError = error.localizedDescription
         }

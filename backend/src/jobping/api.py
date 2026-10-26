@@ -22,7 +22,6 @@ from decimal import Decimal
 from . import registry
 from .companies import BY_KEY
 from .models import normalize_text
-from .notifier import FREE_MAX_COMPANIES, FREE_MAX_KEYWORDS
 from .store import Store
 
 MAX_LIMIT = 100
@@ -70,8 +69,10 @@ def get_companies(store: Store) -> dict:
             "last_success_at": h.get("last_success_at"),
             "last_fetched": _int(h.get("last_fetched")),
         })
-    return {"companies": items, "free_tier": {"max_keywords": FREE_MAX_KEYWORDS,
-                                                "max_companies": FREE_MAX_COMPANIES}}
+    # free_tier 는 전면 무료 전에 나간 앱(빌드 12)이 필수 필드로 읽는다. 빼면 그 앱의
+    # 회사 목록이 깨진다. 값은 API 입력 상한이라 그 앱에서도 사실상 제한이 없다.
+    return {"companies": items, "free_tier": {"max_keywords": MAX_KEYWORDS,
+                                                "max_companies": len(items)}}
 
 
 def get_jobs(store: Store, query: dict) -> dict:
@@ -118,7 +119,7 @@ def put_device(store: Store, body: dict, now: datetime) -> dict:
         "keywords": keywords,
         "companies": companies,
         "push_enabled": bool(body.get("push_enabled", True)),
-        "tier": existing.get("tier", "free"),   # 티어는 결제 검증(5단계)만 바꾼다
+        "tier": existing.get("tier", "free"),   # 전면 무료라 쓰는 곳이 없다. 예전 앱 호환용으로만 둔다
         "updated_at": now.isoformat(),
         "created_at": existing.get("created_at", now.isoformat()),
         "app_version": str(body.get("app_version") or existing.get("app_version") or ""),
@@ -129,10 +130,7 @@ def put_device(store: Store, body: dict, now: datetime) -> dict:
     tier = device["tier"]
     return {
         "install_id": install_id, "tier": tier,
-        "effective": {
-            "keywords": keywords if tier == "pro" else keywords[:FREE_MAX_KEYWORDS],
-            "companies": companies if tier == "pro" else companies[:FREE_MAX_COMPANIES],
-        },
+        "effective": {"keywords": keywords, "companies": companies},
         "push_registered": bool(device.get("device_token")),
     }
 
@@ -153,7 +151,7 @@ def _clean_keywords(raw) -> list[str]:
         if len(k) > MAX_KEYWORD_LEN:
             raise ApiError(400, f"키워드가 너무 길다: {k[:20]}…")
         # 매칭이 같은 것으로 보는 표기("Dev Ops"/"devops")는 하나로 센다.
-        # 안 그러면 무료 티어에서 같은 키워드가 두 자리를 차지한다.
+        # 안 그러면 같은 키워드가 키워드 상한(20개)에서 두 자리를 차지한다.
         norm = normalize_text(k)
         if norm and norm not in seen:
             seen.add(norm)

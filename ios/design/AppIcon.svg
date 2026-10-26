@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+<defs>
+<linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#111D47"/><stop offset="1" stop-color="#26338A"/></linearGradient>
+<mask id="cut" maskUnits="userSpaceOnUse" x="0" y="0" width="1024" height="1024">
+  <rect width="1024" height="1024" fill="#fff"/>
+  <circle cx="738" cy="366" r="108" fill="#000"/>
+  <rect x="216" y="588" width="540" height="20" fill="#000"/>
+  <rect x="429" y="553" width="114" height="90" rx="28" fill="#000"/>
+</mask>
+</defs>
+<rect width="1024" height="1024" fill="url(#g)"/>
+<g mask="url(#cut)" fill="#FFFFFF">
+  <rect x="378" y="328" width="216" height="140" rx="44" fill="none" stroke="#FFFFFF" stroke-width="44"/>
+  <rect x="216" y="432" width="540" height="370" rx="78"/>
+</g>
+<rect x="447" y="571" width="78" height="54" rx="14" fill="#FFFFFF"/>
+<path d="M763.7,220.2 A148,148 0 0 1 884.6,386.6" fill="none" stroke="#3DF5A2" stroke-width="28" stroke-linecap="round" opacity="0.95"/><path d="M773.4,165.1 A204,204 0 0 1 940.0,394.4" fill="none" stroke="#3DF5A2" stroke-width="28" stroke-linecap="round" opacity="0.5"/>
+<circle cx="738" cy="366" r="82" fill="#3DF5A2"/>
+</svg>

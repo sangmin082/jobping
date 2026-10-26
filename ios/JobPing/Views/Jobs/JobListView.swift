@@ -11,7 +11,7 @@ struct JobListView: View {
             Group {
                 if model.jobs.isEmpty && !model.isLoading {
                     ContentUnavailableView(
-                        model.effectiveCompanies.isEmpty ? "구독한 회사가 없어요" : "아직 공고가 없어요",
+                        model.selectedCompanies.isEmpty ? "구독한 회사가 없어요" : "아직 공고가 없어요",
                         systemImage: "tray",
                         description: Text(model.lastError ?? "당겨서 새로고침")
                     )

@@ -42,7 +42,8 @@ class TestCompanies:
         assert by["sk_hynix"]["last_fetched"] == 88
         assert by["sk_hynix"]["group"] == "SK"
         assert by["tesla_kr"]["last_success_at"] is None
-        assert body["free_tier"] == {"max_keywords": 1, "max_companies": 3}
+        # 예전 앱 호환용. 값은 사실상 무제한(키워드 상한 20, 회사는 전체)이다.
+        assert body["free_tier"] == {"max_keywords": 20, "max_companies": len(body["companies"])}
 
 
 class TestJobs:
@@ -89,10 +90,13 @@ class TestDevices:
         d = store.devices[UUID]
         assert d["keywords"] == ["iOS"] and d["device_token"] == "ab" * 32  # 토큰은 유지
 
-    def test_reports_free_tier_effective_filters(self, store):
+    def test_free_user_gets_every_keyword_and_company(self, store):
+        """전면 무료. 티어로 자르지 않는다."""
+        companies = ["sk_hynix", "tesla_kr", "samsung_ds", "naver"]
         _, body = call(store, "POST", "/v1/devices", body={
-            "install_id": UUID, "keywords": ["a", "b"], "companies": ["sk_hynix", "tesla_kr", "samsung_ds", "naver"]})
-        assert body["effective"] == {"keywords": ["a"], "companies": ["sk_hynix", "tesla_kr", "samsung_ds"]}
+            "install_id": UUID, "keywords": ["a", "b"], "companies": companies})
+        assert body["tier"] == "free"
+        assert body["effective"] == {"keywords": ["a", "b"], "companies": companies}
 
     def test_client_cannot_set_tier(self, store):
         """티어는 결제 검증만 바꾼다. 본문의 tier 는 무시된다."""

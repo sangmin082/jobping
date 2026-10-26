@@ -1,6 +1,7 @@
 import SwiftUI
 
-/// 키워드 입력. 순서가 곧 우선순위다 — 무료 티어는 첫 N개만 알림이 간다.
+/// 키워드 입력. 선택 사항이다 — 비우면 고른 회사의 새 공고를 전부 받는다.
+/// 순서는 알림에 어떤 키워드로 걸렸는지 보여줄 때만 쓴다(먼저 걸린 것).
 struct KeywordEditor: View {
     @Binding var keywords: [String]
     @State private var draft = ""
@@ -20,11 +21,11 @@ struct KeywordEditor: View {
                     Button("추가", action: add).disabled(draft.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
             } footer: {
-                Text("띄어쓰기·대소문자는 상관없어요. 영어/한국어 동의어(인프라 ↔ infra)도 같이 찾습니다. 공고 제목과 세부 직무에서 찾아요.")
+                Text("선택이에요. 비워두면 고른 회사의 새 경력 공고를 전부 알려드려요. 띄어쓰기·대소문자는 상관없고, 영어/한국어 동의어(인프라 ↔ infra)도 같이 찾습니다. 공고 제목과 세부 직무에서 찾아요.")
             }
 
             if !keywords.isEmpty {
-                Section("내 키워드 (위쪽이 우선)") {
+                Section("내 키워드") {
                     ForEach(keywords, id: \.self) { k in
                         Text(k)
                     }
@@ -44,7 +45,6 @@ struct KeywordEditor: View {
             }
         }
         .toolbar { EditButton() }
-        .onAppear { focused = keywords.isEmpty }
     }
 
     private func add() {

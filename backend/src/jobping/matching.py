@@ -133,6 +133,8 @@ def match(
     """첫 번째로 걸리는 키워드를 돌려준다. 없으면 None.
 
     제외어가 먼저 적용된다. "DevOps 인턴"은 DevOps 키워드가 있어도 걸러진다.
+    키워드가 비어 있으면 제외어만 거르고 전부 통과시킨다(keyword=""). 키워드는
+    선택이다 — 안 넣은 사람은 고른 회사의 새 공고를 다 받는다.
     """
     collapsed = haystack(job)
     spaced = spaced_haystack(job)
@@ -140,6 +142,8 @@ def match(
         excluded = normalize_text(raw)
         if excluded and _contains(excluded, collapsed, spaced):
             return None
+    if not keywords:
+        return MatchResult(job=job, keyword="")
     for keyword in keywords:
         if any(_contains(v, collapsed, spaced) for v in expand(keyword)):
             return MatchResult(job=job, keyword=keyword)

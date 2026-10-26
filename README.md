@@ -90,5 +90,5 @@ make deploy STAGE=dev      # AWS 배포 — 처음이면 docs/DEPLOY.md
 | 2. 어댑터 + 검증 도구 | ✅ 소스 14개 / 라이브 1,108건 |
 | 3. 서버 | ✅ **오라클 VM에서 운영 중** — `https://138-2-124-116.sslip.io`. AWS 판(`template.yaml`)도 유지 |
 | 3.5. 앱 API | ✅ `/v1/companies` `/v1/jobs` `/v1/devices` |
-| 4. iOS MVP | ✅ CI(macOS 러너)에서 컴파일·유닛 테스트 통과. TestFlight 업로드는 Apple 계정 세팅 후 `docs/IOS.md` |
-| 5. StoreKit 구독 | |
+| 4. iOS MVP | ✅ TestFlight 업로드 성공 (빌드 12). 기기 등록 없이 CI 가 서명 — `docs/IOS.md` |
+| 5. StoreKit 구독 | ⏸ 보류 — 전면 무료로 결정 (2026-10-26) |

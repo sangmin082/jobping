@@ -31,17 +31,33 @@ def store():
     return MemoryStore()
 
 
-class TestTier:
-    def test_free_tier_is_cut_server_side(self):
+class TestFilters:
+    def test_free_tier_is_not_cut(self):
+        """전면 무료. 무료 디바이스도 키워드·회사를 전부 쓴다."""
         d = device(tier="free", keywords=["a", "b", "c"], companies=["x", "y", "z", "w"])
-        assert notifier.effective_filters(d) == (["a"], ["x", "y", "z"])
-
-    def test_pro_tier_is_unlimited(self):
-        d = device(tier="pro", keywords=["a", "b", "c"], companies=["x", "y", "z", "w"])
         assert notifier.effective_filters(d) == (["a", "b", "c"], ["x", "y", "z", "w"])
 
-    def test_free_user_second_keyword_does_not_match(self, store):
+    def test_free_user_second_keyword_matches(self, store):
         d = device(tier="free", keywords=["ios", "devops"])
+        p = notifier.plan(store, [d], [job(1)], now=NOW_DAY, quiet=False)
+        assert len(p.pushes) == 1
+
+    def test_no_keywords_sends_every_job_at_chosen_companies(self, store):
+        """키워드는 선택이다. 비우면 고른 회사의 새 공고를 다 받는다."""
+        d = device(keywords=[], companies=["sk_hynix"])
+        jobs = [job(1, title="회계 담당자"), job(2, company="naver", title="회계 담당자")]
+        p = notifier.plan(store, [d], jobs, now=NOW_DAY, quiet=False)
+        assert [x.body for x in p.pushes] == ["회계 담당자"]
+        assert p.pushes[0].title == "SK하이닉스"
+
+    def test_no_keywords_still_applies_excludes(self, store):
+        d = device(keywords=[], companies=["sk_hynix"])
+        p = notifier.plan(store, [d], [job(1, title="DevOps 인턴")], now=NOW_DAY, quiet=False)
+        assert p.pushes == []
+
+    def test_nothing_chosen_sends_nothing(self, store):
+        """회사도 키워드도 없으면 전체 공고가 다 걸린다. 그건 스팸이라 안 보낸다."""
+        d = device(keywords=[], companies=[])
         p = notifier.plan(store, [d], [job(1)], now=NOW_DAY, quiet=False)
         assert p.pushes == []
 

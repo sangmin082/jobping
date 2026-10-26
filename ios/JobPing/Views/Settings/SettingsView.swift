@@ -7,7 +7,7 @@ struct SettingsView: View {
         @Bindable var model = model
         NavigationStack {
             Form {
-                Section("구독") {
+                Section("알림 조건") {
                     NavigationLink {
                         CompanyPicker(selected: $model.selectedCompanies)
                             .navigationTitle("관심 회사")
@@ -20,7 +20,7 @@ struct SettingsView: View {
                             .navigationTitle("키워드")
                             .onDisappear { Task { await model.syncDevice() } }
                     } label: {
-                        LabeledContent("키워드", value: model.keywords.isEmpty ? "없음" : model.keywords.prefix(3).joined(separator: ", "))
+                        LabeledContent("키워드", value: model.keywords.isEmpty ? "없음 (전체 공고)" : model.keywords.prefix(3).joined(separator: ", "))
                     }
                 }
 
@@ -34,14 +34,6 @@ struct SettingsView: View {
                         }
                 } footer: {
                     Text("밤 11시~아침 8시엔 모아뒀다가 아침에 한 번에 보내드려요. 한 번에 5건이 넘으면 묶어서 알려요.")
-                }
-
-                Section("이용 등급") {
-                    LabeledContent("현재", value: model.isPro ? "Pro" : "무료")
-                    if !model.isPro {
-                        Text("무료: 키워드 \(model.freeTier.maxKeywords)개 · 회사 \(model.freeTier.maxCompanies)곳까지 알림. 그 이상은 등록은 되지만 알림이 가지 않아요.")
-                            .font(.footnote).foregroundStyle(.secondary)
-                    }
                 }
 
                 Section("정보") {
