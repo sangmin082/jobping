@@ -5,46 +5,83 @@ import SwiftUI
 struct KeywordEditor: View {
     @Binding var keywords: [String]
     @State private var draft = ""
-    @FocusState private var focused: Bool
 
     private let suggestions = ["DevOps", "SRE", "백엔드", "iOS", "데이터 엔지니어링", "머신러닝", "반도체", "보안", "인프라", "PM"]
 
     var body: some View {
-        List {
-            Section {
-                HStack {
-                    TextField("예: DevOps, 반도체, 데이터 엔지니어", text: $draft)
-                        .focused($focused)
-                        .submitLabel(.done)
-                        .onSubmit(add)
-                        .autocorrectionDisabled()
-                    Button("추가", action: add).disabled(draft.trimmingCharacters(in: .whitespaces).isEmpty)
-                }
-            } footer: {
-                Text("선택이에요. 비워두면 고른 회사의 새 경력 공고를 전부 알려드려요. 띄어쓰기·대소문자는 상관없고, 영어/한국어 동의어(인프라 ↔ infra)도 같이 찾습니다. 공고 제목과 세부 직무에서 찾아요.")
-            }
+        ScrollView {
+            VStack(alignment: .leading, spacing: 24) {
+                input
 
-            if !keywords.isEmpty {
-                Section("내 키워드") {
-                    ForEach(keywords, id: \.self) { k in
-                        Text(k)
-                    }
-                    .onDelete { keywords.remove(atOffsets: $0) }
-                    .onMove { keywords.move(fromOffsets: $0, toOffset: $1) }
-                }
-            }
-
-            Section("자주 쓰는 키워드") {
-                FlowLayout(spacing: 8) {
-                    ForEach(suggestions.filter { !keywords.contains($0) }, id: \.self) { s in
-                        Button(s) { keywords.append(s) }
-                            .buttonStyle(.bordered)
-                            .controlSize(.small)
+                if !keywords.isEmpty {
+                    VStack(alignment: .leading, spacing: 10) {
+                        SectionLabel("내 키워드", trailing: "\(keywords.count)")
+                        FlowLayout(spacing: 8) {
+                            ForEach(keywords, id: \.self) { k in
+                                RemovableChip(title: k) { keywords.removeAll { $0 == k } }
+                            }
+                        }
                     }
                 }
+
+                let rest = suggestions.filter { s in !keywords.contains { $0.caseInsensitiveCompare(s) == .orderedSame } }
+                if !rest.isEmpty {
+                    VStack(alignment: .leading, spacing: 10) {
+                        SectionLabel("많이 찾는 키워드")
+                        FlowLayout(spacing: 8) {
+                            ForEach(rest, id: \.self) { s in
+                                Button { keywords.append(s) } label: {
+                                    HStack(spacing: 4) {
+                                        Image(systemName: "plus").font(.caption.weight(.bold))
+                                        Text(s)
+                                    }
+                                    .font(.subheadline.weight(.medium))
+                                    .foregroundStyle(.primary)
+                                    .padding(.horizontal, 12)
+                                    .padding(.vertical, 8)
+                                    .overlay(Capsule().strokeBorder(Theme.line, lineWidth: 1))
+                                    .contentShape(Capsule())
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                    }
+                }
+
+                Text("띄어쓰기·대소문자는 상관없어요. 영어/한국어 동의어(인프라 ↔ infra)도 같이 찾아요. 공고 제목과 세부 직무에서 찾아요.")
+                    .font(.footnote)
+                    .foregroundStyle(Theme.muted)
             }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 8)
         }
-        .toolbar { EditButton() }
+        .scrollDismissesKeyboard(.interactively)
+        .background(Theme.bg)
+    }
+
+    private var input: some View {
+        HStack(spacing: 8) {
+            TextField("예: DevOps, 반도체, 데이터 엔지니어", text: $draft)
+                .submitLabel(.done)
+                .onSubmit(add)
+                .autocorrectionDisabled()
+                .textInputAutocapitalization(.never)
+            Button(action: add) {
+                Image(systemName: "plus")
+                    .font(.body.weight(.bold))
+                    .foregroundStyle(Theme.onAccent)
+                    .frame(width: 36, height: 36)
+                    .background(Theme.accent, in: Circle())
+            }
+            .buttonStyle(.plain)
+            .disabled(draft.trimmingCharacters(in: .whitespaces).isEmpty)
+            .opacity(draft.trimmingCharacters(in: .whitespaces).isEmpty ? 0.35 : 1)
+        }
+        .padding(.leading, 16)
+        .padding(.trailing, 6)
+        .frame(height: 52)
+        .background(Theme.card, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(Theme.line, lineWidth: 1))
     }
 
     private func add() {
@@ -55,30 +92,25 @@ struct KeywordEditor: View {
     }
 }
 
-/// 칩을 줄바꿈해 배치한다. iOS 16+ Layout 프로토콜.
-struct FlowLayout: Layout {
-    var spacing: CGFloat = 8
+/// 내 키워드 칩. × 로 지운다.
+private struct RemovableChip: View {
+    let title: String
+    let remove: () -> Void
 
-    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
-        let width = proposal.width ?? 0
-        var x: CGFloat = 0, y: CGFloat = 0, rowH: CGFloat = 0
-        for v in subviews {
-            let s = v.sizeThatFits(.unspecified)
-            if x + s.width > width, x > 0 { x = 0; y += rowH + spacing; rowH = 0 }
-            x += s.width + spacing
-            rowH = max(rowH, s.height)
+    var body: some View {
+        HStack(spacing: 6) {
+            Text(title).lineLimit(1)
+            Button(action: remove) {
+                Image(systemName: "xmark").font(.caption2.weight(.bold))
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("\(title) 지우기")
         }
-        return CGSize(width: width, height: y + rowH)
-    }
-
-    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
-        var x = bounds.minX, y = bounds.minY, rowH: CGFloat = 0
-        for v in subviews {
-            let s = v.sizeThatFits(.unspecified)
-            if x + s.width > bounds.maxX, x > bounds.minX { x = bounds.minX; y += rowH + spacing; rowH = 0 }
-            v.place(at: CGPoint(x: x, y: y), proposal: ProposedViewSize(s))
-            x += s.width + spacing
-            rowH = max(rowH, s.height)
-        }
+        .font(.subheadline.weight(.semibold))
+        .foregroundStyle(Theme.onAccent)
+        .padding(.leading, 14)
+        .padding(.trailing, 10)
+        .padding(.vertical, 9)
+        .background(Theme.accent, in: Capsule())
     }
 }

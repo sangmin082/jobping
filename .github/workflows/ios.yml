@@ -63,11 +63,45 @@ jobs:
           ids = [x['udid'] for rt in sorted(d) for x in d[rt] if x.get('isAvailable') and x['name'].startswith('iPhone')]
           print(ids[-1])")
           echo "simulator: $SIM"
+          echo "SIM=$SIM" >> "$GITHUB_ENV"
           xcodebuild test \
             -project JobPing.xcodeproj -scheme JobPing \
             -destination "id=$SIM" \
             CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO \
             | xcbeautify --renderer github-actions
+
+      # 디자인 확인용 스크린샷. 맥이 없어도 화면을 볼 수 있게 데모 모드(-demo, 디버그 빌드 전용)로
+      # 화면마다 띄워 라이트/다크로 찍는다. 아티팩트 screenshots 로 받는다. 실패해도 빌드는 통과.
+      - name: Screenshots
+        continue-on-error: true
+        working-directory: ios
+        run: |
+          APP=$(find ~/Library/Developer/Xcode/DerivedData -maxdepth 6 -path '*Debug-iphonesimulator/JobPing.app' | head -1)
+          echo "app: $APP"
+          xcrun simctl boot "$SIM" 2>/dev/null || true
+          xcrun simctl bootstatus "$SIM" -b
+          xcrun simctl status_bar "$SIM" override --time 9:41 --batteryState charged --batteryLevel 100 || true
+          xcrun simctl install "$SIM" "$APP"
+          mkdir -p shots
+          for mode in light dark; do
+            xcrun simctl ui "$SIM" appearance "$mode"
+            for s in welcome companies keywords keywords-empty push jobs empty saved settings; do
+              xcrun simctl terminate "$SIM" com.sangmin082.jobping 2>/dev/null || true
+              xcrun simctl launch "$SIM" com.sangmin082.jobping -demo "$s" > /dev/null
+              sleep 4
+              xcrun simctl io "$SIM" screenshot "shots/$mode-$s.png" > /dev/null
+            done
+          done
+          ls shots
+
+      - name: Keep the screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: ios/shots/*.png
+          retention-days: 7
+          if-no-files-found: ignore
 
   testflight:
     name: Archive & upload to TestFlight

@@ -19,6 +19,14 @@ final class Bookmarks {
         save()
     }
 
+    #if DEBUG
+    /// 스크린샷용 데모 모드(DemoMode.swift)가 저장 목록을 정해진 상태로 맞출 때 쓴다.
+    func replace(with jobs: [Job]) {
+        self.jobs = jobs
+        save()
+    }
+    #endif
+
     private func load() {
         guard let data = UserDefaults.standard.data(forKey: key),
               let decoded = try? JSONDecoder().decode([Job].self, from: data) else { return }

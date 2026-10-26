@@ -6,25 +6,32 @@ struct BookmarksView: View {
 
     var body: some View {
         NavigationStack {
-            Group {
+            List {
+                ScreenHeader(eyebrow: nil, title: "저장한 공고",
+                             subtitle: model.bookmarks.jobs.isEmpty ? nil : "\(model.bookmarks.jobs.count)개")
+                    .plainRow()
                 if model.bookmarks.jobs.isEmpty {
-                    ContentUnavailableView("저장한 공고가 없어요", systemImage: "bookmark",
-                                           description: Text("공고를 왼쪽으로 밀어 저장할 수 있어요"))
+                    EmptyState(icon: "bookmark", title: "저장한 공고가 없어요",
+                               message: "공고를 오른쪽으로 밀면 여기에 저장돼요")
+                        .plainRow()
                 } else {
-                    List(model.bookmarks.jobs) { job in
-                        JobRow(job: job)
+                    ForEach(model.bookmarks.jobs) { job in
+                        JobCard(job: job)
                             .contentShape(Rectangle())
                             .onTapGesture { openURL = URL(string: job.url) }
+                            .plainRow(EdgeInsets(top: 5, leading: 16, bottom: 5, trailing: 16))
                             .swipeActions {
                                 Button(role: .destructive) { model.bookmarks.toggle(job) } label: {
                                     Label("삭제", systemImage: "trash")
                                 }
                             }
                     }
-                    .listStyle(.plain)
                 }
             }
-            .navigationTitle("저장")
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
+            .background(Theme.bg)
+            .toolbar(.hidden, for: .navigationBar)
             .sheet(item: $openURL) { url in SafariView(url: url).ignoresSafeArea() }
         }
     }

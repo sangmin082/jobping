@@ -4,7 +4,13 @@ import UserNotifications
 @main
 struct JobPingApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
-    @State private var model = AppModel()
+    @State private var model: AppModel = {
+        #if DEBUG
+        // CI 스크린샷: `-demo <화면>` 으로 실행하면 예시 데이터로 그 화면을 띄운다.
+        if let demo = DemoMode.model() { return demo }
+        #endif
+        return AppModel()
+    }()
 
     var body: some Scene {
         WindowGroup {

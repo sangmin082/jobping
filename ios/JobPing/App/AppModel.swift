@@ -22,6 +22,12 @@ final class AppModel {
     var deviceToken: String?
     var pendingJobId: String?   // 푸시를 탭해서 열린 경우
 
+    // 처음 띄울 화면. 평소엔 기본값이고, 스크린샷용 데모 모드(DemoMode.swift)만 바꾼다.
+    var initialTab: MainTab = .jobs
+    var initialOnboardingStep = 0
+    /// 데모 모드면 서버와 통신하지 않는다 — 넣어둔 예시 데이터가 그대로 보여야 한다.
+    var isDemo = false
+
     let api: APIClient?
     let bookmarks = Bookmarks()
 
@@ -60,6 +66,7 @@ final class AppModel {
     // MARK: - 서버 동기화
 
     func loadCompanies() async {
+        guard !isDemo else { return }
         guard let api else { lastError = APIError.badURL.localizedDescription; return }
         do {
             let resp = try await api.companies()
@@ -73,6 +80,7 @@ final class AppModel {
     }
 
     func refreshJobs() async {
+        guard !isDemo else { return }
         guard let api else { lastError = APIError.badURL.localizedDescription; return }
         guard !selectedCompanies.isEmpty else { jobs = []; return }
         isLoading = true
@@ -90,7 +98,7 @@ final class AppModel {
     }
 
     func syncDevice() async {
-        guard let api else { return }
+        guard !isDemo, let api else { return }
         let reg = DeviceRegistration(
             installId: InstallID.current,
             deviceToken: deviceToken,
