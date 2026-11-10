@@ -4,6 +4,7 @@
     python -m jobping.selfhost flush     # 조용한 시간 보류분 발송 (08:00 KST 타이머)
     python -m jobping.selfhost serve     # 앱 API (Caddy 뒤에서 127.0.0.1:8080)
     python -m jobping.selfhost status    # 소스 헬스와 테이블 건수
+    python -m jobping.selfhost test-push # APNs 설정 점검 + 등록된 기기에 테스트 알림
 
 AWS 판과의 차이는 연결부뿐이다. 로직(collector / notifier / api)은 같은 모듈을
 그대로 부른다.
@@ -28,6 +29,7 @@ import argparse
 import json
 import logging
 import os
+import re
 import sys
 from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -35,7 +37,7 @@ from urllib.parse import parse_qs, urlsplit
 
 from . import api, collector, notifier, registry
 from .alerts import Alerts
-from .apns import APNsClient
+from .apns import APNsClient, alert_payload
 from .sqlite_store import SQLiteStore
 
 log = logging.getLogger("jobping")
@@ -118,6 +120,56 @@ def _send(store, apns, plan, now, alerts) -> int:
     return notifier.send(store, apns, plan.pushes, now=now, alerts=alerts).sent
 
 
+# Apple 이 돌려주는 거절 사유 → 고칠 곳.
+PUSH_HINTS = {
+    "InvalidProviderToken": "APNS_KEY_ID / APNS_TEAM_ID 가 .p8 키와 짝이 안 맞다. "
+                            "Key ID 는 developer.apple.com ▸ Keys 의 그 키 ID(10자리)",
+    "BadDeviceToken": "기기 토큰과 APNS_ENVIRONMENT 가 안 맞는다. TestFlight 앱이면 production",
+    "Unregistered": "앱이 지워졌거나 알림이 꺼진 기기다",
+    "DeviceTokenNotForTopic": "APNS_BUNDLE_ID 가 앱 번들 ID 와 다르다 (com.sangmin082.jobping)",
+    "TopicDisallowed": "이 키로 이 번들에 보낼 수 없다. Keys 에서 APNs 를 켠 키인지 확인",
+}
+
+
+def cmd_test_push(store) -> int:
+    """설정을 점검하고, 토큰이 있는 기기마다 테스트 알림을 하나씩 보낸다. 기기는 지우지 않는다."""
+    key_id = os.environ.get("APNS_KEY_ID", "")
+    team_id = os.environ.get("APNS_TEAM_ID", "")
+    problems = []
+    if not re.fullmatch(r"[A-Z0-9]{10}", key_id):
+        problems.append(f"APNS_KEY_ID 가 10자리 영숫자가 아니다 (지금: {key_id!r})")
+    if not re.fullmatch(r"[A-Z0-9]{10}", team_id):
+        problems.append(f"APNS_TEAM_ID 가 10자리 영숫자가 아니다 (지금: {team_id!r})")
+    print(f"환경: {os.environ.get('APNS_ENVIRONMENT', 'sandbox')}, 번들: {os.environ.get('APNS_BUNDLE_ID', '')!r}")
+    for p in problems:
+        print(f"❌ {p}")
+    apns = make_apns()
+    if problems or apns is None:
+        print("❌ 설정을 고친 뒤 다시 실행한다 (/etc/jobping/env)")
+        return 1
+
+    devices = [d for d in store.list_devices() if d.get("device_token")]
+    if not devices:
+        print("❌ 알림 토큰이 있는 기기가 없다. 앱에서 알림을 허용했는지 확인 (설정 ▸ 새 공고 알림)")
+        apns.close()
+        return 1
+    failed = 0
+    try:
+        for d in devices:
+            payload = alert_payload("잡핑 테스트 알림", "이 알림이 보이면 푸시 설정이 정상이에요.")
+            r = apns.send(d["device_token"], payload)
+            name = f"{d['install_id'][:8]}… (회사 {len(d.get('companies') or [])}곳)"
+            if r.ok:
+                print(f"✅ {name}: 보냈다")
+            else:
+                failed += 1
+                hint = PUSH_HINTS.get(r.reason, "")
+                print(f"❌ {name}: {r.status} {r.reason}" + (f" — {hint}" if hint else ""))
+    finally:
+        apns.close()
+    return 1 if failed else 0
+
+
 def cmd_status(store) -> dict:
     return {"counts": store.counts(),
             "health": sorted(store.list_health(), key=lambda h: h["adapter"])}
@@ -184,6 +236,7 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("collect")
     sub.add_parser("flush")
     sub.add_parser("status")
+    sub.add_parser("test-push")
     s = sub.add_parser("serve")
     s.add_argument("--host", default="127.0.0.1")
     s.add_argument("--port", type=int, default=8080)
@@ -196,6 +249,8 @@ def main(argv: list[str] | None = None) -> int:
     if args.cmd == "status":
         print(json.dumps(cmd_status(store), ensure_ascii=False, indent=1))
         return 0
+    if args.cmd == "test-push":
+        return cmd_test_push(store)
     alerts, apns = make_alerts(), make_apns()
     try:
         fn = cmd_collect if args.cmd == "collect" else cmd_flush

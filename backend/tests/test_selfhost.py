@@ -107,3 +107,47 @@ class TestHTTP:
     def test_oversized_body_is_rejected(self, server):
         status, _ = http(f"{server}/v1/devices", {"install_id": UUID, "pad": "x" * 70_000})
         assert status == 413
+
+
+class TestTestPush:
+    """`jobping test-push` — 설정을 점검하고 등록된 기기에 테스트 알림을 보낸다."""
+
+    class FakeAPNs:
+        def __init__(self, result):
+            self.result, self.sent = result, []
+
+        def send(self, token, payload, collapse_id=None):
+            self.sent.append((token, payload))
+            return self.result
+
+        def close(self):
+            pass
+
+    @pytest.fixture
+    def env(self, monkeypatch):
+        monkeypatch.setenv("APNS_KEY_ID", "ABCDE12345")
+        monkeypatch.setenv("APNS_TEAM_ID", "R49JBP66QZ")
+        monkeypatch.setenv("APNS_BUNDLE_ID", "com.sangmin082.jobping")
+        return monkeypatch
+
+    def test_placeholder_key_id_is_caught_before_sending(self, store, env, capsys):
+        """VM 의 env 에 안내 문구('키ID')가 그대로 남아 있던 실제 사례."""
+        env.setenv("APNS_KEY_ID", "키ID")
+        assert selfhost.cmd_test_push(store) == 1
+        assert "APNS_KEY_ID" in capsys.readouterr().out
+
+    def test_sends_one_alert_per_device(self, store, env, capsys):
+        from jobping.apns import PushResult
+        fake = self.FakeAPNs(PushResult(ok=True, status=200))
+        env.setattr(selfhost, "make_apns", lambda: fake)
+        assert selfhost.cmd_test_push(store) == 0
+        assert [t for t, _ in fake.sent] == ["ab" * 32]
+        assert "✅" in capsys.readouterr().out
+
+    def test_rejection_is_explained(self, store, env, capsys):
+        from jobping.apns import PushResult
+        fake = self.FakeAPNs(PushResult(ok=False, status=403, reason="InvalidProviderToken"))
+        env.setattr(selfhost, "make_apns", lambda: fake)
+        assert selfhost.cmd_test_push(store) == 1
+        assert "Keys" in capsys.readouterr().out
+        assert store.list_devices()  # 테스트는 기기를 지우지 않는다
