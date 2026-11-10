@@ -107,6 +107,7 @@ journalctl -u jobping-collect -n 30     # 최근 수집 로그
 journalctl -u jobping-api -f            # API 로그
 systemctl list-timers 'jobping*'        # 다음 실행 시각
 sudo systemctl start jobping-collect    # 지금 바로 한 번 수집
+jobping test-push                       # APNs 설정 점검 + 등록된 기기에 테스트 알림
 ```
 
 **업데이트**: 설치 명령을 그대로 다시 실행한다. 코드·의존성만 바뀌고 설정과 DB 는
