@@ -92,6 +92,28 @@ jobs:
               xcrun simctl io "$SIM" screenshot "shots/$mode-$s.png" > /dev/null
             done
           done
+
+          # App Store 제출용 세트. 6.9인치(Pro Max)가 필수라 따로 찍는다 — docs/APPSTORE.md 8절.
+          STORE=$(xcrun simctl list -j devices available | python3 -c "
+          import json, sys
+          d = json.load(sys.stdin)['devices']
+          ids = [x['udid'] for rt in sorted(d) for x in d[rt] if x.get('isAvailable') and 'Pro Max' in x['name']]
+          print(ids[-1] if ids else '')")
+          if [ -n "$STORE" ]; then
+            xcrun simctl boot "$STORE" 2>/dev/null || true
+            xcrun simctl bootstatus "$STORE" -b
+            xcrun simctl status_bar "$STORE" override --time 9:41 --batteryState charged --batteryLevel 100 || true
+            xcrun simctl install "$STORE" "$APP"
+            xcrun simctl ui "$STORE" appearance light
+            for s in welcome jobs push companies keywords; do
+              xcrun simctl terminate "$STORE" com.sangmin082.jobping 2>/dev/null || true
+              xcrun simctl launch "$STORE" com.sangmin082.jobping -demo "$s" > /dev/null
+              sleep 4
+              xcrun simctl io "$STORE" screenshot "shots/store-$s.png" > /dev/null
+            done
+          else
+            echo "::warning::Pro Max 시뮬레이터가 없어 스토어용 스크린샷을 못 찍었다"
+          fi
           ls shots
 
       - name: Keep the screenshots
