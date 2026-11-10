@@ -69,3 +69,16 @@ class TestCoverage:
     def test_app_only_offers_companies_from_verified_sources(self):
         verified = {a.key for a in registry.verified_adapters()}
         assert {c.source for c in registry.app_companies()} <= verified
+
+
+class TestSkVariants:
+    """SK 사이트가 2026-11 에 낸 회사명들. 등록 전엔 슬러그로 빠져 앱의 SK 합계가 사이트보다 적었다."""
+
+    @pytest.mark.parametrize("raw, expected", [
+        ("SK가스 어드밴스드", "sk_gas"),          # 사업부 이름이 붙은 SK가스
+        ("SK D&D", "sk_dnd"),                    # 영문 표기
+        ("SK주식회사(Inc.)", "sk_inc"),           # AX 와 다른 회사다
+        ("SK에어코어", "sk_aircore"),
+    ])
+    def test_resolves_to_registered_company(self, raw, expected):
+        assert resolve("skcareers", raw) == expected

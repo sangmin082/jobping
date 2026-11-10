@@ -73,10 +73,16 @@ SAMSUNG: tuple[Company, ...] = tuple(
     )
 )
 
+# 사이트가 같은 회사를 다른 이름으로 낼 때. 사업부 이름이 붙거나("SK가스 어드밴스드"),
+# 영문 표기가 한글 표기와 따로 논다("SK D&D").
+_SK_EXTRA_ALIASES: dict[str, tuple[str, ...]] = {
+    "sk_gas": ("SK가스 어드밴스드",),
+}
+
 # SK — 소스가 코드가 아니라 회사명을 준다. 그 회사명은 요청 언어에 따라
 # 한국어/영어로 달라지므로 두 표기를 모두 등록한다.
 SK: tuple[Company, ...] = tuple(
-    Company(key=key, display_name=name, source="skcareers", aliases=(en,))
+    Company(key=key, display_name=name, source="skcareers", aliases=(en, *_SK_EXTRA_ALIASES.get(key, ())))
     for key, name, en in (
         ("sk_hynix", "SK하이닉스", "SK hynix"),
         ("sk_telecom", "SK텔레콤", "SK telecom"),
@@ -108,6 +114,17 @@ SK: tuple[Company, ...] = tuple(
         ("ige", "아이지이", "IGE"),
         ("ensolve", "엔솔브(주)", "EnSolve Co.,Ltd"),
         ("hweechan", "휘찬", "Hweechan Co.,Ltd."),
+        # 2026-11 추가. 등록 전엔 공고가 슬러그 키로만 저장돼 앱 목록과 계열사별 공고 수에서 빠졌다.
+        ("sk_aircore", "SK에어코어", "SK aircore"),
+        ("sk_inc", "SK주식회사(Inc.)", "SK inc.(Inc.)"),
+        ("sk_aigen", "SK아이젠", "SK AIGEN"),
+        ("sk_eternix", "SK이터닉스", "SK eternix"),
+        ("sk_networks_service", "SK네트웍스서비스", "SK networks service"),
+        ("sk_biotek", "SK바이오텍", "SK biotek"),
+        ("sk_dnd", "SK디앤디", "SK D&D"),
+        ("dnd_property", "디앤디프라퍼티솔루션", "D&D Property Solution"),
+        ("glowide", "글로와이드", "Glowide"),
+        ("ackerton", "애커튼파트너스", "Ackerton Partners"),
     )
 )
 
@@ -124,6 +141,7 @@ NAVER: tuple[Company, ...] = tuple(
         ("naver_cloud", "네이버클라우드", "NAVER Cloud"),
         ("naver_labs", "네이버랩스", "NAVER LABS"),
         ("snow", "스노우", "SNOW"),
+        ("naver_is", "네이버아이앤에스", "NAVER I&S"),
     )
 )
 
@@ -170,6 +188,8 @@ LG: tuple[Company, ...] = tuple(
         ("hi_care", "하이케어솔루션", "HIC"),
         ("robostar", "로보스타", "RBO"),
         ("dno", "D&O", "SVO"),
+        ("lg_enibio", "엘지에니바이오리파이닝", "LGEB"),
+        ("hiplaza", "하이프라자", "Hiplaza"),
     )
 )
 
@@ -186,6 +206,7 @@ TOSS: tuple[Company, ...] = tuple(
         ("toss_cx", "토스씨엑스"),
         ("toss_community", "토스커뮤니티"),
         ("toss_insight", "토스인사이트"),
+        ("toss_income", "토스인컴"),
     )
 )
 
