@@ -136,8 +136,10 @@ def cmd_test_push(store) -> int:
     key_id = os.environ.get("APNS_KEY_ID", "")
     team_id = os.environ.get("APNS_TEAM_ID", "")
     problems = []
-    if not re.fullmatch(r"[A-Z0-9]{10}", key_id):
-        problems.append(f"APNS_KEY_ID 가 10자리 영숫자가 아니다 (지금: {key_id!r})")
+    # 10자리 영숫자인지, 그리고 안내문의 예시(XXXXXXXXXX)가 그대로 남지 않았는지.
+    if not re.fullmatch(r"[A-Z0-9]{10}", key_id) or len(set(key_id)) == 1:
+        problems.append(f"APNS_KEY_ID 가 실제 키 ID 가 아니다 (지금: {key_id!r}). "
+                        "developer.apple.com ▸ Keys 의 APNs 키 ID(10자리)")
     if not re.fullmatch(r"[A-Z0-9]{10}", team_id):
         problems.append(f"APNS_TEAM_ID 가 10자리 영숫자가 아니다 (지금: {team_id!r})")
     print(f"환경: {os.environ.get('APNS_ENVIRONMENT', 'sandbox')}, 번들: {os.environ.get('APNS_BUNDLE_ID', '')!r}")

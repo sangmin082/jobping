@@ -136,6 +136,12 @@ class TestTestPush:
         assert selfhost.cmd_test_push(store) == 1
         assert "APNS_KEY_ID" in capsys.readouterr().out
 
+    def test_example_key_id_is_caught(self, store, env, capsys):
+        """안내문 예시(XXXXXXXXXX)를 그대로 넣은 실제 사례. 형식은 맞아서 Apple 까지 갔었다."""
+        env.setenv("APNS_KEY_ID", "XXXXXXXXXX")
+        assert selfhost.cmd_test_push(store) == 1
+        assert "APNS_KEY_ID" in capsys.readouterr().out
+
     def test_sends_one_alert_per_device(self, store, env, capsys):
         from jobping.apns import PushResult
         fake = self.FakeAPNs(PushResult(ok=True, status=200))
